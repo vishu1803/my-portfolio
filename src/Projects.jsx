@@ -4,7 +4,8 @@ const projects = [
     {
       title: "3D Portfolio Website",
       image: `${import.meta.env.BASE_URL}portfolio.png`,
-      description: "A visually stunning 3D portfolio website built with React, Three.js, and Tailwind CSS, showcasing skills and projects interactively."
+      description: "A visually stunning 3D portfolio website built with React, Three.js, and Tailwind CSS, showcasing skills and projects interactively.",
+      link: "https://3-d-portfolio-website-one.vercel.app"
     },
     {
       title: "Weather App",
@@ -19,7 +20,8 @@ const projects = [
     {
       title: "AI Job Search Dashboard",
       image: `${import.meta.env.BASE_URL}job.png`,
-      description: "A smart AI-powered job search dashboard that helps users find jobs efficiently with AI recommendations and resume analysis."
+      description: "A smart AI-powered job search dashboard that helps users find jobs efficiently with AI recommendations and resume analysis.",
+      link: "https://ai-job-search-board.vercel.app"
     },
     {
       title: "Chat App",
@@ -54,13 +56,16 @@ export default function Projects() {
             />
             <h3 className="text-2xl font-semibold mb-2 text-blue-400">{project.title}</h3>
             <p className="text-gray-300">{project.description}</p>
-            <motion.button 
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300"
+            <motion.a 
+              href={project.link || "#"} 
+              target={project.link ? "_blank" : "_self"} 
+              rel="noopener noreferrer"
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300 inline-block"
               whileHover={{ scale: 1.1 }}
               transition={{ duration: 0.3 }}
             >
               View Project
-            </motion.button>
+            </motion.a>
           </motion.div>
         ))}
       </div>
