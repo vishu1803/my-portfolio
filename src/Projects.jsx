@@ -8,9 +8,10 @@ const projects = [
       link: "https://3-d-portfolio-website-one.vercel.app"
     },
     {
-      title: "Weather App",
-      image: `${import.meta.env.BASE_URL}weather.png`,
-      description: "A real-time weather app that fetches live weather updates, forecasts, and detailed climate data using OpenWeather API."
+      title: "Object Detection Web App",
+      image: `${import.meta.env.BASE_URL}object-detection.png`,
+      description: "A real-time object detection web app that identifies objects in images and videos using AI-powered machine learning models.",
+      link: "https://object-detection-web-app-indol.vercel.app/"
     },
     {
       title: "Music Player App",
