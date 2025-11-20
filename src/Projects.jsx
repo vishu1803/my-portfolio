@@ -1,121 +1,172 @@
-import { motion } from "framer-motion";
+import { useEffect, useState, useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Float, MeshDistortMaterial } from "@react-three/drei";
 
+// 3D Floating Shape Component
+function FloatingShape({ color = "#3b82f6" }) {
+  const meshRef = useRef();
+
+  useFrame((state) => {
+    meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.3;
+  });
+
+  return (
+    <Float speed={2} floatIntensity={1.2} rotationIntensity={1}>
+      <mesh ref={meshRef}>
+        <icosahedronGeometry args={[0.8, 1]} />
+        <MeshDistortMaterial
+          color={color}
+          distort={0.3}
+          speed={2}
+          roughness={0.1}
+          metalness={0.6}
+        />
+      </mesh>
+    </Float>
+  );
+}
+
+// PROJECTS DATA
 const projects = [
   {
-    id: "ai-code-review",
     title: "AI-Powered Code Review Assistant",
+    description:
+      "Analyzes GitHub PRs to detect bugs, code quality issues, and suggests smart improvements using FastAPI + OpenAI.",
     image: `${import.meta.env.BASE_URL}ai-code-review.png`,
-    description:
-      "An intelligent assistant that analyzes GitHub pull requests to detect style issues, potential bugs, and suggest improvements using OpenAI API and FastAPI.",
     link: "https://github.com/vishu1803/Ai-powered-code-review-assistant/",
-    tags: [
-      { name: "fastapi", color: "green-text-gradient" },
-      { name: "openai", color: "blue-text-gradient" },
-      { name: "python", color: "pink-text-gradient" },
-    ],
+    color: "#3b82f6",
   },
   {
-    id: "product-explorer",
     title: "Product Data Explorer",
+    description:
+      "Analytics dashboard with API integration, charts, and data exploration features built in Next.js.",
     image: `${import.meta.env.BASE_URL}product-explorer.png`,
-    description:
-      "An analytics dashboard for exploring and visualizing large product datasets with REST APIs and interactive charts built using Next.js and NestJS.",
     link: "https://product-explorer-frontend-qp3m.onrender.com/",
-    tags: [
-      { name: "nextjs", color: "blue-text-gradient" },
-      { name: "nestjs", color: "green-text-gradient" },
-      { name: "restapi", color: "pink-text-gradient" },
-    ],
+    color: "#a855f7",
   },
   {
-    id: "task-manager",
     title: "Collaborative Task Manager",
+    description:
+      "Real-time team collaboration app built with Next.js, Prisma, and PostgreSQL.",
     image: `${import.meta.env.BASE_URL}task-manager.png`,
-    description:
-      "A full-stack task management platform supporting team collaboration, task prioritization, and real-time updates using Next.js, Prisma, and PostgreSQL.",
     link: "https://collaborative-task-manager-fc26.vercel.app/",
-    tags: [
-      { name: "nextjs", color: "blue-text-gradient" },
-      { name: "prisma", color: "green-text-gradient" },
-      { name: "postgresql", color: "pink-text-gradient" },
-    ],
+    color: "#22c55e",
   },
   {
-    id: "3d-portfolio",
     title: "3D Portfolio Website",
+    description:
+      "A beautiful 3D interactive portfolio built using React + Three.js.",
     image: `${import.meta.env.BASE_URL}portfolio.png`,
-    description:
-      "A visually stunning 3D portfolio website built with React, Three.js, and Tailwind CSS, showcasing skills and projects interactively.",
     link: "https://3-d-portfolio-website-one.vercel.app",
-    tags: [
-      { name: "react", color: "blue-text-gradient" },
-      { name: "threejs", color: "green-text-gradient" },
-      { name: "tailwindcss", color: "pink-text-gradient" },
-    ],
+    color: "#f97316",
   },
   {
-    id: "object-detection",
     title: "Object Detection Web App",
-    image: `${import.meta.env.BASE_URL}object-detection.png`,
     description:
-      "A real-time object detection web app that identifies objects in images and videos using AI-powered machine learning models.",
+      "Real-time object detection using TensorFlow.js in the browser.",
+    image: `${import.meta.env.BASE_URL}object-detection.png`,
     link: "https://object-detection-web-app-indol.vercel.app/",
-    tags: [
-      { name: "react", color: "blue-text-gradient" },
-      { name: "tensorflowjs", color: "green-text-gradient" },
-      { name: "css", color: "pink-text-gradient" },
-    ],
+    color: "#eab308",
   },
   {
-    id: "ai-job-search",
     title: "AI Job Search Dashboard",
-    image: `${import.meta.env.BASE_URL}job.png`,
     description:
-      "A smart AI-powered job search dashboard that helps users find jobs efficiently with AI recommendations and resume analysis.",
+      "AI-based recommendation engine to find personalized job listings.",
+    image: `${import.meta.env.BASE_URL}job.png`,
     link: "https://ai-job-search-board.vercel.app",
-    tags: [
-      { name: "react", color: "blue-text-gradient" },
-      { name: "python", color: "green-text-gradient" },
-      { name: "restapi", color: "pink-text-gradient" },
-    ],
+    color: "#6366f1",
   },
 ];
 
 export default function Projects() {
-  return (
-    <section id="projects" className="min-h-screen bg-gray-900 text-white py-16 px-6 md:px-20">
-      <h2 className="text-5xl font-bold text-center mb-12">Projects</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-        {projects.map((project, index) => (
-          <motion.div
-            key={index}
-            className="bg-gray-800 rounded-lg p-5 shadow-lg overflow-hidden relative hover:shadow-2xl transition-shadow duration-300"
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-          >
-            <motion.img
-              src={project.image}
-              alt={project.title}
-              className="w-full h-48 object-cover rounded-md mb-4"
-              whileHover={{ scale: 1.1, filter: "drop-shadow(0px 0px 15px rgba(0, 183, 255, 0.8))" }}
-              transition={{ duration: 0.3 }}
-            />
-            <h3 className="text-2xl font-semibold mb-2 text-blue-400">{project.title}</h3>
-            <p className="text-gray-300">{project.description}</p>
+  const [isMobile, setIsMobile] = useState(false);
 
-            <motion.a
-              href={project.link || "#"}
-              target={project.link ? "_blank" : "_self"}
-              rel="noopener noreferrer"
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300 inline-block"
-              whileHover={{ scale: 1.1 }}
-              transition={{ duration: 0.3 }}
-            >
-              View Project
-            </motion.a>
-          </motion.div>
+  // Safe mobile detection (React 19 safe)
+  useEffect(() => {
+    const update = () => setIsMobile(window.innerWidth < 768);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  return (
+    <section
+      id="projects"
+      className="min-h-screen bg-black text-white py-20 px-6 md:px-20 relative overflow-hidden"
+    >
+      {/* BACKGROUND FLOATING SHAPES */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <Canvas camera={{ position: [0, 0, 5] }}>
+          <FloatingShape color="#3b82f6" />
+        </Canvas>
+      </div>
+
+      <motion.h2
+        className="text-5xl md:text-6xl font-bold text-center mb-16 relative z-10"
+        initial={{ opacity: 0, y: -40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+      >
+        Featured Projects
+      </motion.h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12 relative z-10">
+        {projects.map((project, index) => (
+          <ProjectCard project={project} index={index} isMobile={isMobile} key={index} />
         ))}
       </div>
     </section>
+  );
+}
+
+// Project Card Component
+function ProjectCard({ project, index, isMobile }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-40px" });
+
+  return (
+    <motion.div
+      ref={ref}
+      className="group bg-gray-900/40 backdrop-blur-xl border border-gray-700/40 rounded-xl overflow-hidden shadow-xl relative"
+      initial={{ opacity: 0, y: 40 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, delay: index * 0.15 }}
+      whileHover={{ y: -10 }}
+    >
+      {/* 3D Shape on Desktop Only */}
+      {!isMobile && (
+        <div className="absolute top-4 right-4 w-20 h-20 opacity-80">
+          <Canvas camera={{ position: [0, 0, 2.5] }} dpr={[1, 1.5]}>
+            <FloatingShape color={project.color} />
+          </Canvas>
+        </div>
+      )}
+
+      <motion.img
+        src={project.image}
+        alt={project.title}
+        className="w-full h-48 object-cover rounded-t-xl group-hover:opacity-80 transition duration-300"
+      />
+
+      <div className="p-6">
+        <h3 className="text-2xl font-semibold mb-2 group-hover:text-blue-400 transition">
+          {project.title}
+        </h3>
+
+        <p className="text-gray-300 mb-4 leading-relaxed">
+          {project.description}
+        </p>
+
+        <motion.a
+          href={project.link}
+          target="_blank"
+          className="inline-block px-5 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-blue-500/50 transition-all"
+          whileHover={{ scale: 1.07 }}
+        >
+          View Project →
+        </motion.a>
+      </div>
+    </motion.div>
   );
 }
