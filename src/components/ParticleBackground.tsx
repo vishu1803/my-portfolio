@@ -7,9 +7,9 @@ import { Points, PointMaterial } from "@react-three/drei";
 import { inSphere } from "maath/random";
 
 function Stars() {
-  const ref = useRef();
-  const [sphere] = useState(() =>
-    inSphere(new Float32Array(5000), { radius: 1.5 })
+  const ref = useRef<any>(null);
+  const [sphere] = useState<Float32Array>(() =>
+    inSphere(new Float32Array(5000), { radius: 1.5 }) as Float32Array
   );
 
   useFrame((_, delta) => {
@@ -38,7 +38,7 @@ export default function ParticleBackground() {
 
   // Listen for global performance-mode toggle
   useEffect(() => {
-    const handler = (e) => setPerformanceMode(e.detail.enabled);
+    const handler = (e: any) => setPerformanceMode(e.detail.enabled);
     window.addEventListener("performance-mode", handler);
 
     return () => window.removeEventListener("performance-mode", handler);
