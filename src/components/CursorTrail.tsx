@@ -1,4 +1,5 @@
-// src/components/CursorTrail.jsx
+"use client";
+
 import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
@@ -7,15 +8,22 @@ export default function CursorTrail() {
 
   // Listen for global performance-mode toggle
   useEffect(() => {
-    const handler = (e) => setPerformanceMode(e.detail.enabled);
+    const handler = (e: any) => setPerformanceMode(e.detail.enabled);
     window.addEventListener("performance-mode", handler);
     return () => window.removeEventListener("performance-mode", handler);
   }, []);
 
   if (performanceMode) return null;
 
-  const x = useMotionValue(window.innerWidth / 2);
-  const y = useMotionValue(window.innerHeight / 2);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      x.set(window.innerWidth / 2);
+      y.set(window.innerHeight / 2);
+    }
+  }, []);
 
   const smoothX = useSpring(x, { stiffness: 200, damping: 20 });
   const smoothY = useSpring(y, { stiffness: 200, damping: 20 });

@@ -1,14 +1,18 @@
+"use client";
+
 import { useEffect, useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, MeshDistortMaterial } from "@react-three/drei";
 
 // 3D Floating Shape Component
-function FloatingShape({ color = "#3b82f6" }) {
-  const meshRef = useRef();
+function FloatingShape({ color = "#3b82f6" }: { color?: string }) {
+  const meshRef = useRef<any>(null);
 
   useFrame((state) => {
-    meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.3;
+    if (meshRef.current) {
+      meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.3;
+    }
   });
 
   return (
@@ -33,7 +37,7 @@ const projects = [
     title: "AI-Powered Code Review Assistant",
     description:
       "Analyzes GitHub PRs to detect bugs, code quality issues, and suggests smart improvements using FastAPI + OpenAI.",
-    image: `${import.meta.env.BASE_URL}ai-code-review.png`,
+    image: "/ai-code-review.png",
     link: "https://github.com/vishu1803/Ai-powered-code-review-assistant/",
     color: "#3b82f6",
   },
@@ -41,7 +45,7 @@ const projects = [
     title: "Product Data Explorer",
     description:
       "Analytics dashboard with API integration, charts, and data exploration features built in Next.js.",
-    image: `${import.meta.env.BASE_URL}product-explorer.png`,
+    image: "/product-explorer.png",
     link: "https://product-explorer-frontend-qp3m.onrender.com/",
     color: "#a855f7",
   },
@@ -49,7 +53,7 @@ const projects = [
     title: "Collaborative Task Manager",
     description:
       "Real-time team collaboration app built with Next.js, Prisma, and PostgreSQL.",
-    image: `${import.meta.env.BASE_URL}task-manager.png`,
+    image: "/task-manager.png",
     link: "https://collaborative-task-manager-fc26.vercel.app/",
     color: "#22c55e",
   },
@@ -57,7 +61,7 @@ const projects = [
     title: "3D Portfolio Website",
     description:
       "A beautiful 3D interactive portfolio built using React + Three.js.",
-    image: `${import.meta.env.BASE_URL}portfolio.png`,
+    image: "/portfolio.png",
     link: "https://3-d-portfolio-website-one.vercel.app",
     color: "#f97316",
   },
@@ -65,7 +69,7 @@ const projects = [
     title: "Object Detection Web App",
     description:
       "Real-time object detection using TensorFlow.js in the browser.",
-    image: `${import.meta.env.BASE_URL}object-detection.png`,
+    image: "/object-detection.png",
     link: "https://object-detection-web-app-indol.vercel.app/",
     color: "#eab308",
   },
@@ -73,7 +77,7 @@ const projects = [
     title: "AI Job Search Dashboard",
     description:
       "AI-based recommendation engine to find personalized job listings.",
-    image: `${import.meta.env.BASE_URL}job.png`,
+    image: "/job.png",
     link: "https://ai-job-search-board.vercel.app",
     color: "#6366f1",
   },
@@ -93,7 +97,7 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      className="min-h-screen bg-black text-white py-20 px-6 md:px-20 relative overflow-hidden"
+      className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white py-20 px-6 md:px-20 relative overflow-hidden"
     >
       {/* BACKGROUND FLOATING SHAPES */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
@@ -121,7 +125,21 @@ export default function Projects() {
 }
 
 // Project Card Component
-function ProjectCard({ project, index, isMobile }) {
+interface Project {
+  title: string;
+  description: string;
+  image: string;
+  link: string;
+  color: string;
+}
+
+interface ProjectCardProps {
+  project: Project;
+  index: number;
+  isMobile: boolean;
+}
+
+function ProjectCard({ project, index, isMobile }: ProjectCardProps) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
 

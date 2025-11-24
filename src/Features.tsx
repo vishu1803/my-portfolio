@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import {
@@ -55,12 +57,12 @@ const features = [
 ];
 
 export default function Features() {
-  const [hoverIndex, setHoverIndex] = useState(null);
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   return (
     <section
       id="features"
-      className="py-20 bg-gray-900 text-white relative overflow-hidden"
+      className="py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white relative overflow-hidden"
     >
       {/* Background Blobs */}
       <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-[160px]"></div>
@@ -92,7 +94,21 @@ export default function Features() {
   );
 }
 
-const FeatureCard = ({ feature, index, hoverIndex, setHoverIndex }) => {
+interface Feature {
+  title: string;
+  icon: JSX.Element;
+  description: string;
+  color: string;
+}
+
+interface FeatureCardProps {
+  feature: Feature;
+  index: number;
+  hoverIndex: number | null;
+  setHoverIndex: (index: number | null) => void;
+}
+
+const FeatureCard = ({ feature, index, hoverIndex, setHoverIndex }: FeatureCardProps) => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-50px" });
 

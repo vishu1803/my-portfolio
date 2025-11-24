@@ -1,3 +1,5 @@
+"use client";
+
 import { FaGithub, FaLinkedin, FaArrowUp } from "react-icons/fa";
 import MagneticButton from "./components/MagneticButton";
 import { useEffect, useState } from "react";

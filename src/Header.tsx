@@ -1,5 +1,8 @@
-import { useState, useEffect } from "react";
-import { Link as ScrollLink } from "react-scroll";
+"use client";
+
+import React, { useState, useEffect } from "react";
+
+import { Link as ScrollLink, LinkProps } from "react-scroll";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Text } from "@react-three/drei";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,29 +10,39 @@ import { FaBars, FaTimes } from "react-icons/fa";
 
 // ============ 3D LOGO MESH (Allowed inside Canvas only) ============
 function VNLogoMesh() {
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime();
-    state.scene.rotation.y = Math.sin(t * 0.5) * 0.3;
+  const meshRef = React.useRef<any>(null);
+
+  useFrame((state: any) => {
+    if (meshRef.current) {
+      const t = state.clock.getElapsedTime();
+      meshRef.current.rotation.y = Math.sin(t * 0.5) * 0.3;
+    }
   });
 
   return (
     <Text
+      ref={meshRef}
       fontSize={2}
       color="white"
       anchorX="center"
       anchorY="middle"
       outlineWidth={0.05}
       outlineColor="#3b82f6"
-    >
-      VN
-    </Text>
+      children="VN"
+    />
   );
 }
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  const isMobile = window.innerWidth < 768; // disable 3D on mobile
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize(); // Set initial value
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     document.documentElement.style.scrollBehavior = "smooth";

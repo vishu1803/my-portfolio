@@ -1,7 +1,10 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import MagneticButton from "./components/MagneticButton";
-import profileImage from "/src/assets/profile.jpg";
+import profileImage from "./assets/profile.jpg";
+import Image from "next/image";
 
 const roles = ["Full Stack Developer", "UI Designer", "Professional Coder"];
 
@@ -81,11 +84,12 @@ export default function Home() {
               bg-gradient-to-r from-blue-500 to-purple-600 text-white
               shadow-lg hover:shadow-blue-500/50 transition-all
             "
-            onClick={() =>
-              document
-                .getElementById("contact")
-                .scrollIntoView({ behavior: "smooth" })
-            }
+            onClick={() => {
+              const contactSection = document.getElementById("contact");
+              if (contactSection) {
+                contactSection.scrollIntoView({ behavior: "smooth" });
+              }
+            }}
           >
             Hire Me
           </MagneticButton>
@@ -118,11 +122,12 @@ export default function Home() {
         >
           <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full blur-2xl opacity-30"></div>
 
-          <img
+          <Image
             src={profileImage}
             alt="Vishwanath Nishad"
+            fill
             className="
-              relative w-full h-full rounded-full object-cover 
+              rounded-full object-cover 
               border-4 border-blue-400 shadow-2xl shadow-blue-500/40
             "
           />

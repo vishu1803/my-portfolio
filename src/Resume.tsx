@@ -1,9 +1,17 @@
 // src/Resume.jsx
+"use client";
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 
 // ---------------------- DATA ----------------------
-const education = [
+interface Education {
+  year: string;
+  degree: string;
+  institution: string;
+}
+
+const education: Education[] = [
   {
     year: "2021 - Present",
     degree: "B.Tech in Electronics Engineering",
@@ -21,7 +29,13 @@ const education = [
   },
 ];
 
-const experience = [
+interface Experience {
+  year: string;
+  role: string;
+  company: string;
+}
+
+const experience: Experience[] = [
   {
     year: "2024 - Present",
     role: "Web Developer Intern",
@@ -34,7 +48,12 @@ const experience = [
   },
 ];
 
-const skills = [
+interface Skill {
+  name: string;
+  percentage: number;
+}
+
+const skills: Skill[] = [
   { name: "React.js", percentage: 90 },
   { name: "Node.js", percentage: 85 },
   { name: "MongoDB", percentage: 80 },
@@ -45,12 +64,12 @@ const skills = [
 
 // ---------------------- COMPONENT ----------------------
 export default function Resume() {
-  const [activeTab, setActiveTab] = useState("education");
+  const [activeTab, setActiveTab] = useState<"education" | "skills" | "experience">("education");
 
   return (
     <section
       id="resume"
-      className="min-h-screen bg-gray-900 text-white py-16 px-6 md:px-20"
+      className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white py-16 px-6 md:px-20"
     >
       <h2 className="text-5xl font-bold text-center mb-12">Resume</h2>
 
@@ -61,17 +80,16 @@ export default function Resume() {
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`px-5 py-2 rounded-lg text-lg font-semibold transition-all 
-              ${
-                activeTab === tab
-                  ? "bg-blue-500 text-white shadow-lg"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              ${activeTab === tab
+                ? "bg-blue-500 text-white shadow-lg"
+                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
               }`}
           >
             {tab === "education"
               ? "Education"
               : tab === "skills"
-              ? "Skills"
-              : "Experience"}
+                ? "Skills"
+                : "Experience"}
           </button>
         ))}
       </div>

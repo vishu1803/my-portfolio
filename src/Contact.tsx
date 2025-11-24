@@ -1,10 +1,21 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import emailjs from "@emailjs/browser";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import MagneticButton from "./components/MagneticButton";
 
+interface FormData {
+  [key: string]: string;
+  name: string;
+  phone: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
 export default function Contact() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     phone: "",
     email: "",
@@ -16,15 +27,15 @@ export default function Contact() {
 
   // Detect performance mode globally
   useEffect(() => {
-    const handlePerfChange = (e) => setPerformanceMode(e.detail);
+    const handlePerfChange = (e: any) => setPerformanceMode(e.detail);
     window.addEventListener("performance-mode", handlePerfChange);
     return () => window.removeEventListener("performance-mode", handlePerfChange);
   }, []);
 
-  const handleChange = (e) =>
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     emailjs
@@ -52,7 +63,7 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="min-h-screen bg-black text-white py-16 px-4 md:px-20 relative overflow-hidden"
+      className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white py-16 px-4 md:px-20 relative overflow-hidden"
     >
       {/* Background gradients */}
       {!performanceMode && (
