@@ -9,7 +9,7 @@ export default function Footer() {
 
   // Listen for performance mode toggle (used globally)
   useEffect(() => {
-    const handlePerfChange = (e) => setPerformanceMode(e.detail);
+    const handlePerfChange = (e: any) => setPerformanceMode(e.detail);
     window.addEventListener("performance-mode", handlePerfChange);
     return () => window.removeEventListener("performance-mode", handlePerfChange);
   }, []);
@@ -32,7 +32,7 @@ export default function Footer() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const scrollToSection = (id) => {
+  const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
