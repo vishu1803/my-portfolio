@@ -3,13 +3,26 @@
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useRef } from "react";
 
+interface MagneticButtonProps {
+  children: any;
+  className?: string;
+  intensity?: number;
+  radius?: number;
+  href?: string;
+  onClick?: () => void;
+  type?: "button" | "submit" | "reset";
+}
+
 export default function MagneticButton({
   children,
   className = "",
   intensity = 0.35, // how strong the magnet pulls
   radius = 120,      // how far around the button the magnet works
-}) {
-  const ref = useRef(null);
+  href,
+  onClick,
+  type = "button",
+}: MagneticButtonProps) {
+  const ref = useRef<any>(null);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -17,7 +30,7 @@ export default function MagneticButton({
   const springX = useSpring(x, { stiffness: 200, damping: 18 });
   const springY = useSpring(y, { stiffness: 200, damping: 18 });
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: any) => {
     if (!ref.current) return;
 
     const rect = ref.current.getBoundingClientRect();
@@ -42,9 +55,16 @@ export default function MagneticButton({
     y.set(0);
   };
 
+  const MotionComponent = href ? motion.a : motion.button;
+
   return (
-    <motion.button
+    <MotionComponent
       ref={ref}
+      href={href}
+      target={href ? "_blank" : undefined}
+      rel={href ? "noopener noreferrer" : undefined}
+      onClick={onClick}
+      type={!href ? type : undefined}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{
@@ -59,6 +79,6 @@ export default function MagneticButton({
       className={`transition-shadow duration-300 ${className}`}
     >
       {children}
-    </motion.button>
+    </MotionComponent>
   );
 }
