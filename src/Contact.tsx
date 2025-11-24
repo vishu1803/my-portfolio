@@ -172,7 +172,7 @@ export default function Contact() {
             name="message"
             placeholder="Your Message"
             required
-            rows="5"
+            rows={5}
             value={formData.message}
             onChange={handleChange}
             className="w-full p-4 rounded-xl bg-gray-800 text-white border border-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 focus:outline-none transition resize-none"
