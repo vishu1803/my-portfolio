@@ -73,9 +73,10 @@ export default function Resume() {
     >
       <h2 className="text-5xl font-bold text-center mb-12">Resume</h2>
 
+
       {/* TABS */}
       <div className="flex justify-center gap-4 mb-10">
-        {["education", "skills", "experience"].map((tab) => (
+        {(["education", "skills", "experience"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
