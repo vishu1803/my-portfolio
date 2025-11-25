@@ -1,4 +1,3 @@
-// src/Resume.jsx
 "use client";
 
 import { useState } from "react";
@@ -50,21 +49,42 @@ const experience: Experience[] = [
 
 interface Skill {
   name: string;
-  percentage: number;
+  icon: string;
 }
 
-const skills: Skill[] = [
-  { name: "React.js", percentage: 90 },
-  { name: "Node.js", percentage: 85 },
-  { name: "MongoDB", percentage: 80 },
-  { name: "Tailwind CSS", percentage: 95 },
-  { name: "React Native", percentage: 75 },
-  { name: "Generative AI", percentage: 70 },
-];
+const skillCategories: Record<string, Skill[]> = {
+  frontend: [
+    { name: "React.js", icon: "/icons/react.svg" },
+    { name: "Next.js", icon: "/icons/nextjs.svg" },
+    { name: "JavaScript", icon: "/icons/js.svg" },
+    { name: "TypeScript", icon: "/icons/ts.svg" },
+    { name: "Tailwind CSS", icon: "/icons/tailwind.svg" },
+  ],
+  backend: [
+    { name: "Node.js", icon: "/icons/nodejs.svg" },
+    { name: "NestJS", icon: "/icons/nestjs.svg" },
+    { name: "Express.js", icon: "/icons/express.svg" },
+    { name: "FastAPI", icon: "/icons/fastapi.svg" },
+    { name: "Python", icon: "/icons/python.svg" },
+    { name: "PostgreSQL", icon: "/icons/postgres.svg" },
+    { name: "MongoDB", icon: "/icons/mongo.svg" },
+    { name: "Prisma ORM", icon: "/icons/prisma.svg" },
+    { name: "Supabase", icon: "/icons/supabase.svg" },
+  ],
+  tools: [
+    { name: "Git & GitHub", icon: "/icons/git.svg" },
+    { name: "Docker", icon: "/icons/docker.svg" },
+    { name: "Postman", icon: "/icons/postman.svg" },
+    { name: "VS Code", icon: "/icons/vscode.svg" },
+    { name: "Generative AI", icon: "/icons/ai.svg" },
+  ],
+};
 
 // ---------------------- COMPONENT ----------------------
 export default function Resume() {
-  const [activeTab, setActiveTab] = useState<"education" | "skills" | "experience">("education");
+  const [activeTab, setActiveTab] = useState<
+    "education" | "skills" | "experience"
+  >("education");
 
   return (
     <section
@@ -73,7 +93,6 @@ export default function Resume() {
     >
       <h2 className="text-5xl font-bold text-center mb-12">Resume</h2>
 
-
       {/* TABS */}
       <div className="flex justify-center gap-4 mb-10">
         {(["education", "skills", "experience"] as const).map((tab) => (
@@ -81,16 +100,17 @@ export default function Resume() {
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`px-5 py-2 rounded-lg text-lg font-semibold transition-all 
-              ${activeTab === tab
+            ${
+              activeTab === tab
                 ? "bg-blue-500 text-white shadow-lg"
                 : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-              }`}
+            }`}
           >
             {tab === "education"
               ? "Education"
               : tab === "skills"
-                ? "Skills"
-                : "Experience"}
+              ? "Skills"
+              : "Experience"}
           </button>
         ))}
       </div>
@@ -118,30 +138,69 @@ export default function Resume() {
 
         {/* SKILLS */}
         {activeTab === "skills" && (
-          <div className="space-y-6">
-            {skills.map((skill, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-                className="bg-gray-800 p-6 rounded-xl shadow-md border border-gray-700"
-              >
-                <div className="flex justify-between mb-2">
-                  <h4 className="text-lg font-semibold">{skill.name}</h4>
-                  <span className="text-gray-300">{skill.percentage}%</span>
-                </div>
-
-                <div className="w-full bg-gray-700 rounded-full h-3">
+          <div className="space-y-12">
+            {/* FRONTEND */}
+            <div>
+              <h3 className="text-2xl font-semibold mb-4 text-blue-400">
+                Frontend
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+                {skillCategories.frontend.map((skill, i) => (
                   <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${skill.percentage}%` }}
-                    transition={{ duration: 1 }}
-                    className="h-3 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"
-                  />
-                </div>
-              </motion.div>
-            ))}
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.4 }}
+                    className="bg-gray-800 border border-gray-700 p-4 rounded-xl flex flex-col items-center gap-3 hover:bg-gray-700/60 transition"
+                  >
+                    <img src={skill.icon} className="w-10 h-10" />
+                    <p className="text-sm">{skill.name}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* BACKEND */}
+            <div>
+              <h3 className="text-2xl font-semibold mb-4 text-purple-400">
+                Backend
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+                {skillCategories.backend.map((skill, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.4 }}
+                    className="bg-gray-800 border border-gray-700 p-4 rounded-xl flex flex-col items-center gap-3 hover:bg-gray-700/60 transition"
+                  >
+                    <img src={skill.icon} className="w-10 h-10" />
+                    <p className="text-sm">{skill.name}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* TOOLS */}
+            <div>
+              <h3 className="text-2xl font-semibold mb-4 text-green-400">
+                Tools & Others
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+                {skillCategories.tools.map((skill, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.4 }}
+                    className="bg-gray-800 border border-gray-700 p-4 rounded-xl flex flex-col items-center gap-3 hover:bg-gray-700/60 transition"
+                  >
+                    <img src={skill.icon} className="w-10 h-10" />
+                    <p className="text-sm">{skill.name}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
