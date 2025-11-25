@@ -74,13 +74,13 @@ const projects = [
     color: "#eab308",
   },
   {
-    title: "AI Job Search Dashboard",
-    description:
-      "AI-based recommendation engine to find personalized job listings.",
-    image: "/job.png",
-    link: "https://ai-job-search-board.vercel.app",
-    color: "#6366f1",
-  },
+  title: "Audience Query System",
+  description:
+    "An AI-powered audience query management platform that centralizes customer inquiries from multiple channels, automatically categorizes intent, and routes them intelligently for faster resolution and improved customer experience.",
+  image: "/audience-query-system.png",
+  link: "https://audience-query-system.vercel.app/",
+  color: "#6366f1",
+},
 ];
 
 export default function Projects() {
