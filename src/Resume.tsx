@@ -100,17 +100,16 @@ export default function Resume() {
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`px-5 py-2 rounded-lg text-lg font-semibold transition-all 
-            ${
-              activeTab === tab
+            ${activeTab === tab
                 ? "bg-blue-500 text-white shadow-lg"
                 : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-            }`}
+              }`}
           >
             {tab === "education"
               ? "Education"
               : tab === "skills"
-              ? "Skills"
-              : "Experience"}
+                ? "Skills"
+                : "Experience"}
           </button>
         ))}
       </div>
@@ -153,7 +152,7 @@ export default function Resume() {
                     transition={{ duration: 0.4 }}
                     className="bg-gray-800 border border-gray-700 p-4 rounded-xl flex flex-col items-center gap-3 hover:bg-gray-700/60 transition"
                   >
-                    <img src={skill.icon} className="w-10 h-10" />
+                    <img src={skill.icon} alt={skill.name} className="w-10 h-10" />
                     <p className="text-sm">{skill.name}</p>
                   </motion.div>
                 ))}
@@ -174,7 +173,7 @@ export default function Resume() {
                     transition={{ duration: 0.4 }}
                     className="bg-gray-800 border border-gray-700 p-4 rounded-xl flex flex-col items-center gap-3 hover:bg-gray-700/60 transition"
                   >
-                    <img src={skill.icon} className="w-10 h-10" />
+                    <img src={skill.icon} alt={skill.name} className="w-10 h-10" />
                     <p className="text-sm">{skill.name}</p>
                   </motion.div>
                 ))}
@@ -195,7 +194,7 @@ export default function Resume() {
                     transition={{ duration: 0.4 }}
                     className="bg-gray-800 border border-gray-700 p-4 rounded-xl flex flex-col items-center gap-3 hover:bg-gray-700/60 transition"
                   >
-                    <img src={skill.icon} className="w-10 h-10" />
+                    <img src={skill.icon} alt={skill.name} className="w-10 h-10" />
                     <p className="text-sm">{skill.name}</p>
                   </motion.div>
                 ))}
