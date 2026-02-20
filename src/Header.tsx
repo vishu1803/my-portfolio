@@ -2,22 +2,21 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { Link as ScrollLink } from "react-scroll";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { FaBars, FaTimes } from "react-icons/fa";
 
 const NAV_SECTIONS = ["Home", "Features", "Projects", "Resume", "Contact"];
 
+// Google-style smooth easing
+const smoothSpring = { type: "spring" as const, stiffness: 400, damping: 40 };
+
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
 
-  // Track scroll position for header blur effect
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const { scrollY } = useScroll();
+  const headerBg = useTransform(scrollY, [0, 100], [0, 1]);
+  const headerBlur = useTransform(scrollY, [0, 100], [0, 20]);
 
   // Track active section via IntersectionObserver
   useEffect(() => {
@@ -46,50 +45,49 @@ export default function Header() {
   const closeMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
 
   return (
-    <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 border-b ${scrolled
-          ? "bg-gray-900/80 backdrop-blur-xl border-white/10 shadow-lg shadow-black/20"
-          : "bg-transparent backdrop-blur-sm border-transparent"
-        }`}
+    <motion.header
+      className="fixed top-0 left-0 w-full z-50 border-b"
+      style={{
+        backgroundColor: useTransform(headerBg, (v) => `rgba(10, 10, 15, ${v * 0.85})`),
+        backdropFilter: useTransform(headerBlur, (v) => `blur(${v}px)`),
+        WebkitBackdropFilter: useTransform(headerBlur, (v) => `blur(${v}px)`),
+        borderColor: useTransform(headerBg, (v) => `rgba(255, 255, 255, ${v * 0.08})`),
+      }}
     >
-      <div className="flex justify-between items-center p-4 max-w-7xl mx-auto">
+      <div className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
         {/* Logo */}
         <motion.div
-          className="relative z-50 select-none"
+          className="relative z-50 select-none cursor-pointer"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          transition={smoothSpring}
         >
-          <span className="text-3xl md:text-4xl font-black bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+          <span className="text-2xl md:text-3xl font-black tracking-tight bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             VN
           </span>
-          <div className="absolute -inset-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-lg blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
         </motion.div>
 
         {/* Desktop Nav */}
         <nav className="hidden md:block">
-          <ul className="flex space-x-1 text-sm font-medium">
+          <ul className="flex items-center gap-1">
             {NAV_SECTIONS.map((section) => (
               <li key={section}>
                 <ScrollLink
                   to={section.toLowerCase()}
                   smooth={true}
-                  duration={600}
+                  duration={800}
                   offset={-70}
-                  className={`relative cursor-pointer px-4 py-2 rounded-lg transition-all duration-300 ${activeSection === section.toLowerCase()
+                  className={`relative cursor-pointer px-4 py-2 text-[13px] font-medium tracking-wide rounded-full transition-colors duration-300 ${activeSection === section.toLowerCase()
                       ? "text-white"
-                      : "text-gray-400 hover:text-white"
+                      : "text-gray-500 hover:text-gray-300"
                     }`}
                 >
                   {section}
                   {activeSection === section.toLowerCase() && (
                     <motion.div
-                      layoutId="activeNav"
-                      className="absolute inset-0 bg-white/10 rounded-lg -z-10"
-                      transition={{
-                        type: "spring",
-                        stiffness: 350,
-                        damping: 30,
-                      }}
+                      layoutId="navPill"
+                      className="absolute inset-0 bg-white/[0.08] rounded-full -z-10"
+                      transition={{ type: "spring", stiffness: 500, damping: 35 }}
                     />
                   )}
                 </ScrollLink>
@@ -100,11 +98,22 @@ export default function Header() {
 
         {/* Mobile Menu Icon */}
         <motion.button
-          className="md:hidden text-white text-2xl cursor-pointer z-[60] p-2 rounded-lg bg-white/5 backdrop-blur-sm"
+          className="md:hidden text-white text-xl cursor-pointer z-[60] p-2.5 rounded-full bg-white/[0.05]"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          whileTap={{ scale: 0.9 }}
+          whileTap={{ scale: 0.85 }}
+          transition={smoothSpring}
         >
-          {mobileMenuOpen ? <FaTimes /> : <FaBars />}
+          <AnimatePresence mode="wait">
+            {mobileMenuOpen ? (
+              <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                <FaTimes />
+              </motion.div>
+            ) : (
+              <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                <FaBars />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.button>
 
         {/* Mobile Sidebar */}
@@ -112,28 +121,33 @@ export default function Header() {
           {mobileMenuOpen && (
             <motion.div
               key="mobile-menu"
-              initial={{ opacity: 0, x: "100%" }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: "100%" }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="fixed inset-0 bg-gray-950/98 backdrop-blur-2xl z-[55] flex flex-col items-center justify-center md:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3, ease: [0.25, 0.1, 0, 1] }}
+              className="fixed inset-0 bg-[#0a0a0f]/98 backdrop-blur-3xl z-[55] flex flex-col items-center justify-center md:hidden"
             >
               {NAV_SECTIONS.map((section, i) => (
                 <motion.div
                   key={section}
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 + i * 0.06 }}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{
+                    delay: i * 0.05,
+                    duration: 0.4,
+                    ease: [0.25, 0.1, 0, 1],
+                  }}
                 >
                   <ScrollLink
                     to={section.toLowerCase()}
                     smooth={true}
-                    duration={600}
+                    duration={800}
                     offset={-70}
                     onClick={closeMobileMenu}
-                    className={`text-3xl font-bold transition-colors duration-300 cursor-pointer block py-3 ${activeSection === section.toLowerCase()
+                    className={`text-3xl font-bold tracking-tight cursor-pointer block py-4 transition-colors duration-300 ${activeSection === section.toLowerCase()
                         ? "text-blue-400"
-                        : "text-white/70 hover:text-white"
+                        : "text-white/50 hover:text-white"
                       }`}
                   >
                     {section}
@@ -144,6 +158,6 @@ export default function Header() {
           )}
         </AnimatePresence>
       </div>
-    </header>
+    </motion.header>
   );
 }
