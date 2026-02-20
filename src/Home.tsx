@@ -23,7 +23,7 @@ const descriptions: Record<string, string> = {
 };
 
 const FULL_NAME = "Vishwanath Nishad";
-const ease = [0.25, 0.1, 0, 1];
+const ease = [0.25, 0.1, 0, 1] as const;
 
 export default function Home() {
   const [roleIndex, setRoleIndex] = useState(0);
