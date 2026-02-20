@@ -12,6 +12,7 @@
     "@emailjs/browser": "^4.4.1",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.0",
+    "@vercel/analytics": "^1.6.1",
     "framer-motion": "^12.23.24",
     "maath": "^0.10.8",
     "next": "16.0.10",
