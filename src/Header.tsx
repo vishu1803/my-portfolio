@@ -1,134 +1,148 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-
-import { Link as ScrollLink, LinkProps } from "react-scroll";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Text } from "@react-three/drei";
+import React, { useState, useEffect, useCallback } from "react";
+import { Link as ScrollLink } from "react-scroll";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaBars, FaTimes } from "react-icons/fa";
 
-// ============ 3D LOGO MESH (Allowed inside Canvas only) ============
-function VNLogoMesh() {
-  const meshRef = React.useRef<any>(null);
-
-  useFrame((state: any) => {
-    if (meshRef.current) {
-      const t = state.clock.getElapsedTime();
-      meshRef.current.rotation.y = Math.sin(t * 0.5) * 0.3;
-    }
-  });
-
-  return (
-    <Text
-      ref={meshRef}
-      fontSize={2}
-      color="white"
-      anchorX="center"
-      anchorY="middle"
-      outlineWidth={0.05}
-      outlineColor="#3b82f6"
-      children="VN"
-    />
-  );
-}
+const NAV_SECTIONS = ["Home", "Features", "Projects", "Resume", "Contact"];
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
 
+  // Track scroll position for header blur effect
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    handleResize(); // Set initial value
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Track active section via IntersectionObserver
   useEffect(() => {
-    document.documentElement.style.scrollBehavior = "smooth";
+    const observers: IntersectionObserver[] = [];
+
+    NAV_SECTIONS.forEach((section) => {
+      const el = document.getElementById(section.toLowerCase());
+      if (!el) return;
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setActiveSection(section.toLowerCase());
+          }
+        },
+        { threshold: 0.3, rootMargin: "-80px 0px 0px 0px" }
+      );
+
+      observer.observe(el);
+      observers.push(observer);
+    });
+
+    return () => observers.forEach((obs) => obs.disconnect());
   }, []);
+
+  const closeMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
 
   return (
-    <header className="fixed top-0 left-0 w-full backdrop-blur-md bg-gray-900/70 shadow-lg z-50 border-b border-white/10">
+    <header
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 border-b ${scrolled
+          ? "bg-gray-900/80 backdrop-blur-xl border-white/10 shadow-lg shadow-black/20"
+          : "bg-transparent backdrop-blur-sm border-transparent"
+        }`}
+    >
       <div className="flex justify-between items-center p-4 max-w-7xl mx-auto">
-
-        {/* ===================== LOGO ===================== */}
-        {!isMobile ? (
-          // Desktop 3D Logo
-          <div className="relative z-50 w-16 h-16 md:w-20 md:h-20 overflow-hidden">
-            <Canvas
-              camera={{ position: [0, 0, 5] }}
-              dpr={[1, 2]}
-              className="!absolute top-0 left-0 w-full h-full"
-            >
-              <ambientLight intensity={1.5} />
-              <directionalLight position={[2, 2, 5]} intensity={2} />
-              <OrbitControls enableZoom={false} enableRotate={true} />
-              <VNLogoMesh />
-            </Canvas>
-          </div>
-        ) : (
-          // Mobile static logo
-          <div className="text-white text-3xl font-extrabold tracking-wide">
+        {/* Logo */}
+        <motion.div
+          className="relative z-50 select-none"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <span className="text-3xl md:text-4xl font-black bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
             VN
-          </div>
-        )}
+          </span>
+          <div className="absolute -inset-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-lg blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+        </motion.div>
 
-        {/* ===================== DESKTOP NAV ===================== */}
+        {/* Desktop Nav */}
         <nav className="hidden md:block">
-          <ul className="flex space-x-6 text-white text-lg font-semibold">
-            {["Home", "Features", "Projects", "Resume", "Contact"].map((section) => (
+          <ul className="flex space-x-1 text-sm font-medium">
+            {NAV_SECTIONS.map((section) => (
               <li key={section}>
                 <ScrollLink
                   to={section.toLowerCase()}
                   smooth={true}
-                  duration={500}
+                  duration={600}
                   offset={-70}
-                  className="cursor-pointer hover:text-blue-400 transition"
+                  className={`relative cursor-pointer px-4 py-2 rounded-lg transition-all duration-300 ${activeSection === section.toLowerCase()
+                      ? "text-white"
+                      : "text-gray-400 hover:text-white"
+                    }`}
                 >
                   {section}
+                  {activeSection === section.toLowerCase() && (
+                    <motion.div
+                      layoutId="activeNav"
+                      className="absolute inset-0 bg-white/10 rounded-lg -z-10"
+                      transition={{
+                        type: "spring",
+                        stiffness: 350,
+                        damping: 30,
+                      }}
+                    />
+                  )}
                 </ScrollLink>
               </li>
             ))}
           </ul>
         </nav>
 
-        {/* ===================== MOBILE MENU ICON ===================== */}
-        <div
-          className="md:hidden text-white text-3xl cursor-pointer z-[60] p-2 bg-gray-900/50 rounded-md backdrop-blur-sm"
+        {/* Mobile Menu Icon */}
+        <motion.button
+          className="md:hidden text-white text-2xl cursor-pointer z-[60] p-2 rounded-lg bg-white/5 backdrop-blur-sm"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          whileTap={{ scale: 0.9 }}
         >
           {mobileMenuOpen ? <FaTimes /> : <FaBars />}
-        </div>
+        </motion.button>
 
-        {/* ===================== MOBILE SIDEBAR ===================== */}
+        {/* Mobile Sidebar */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
               key="mobile-menu"
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", stiffness: 100, damping: 20 }}
-              className="fixed inset-0 bg-gray-900/95 backdrop-blur-xl z-[55] flex flex-col items-center justify-center space-y-8 md:hidden"
+              initial={{ opacity: 0, x: "100%" }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: "100%" }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="fixed inset-0 bg-gray-950/98 backdrop-blur-2xl z-[55] flex flex-col items-center justify-center md:hidden"
             >
-              {["Home", "Features", "Projects", "Resume", "Contact"].map((section) => (
-                <ScrollLink
+              {NAV_SECTIONS.map((section, i) => (
+                <motion.div
                   key={section}
-                  to={section.toLowerCase()}
-                  smooth={true}
-                  duration={500}
-                  offset={-70}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-3xl font-bold text-white hover:text-blue-400 transition cursor-pointer"
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 + i * 0.06 }}
                 >
-                  {section}
-                </ScrollLink>
+                  <ScrollLink
+                    to={section.toLowerCase()}
+                    smooth={true}
+                    duration={600}
+                    offset={-70}
+                    onClick={closeMobileMenu}
+                    className={`text-3xl font-bold transition-colors duration-300 cursor-pointer block py-3 ${activeSection === section.toLowerCase()
+                        ? "text-blue-400"
+                        : "text-white/70 hover:text-white"
+                      }`}
+                  >
+                    {section}
+                  </ScrollLink>
+                </motion.div>
               ))}
             </motion.div>
           )}
         </AnimatePresence>
-
       </div>
     </header>
   );

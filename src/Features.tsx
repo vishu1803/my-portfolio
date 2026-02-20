@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import {
   FaCode,
@@ -14,82 +14,103 @@ import {
 const features = [
   {
     title: "Web Development",
-    icon: <FaCode className="text-5xl text-blue-500" />,
+    icon: <FaCode />,
     description:
       "Crafting sleek, responsive, and performance-driven websites using MERN stack & modern UI frameworks.",
     color: "from-blue-500 to-cyan-400",
+    iconColor: "text-blue-400",
   },
   {
     title: "App Development",
-    icon: <FaMobileAlt className="text-5xl text-green-500" />,
+    icon: <FaMobileAlt />,
     description:
       "Building cross-platform mobile applications with React Native, ensuring speed and smooth UX.",
     color: "from-green-500 to-emerald-400",
+    iconColor: "text-emerald-400",
   },
   {
     title: "SEO Optimization",
-    icon: <FaSearch className="text-5xl text-purple-500" />,
+    icon: <FaSearch />,
     description:
       "Improving visibility with SEO-optimized coding practices and high-performance design.",
     color: "from-purple-500 to-pink-500",
+    iconColor: "text-purple-400",
   },
   {
     title: "Generative AI",
-    icon: <FaBrain className="text-5xl text-yellow-500" />,
+    icon: <FaBrain />,
     description:
       "Integrating AI-powered solutions to automate workflows, enhance UX, and deliver smart systems.",
-    color: "from-yellow-500 to-orange-400",
+    color: "from-amber-500 to-orange-400",
+    iconColor: "text-amber-400",
   },
   {
     title: "UX Design",
-    icon: <FaPalette className="text-5xl text-pink-500" />,
+    icon: <FaPalette />,
     description:
       "Designing intuitive, user-centered interfaces with stunning visuals and smooth user flows.",
     color: "from-pink-500 to-rose-500",
+    iconColor: "text-pink-400",
   },
   {
     title: "Hosting & Deployment",
-    icon: <FaServer className="text-5xl text-red-500" />,
+    icon: <FaServer />,
     description:
       "Deploying secure, scalable applications with high-availability hosting and CI/CD pipelines.",
     color: "from-red-500 to-orange-500",
+    iconColor: "text-red-400",
   },
 ];
 
-export default function Features() {
-  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 },
+  },
+};
 
+const cardVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+};
+
+export default function Features() {
   return (
     <section
       id="features"
-      className="py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white relative overflow-hidden"
+      className="py-24 bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white relative overflow-hidden"
     >
       {/* Background Blobs */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-[160px]"></div>
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-[160px]"></div>
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[160px]" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-600/5 rounded-full blur-[160px]" />
 
       {/* Title */}
-      <motion.h2
-        className="text-5xl md:text-6xl font-extrabold text-center mb-16 relative z-10"
+      <motion.div
+        className="text-center mb-16 relative z-10"
         initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
         transition={{ duration: 0.6 }}
       >
-        What I Do
-      </motion.h2>
+        <p className="text-sm font-medium tracking-widest uppercase text-blue-400/80 mb-3">
+          Services
+        </p>
+        <h2 className="text-4xl md:text-5xl font-extrabold">What I Do</h2>
+      </motion.div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-10 px-6 md:px-20 relative z-10">
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-3 gap-8 px-6 md:px-20 relative z-10 max-w-7xl mx-auto"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-50px" }}
+      >
         {features.map((feature, index) => (
-          <FeatureCard
-            feature={feature}
-            index={index}
-            key={index}
-            hoverIndex={hoverIndex}
-            setHoverIndex={setHoverIndex}
-          />
+          <FeatureCard feature={feature} key={index} />
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 }
@@ -99,72 +120,56 @@ interface Feature {
   icon: JSX.Element;
   description: string;
   color: string;
+  iconColor: string;
 }
 
-interface FeatureCardProps {
-  feature: Feature;
-  index: number;
-  hoverIndex: number | null;
-  setHoverIndex: (index: number | null) => void;
-}
-
-const FeatureCard = ({ feature, index, hoverIndex, setHoverIndex }: FeatureCardProps) => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-50px" });
-
+const FeatureCard = ({ feature }: { feature: Feature }) => {
   return (
     <motion.div
-      ref={ref}
-      className="relative bg-gray-800/40 backdrop-blur-lg rounded-2xl p-8 shadow-lg border border-gray-700/40 overflow-hidden group"
-      onMouseEnter={() => setHoverIndex(index)}
-      onMouseLeave={() => setHoverIndex(null)}
-      onClick={(e) => e.stopPropagation()}
-      initial={{ opacity: 0, y: 40 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className="relative bg-white/[0.03] backdrop-blur-sm rounded-2xl p-8 border border-white/[0.06]
+        overflow-hidden group cursor-default"
+      variants={cardVariants}
       whileHover={{
-        y: -10,
-        rotateX: 5,
-        rotateY: -5,
-        scale: 1.03,
+        y: -8,
+        transition: { duration: 0.3 },
       }}
+      style={{ perspective: 1000 }}
     >
-      {/* Glow Background */}
+      {/* Hover glow */}
       <div
-        className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-20 transition-all duration-300`}
-      ></div>
+        className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-[0.08] transition-all duration-500`}
+      />
+
+      {/* Gradient border on hover */}
+      <div
+        className={`absolute inset-0 rounded-2xl border border-transparent 
+          group-hover:border-gradient-to-r ${feature.color} opacity-0 group-hover:opacity-30 transition-all duration-500`}
+      />
 
       {/* Icon */}
       <motion.div
-        className="flex justify-center mb-4"
-        animate={hoverIndex === index ? { rotate: 360 } : {}}
-        transition={{ duration: 0.6 }}
+        className={`text-4xl mb-5 ${feature.iconColor}`}
+        whileHover={{ scale: 1.15, rotate: 5 }}
+        transition={{ type: "spring", stiffness: 400, damping: 15 }}
       >
         {feature.icon}
       </motion.div>
 
       {/* Title */}
-      <h3 className="text-2xl font-semibold mb-3 text-white">
+      <h3 className="text-xl font-bold mb-3 text-white group-hover:text-white transition-colors">
         {feature.title}
       </h3>
 
       {/* Description */}
-      <motion.p
-        className="text-gray-300 text-sm leading-relaxed"
-        animate={
-          hoverIndex === index
-            ? { opacity: 1, y: 0 }
-            : { opacity: 0.3, y: 5 }
-        }
-        transition={{ duration: 0.3 }}
-      >
+      <p className="text-gray-400 text-sm leading-relaxed group-hover:text-gray-300 transition-colors duration-300">
         {feature.description}
-      </motion.p>
+      </p>
 
-      {/* Bottom Glow Line */}
-      <div className="absolute left-0 bottom-0 w-full h-1 
-          bg-gradient-to-r from-transparent via-blue-400 to-transparent 
-          opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+      {/* Bottom accent line */}
+      <div
+        className={`absolute left-0 bottom-0 w-full h-[2px] bg-gradient-to-r ${feature.color}
+          scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left`}
+      />
     </motion.div>
   );
 };
