@@ -11,7 +11,8 @@ const projects = [
     image: "/ai-code-review.png",
     link: "https://github.com/vishu1803/Ai-powered-code-review-assistant/",
     tag: "AI · Python · FastAPI",
-    accent: "from-blue-500 to-cyan-500",
+    accent: "from-[#4F8EF7] to-[#38BDF8]",
+    accentGlow: "shadow-[#4F8EF7]/10",
   },
   {
     title: "Product Data Explorer",
@@ -20,7 +21,8 @@ const projects = [
     image: "/product-explorer.png",
     link: "https://product-explorer-frontend-qp3m.onrender.com/",
     tag: "Next.js · REST API",
-    accent: "from-purple-500 to-violet-500",
+    accent: "from-[#7C5CFC] to-[#A78BFA]",
+    accentGlow: "shadow-[#7C5CFC]/10",
   },
   {
     title: "Collaborative Task Manager",
@@ -29,7 +31,8 @@ const projects = [
     image: "/task-manager.png",
     link: "https://collaborative-task-manager-fc26.vercel.app/",
     tag: "Full Stack · PostgreSQL",
-    accent: "from-emerald-500 to-green-500",
+    accent: "from-[#34D399] to-[#10B981]",
+    accentGlow: "shadow-[#34D399]/10",
   },
   {
     title: "3D Portfolio Website",
@@ -38,7 +41,8 @@ const projects = [
     image: "/portfolio.png",
     link: "https://3-d-portfolio-website-one.vercel.app",
     tag: "React · Three.js",
-    accent: "from-orange-500 to-amber-500",
+    accent: "from-[#F97316] to-[#FB923C]",
+    accentGlow: "shadow-[#F97316]/10",
   },
   {
     title: "Object Detection App",
@@ -47,7 +51,8 @@ const projects = [
     image: "/object-detection.png",
     link: "https://object-detection-web-app-indol.vercel.app/",
     tag: "ML · TensorFlow.js",
-    accent: "from-yellow-500 to-orange-500",
+    accent: "from-[#FBBF24] to-[#F59E0B]",
+    accentGlow: "shadow-[#FBBF24]/10",
   },
   {
     title: "Audience Query System",
@@ -56,7 +61,8 @@ const projects = [
     image: "/audience-query-system.png",
     link: "https://audience-query-system.vercel.app/",
     tag: "AI · React · Node",
-    accent: "from-indigo-500 to-blue-500",
+    accent: "from-[#E879A8] to-[#F472B6]",
+    accentGlow: "shadow-[#E879A8]/10",
   },
 ];
 
@@ -83,13 +89,19 @@ export default function Projects() {
   return (
     <SectionWrapper
       id="projects"
-      className="min-h-screen bg-[#0a0a0f] text-white py-28 px-6 md:px-20 relative overflow-hidden"
+      className="min-h-screen bg-[#060609] text-white py-28 px-5 sm:px-6 md:px-20 relative overflow-hidden"
     >
-      {/* Background */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/3 left-0 w-[600px] h-[600px] bg-blue-600/[0.03] rounded-full blur-[200px]" />
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-600/[0.03] rounded-full blur-[200px]" />
-      </div>
+      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `
+            radial-gradient(ellipse 70% 60% at 10% 30%, rgba(79, 142, 247, 0.08) 0%, transparent 70%),
+            radial-gradient(ellipse 70% 60% at 90% 80%, rgba(124, 92, 252, 0.08) 0%, transparent 70%)
+          `,
+        }}
+      />
 
       <motion.div
         className="text-center mb-20 relative z-10 max-w-2xl mx-auto"
@@ -98,20 +110,20 @@ export default function Projects() {
         viewport={{ once: true }}
         transition={{ duration: 0.8, ease }}
       >
-        <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-blue-400/70 mb-4">
+        <p className="text-[11px] font-semibold tracking-[0.25em] uppercase text-[#4F8EF7]/70 mb-4">
           Portfolio
         </p>
         <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
           Featured Projects
         </h2>
-        <p className="mt-4 text-gray-500 text-[15px] leading-relaxed">
+        <p className="mt-4 text-[#6b6b80] text-[15px] leading-relaxed">
           A collection of production applications showcasing full-stack development,
           AI integration, and system design.
         </p>
       </motion.div>
 
       <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 relative z-10 max-w-7xl mx-auto"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 relative z-10 max-w-7xl mx-auto"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -132,6 +144,7 @@ interface Project {
   link: string;
   tag: string;
   accent: string;
+  accentGlow: string;
 }
 
 function ProjectCard({ project }: { project: Project }) {
@@ -140,12 +153,10 @@ function ProjectCard({ project }: { project: Project }) {
       href={project.link}
       target="_blank"
       rel="noopener noreferrer"
-      className="group block bg-white/[0.02] border border-white/[0.04] rounded-2xl overflow-hidden relative"
+      className={`group block glass-card rounded-2xl overflow-hidden hover:${project.accentGlow} hover:shadow-2xl`}
       variants={cardVariants}
       whileHover={{
-        y: -4,
-        backgroundColor: "rgba(255, 255, 255, 0.04)",
-        borderColor: "rgba(255, 255, 255, 0.08)",
+        y: -6,
         transition: { duration: 0.3, ease: [0.25, 0.1, 0, 1] },
       }}
     >
@@ -156,44 +167,41 @@ function ProjectCard({ project }: { project: Project }) {
           alt={project.title}
           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
         />
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-transparent to-transparent opacity-60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#060609] via-[#060609]/30 to-transparent opacity-70" />
 
         {/* Tag */}
-        <span className="absolute top-3 left-3 text-[10px] font-semibold px-2.5 py-1 rounded-full
-          bg-white/10 backdrop-blur-md text-white/80 border border-white/10">
+        <span className="absolute top-3 left-3 text-[10px] font-semibold px-3 py-1 rounded-full
+          bg-black/40 backdrop-blur-xl text-white/80 border border-white/[0.08]">
           {project.tag}
         </span>
       </div>
 
-      <div className="p-6">
+      <div className="p-5 sm:p-6">
         <h3 className="text-[15px] font-semibold mb-2 text-white/90 group-hover:text-white transition-colors duration-300">
           {project.title}
         </h3>
 
-        <p className="text-gray-500 text-[13px] leading-relaxed line-clamp-2 mb-4">
+        <p className="text-[#6b6b80] text-[13px] leading-[1.7] line-clamp-2 mb-4">
           {project.description}
         </p>
 
         {/* Arrow link */}
-        <div className="flex items-center gap-1.5 text-[12px] font-medium text-gray-400 group-hover:text-blue-400 transition-colors duration-300">
+        <div className="flex items-center gap-1.5 text-[12px] font-medium text-[#8b8b9e] group-hover:text-[#4F8EF7] transition-colors duration-300">
           <span>View Project</span>
-          <motion.svg
-            className="w-3.5 h-3.5"
+          <svg
+            className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            animate={{ x: 0 }}
-            whileHover={{ x: 3 }}
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </motion.svg>
+          </svg>
         </div>
       </div>
 
       {/* Bottom accent */}
       <div
-        className={`absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r ${project.accent}
+        className={`absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r ${project.accent}
           scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left`}
       />
     </motion.a>

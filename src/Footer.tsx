@@ -21,15 +21,14 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-[#0a0a0f] text-white pt-16 pb-8 relative">
-      {/* Top divider */}
+    <footer className="bg-[#060609] text-white pt-16 pb-8 relative">
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Brand */}
           <motion.span
-            className="text-2xl font-black tracking-tight bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
+            className="text-2xl font-black tracking-tight gradient-text"
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 30 }}
           >
@@ -42,7 +41,7 @@ export default function Footer() {
               <button
                 key={section}
                 onClick={() => scrollToSection(section)}
-                className="px-3 py-1.5 text-[12px] font-medium text-gray-600 hover:text-gray-300 rounded-full hover:bg-white/[0.03] transition-all duration-300 capitalize"
+                className="px-3 py-1.5 text-[12px] font-medium text-[#4a4a5e] hover:text-[#8b8b9e] rounded-full hover:bg-white/[0.03] transition-all duration-300 capitalize"
               >
                 {section}
               </button>
@@ -53,7 +52,7 @@ export default function Footer() {
           <div className="flex gap-2">
             <MagneticButton
               href="https://github.com/vishu1803"
-              className="text-base p-2.5 rounded-xl text-gray-600 hover:text-white bg-white/[0.02] border border-white/[0.04] hover:border-white/[0.1] transition-all duration-300"
+              className="text-base p-2.5 rounded-xl glass-card text-[#4a4a5e] hover:text-white"
               aria-label="GitHub"
             >
               <FaGithub />
@@ -61,7 +60,7 @@ export default function Footer() {
 
             <MagneticButton
               href="https://www.linkedin.com/in/vishwanath-nishad-69b047233/"
-              className="text-base p-2.5 rounded-xl text-gray-600 hover:text-white bg-white/[0.02] border border-white/[0.04] hover:border-white/[0.1] transition-all duration-300"
+              className="text-base p-2.5 rounded-xl glass-card text-[#4a4a5e] hover:text-white"
               aria-label="LinkedIn"
             >
               <FaLinkedin />
@@ -69,8 +68,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Copyright */}
-        <div className="text-center text-gray-700 text-[11px] mt-10">
+        <div className="text-center text-[#2a2a3a] text-[11px] mt-10 tracking-wide">
           © {new Date().getFullYear()} Vishwanath Nishad
         </div>
       </div>
@@ -78,9 +76,9 @@ export default function Footer() {
       {/* Back to Top */}
       <motion.button
         onClick={scrollToTop}
-        className={`fixed bottom-8 right-8 p-2.5 rounded-xl z-50
-          bg-white/[0.05] border border-white/[0.08] text-gray-400
-          hover:text-white hover:bg-white/[0.1] backdrop-blur-sm
+        className={`fixed bottom-8 right-8 p-3 rounded-xl z-50
+          bg-gradient-to-r from-[#4F8EF7] to-[#7C5CFC] text-white
+          shadow-lg shadow-[#4F8EF7]/20
           transition-all duration-500 ${showScroll ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"
           }`}
         whileHover={{ scale: 1.1 }}

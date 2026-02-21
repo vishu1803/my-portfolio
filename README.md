@@ -1,84 +1,102 @@
-🚀 Project Title & Tagline
-===========================
-**My Portfolio**: A Next.js React Application for Showcasing Personal Projects and Achievements 🌟
+# Vishwanath Nishad — Portfolio
 
-📖 Description
-================
-My Portfolio is a web application built using Next.js, a popular React framework for creating server-side rendered and statically generated websites. The application is designed to showcase personal projects, achievements, and experiences in a visually appealing and user-friendly manner. With a focus on simplicity, scalability, and performance, My Portfolio provides a robust platform for individuals to demonstrate their skills and accomplishments to potential employers, clients, or collaborators.
+A modern, animated portfolio website built with **Next.js**, **Framer Motion**, and **Three.js**. Features Google-style smooth animations, scroll-linked effects, and a fully responsive design.
 
-The application features a responsive design, ensuring an optimal user experience across various devices and screen sizes. The use of Tailwind CSS, a utility-first CSS framework, enables rapid customization and styling of the application's UI components. Additionally, the integration of React Hooks and ESLint ensures a maintainable, efficient, and error-free codebase.
+🔗 **Live**: [vishwanath-nishad.vercel.app](https://vishwanath-nishad.vercel.app)
 
-My Portfolio is an open-source project, and its development is driven by the principles of transparency, community involvement, and continuous improvement. The application is designed to be highly customizable, allowing users to easily modify its layout, content, and features to suit their specific needs and preferences. Whether you're a developer, designer, or simply looking for a platform to showcase your work, My Portfolio provides a solid foundation for creating a stunning online presence.
+---
 
-📖 Additional Description
--------------------------
-The application's architecture is designed with scalability and performance in mind. The use of Next.js enables server-side rendering, static site generation, and incremental static regeneration, ensuring fast page loads and improved SEO. The application's codebase is organized into logical modules, making it easy to maintain, update, and extend its functionality.
+## ✨ Highlights
 
-✨ Features
-================
-The following features are included in My Portfolio:
+- **Typewriter name animation** with gradient blinking cursor
+- **Dynamic role descriptions** — content changes based on active role (Full Stack / Backend / Software Dev)
+- **Scroll progress bar** — spring-based gradient indicator
+- **Scroll-linked header** — background blur and opacity transition as you scroll
+- **Active section tracking** — nav pill follows current section via IntersectionObserver
+- **Parallax backgrounds** — subtle scroll-driven glow movement
+- **Section fade-in** — sections smoothly reveal on scroll
+- **Stagger grid animations** — cards animate in sequence
+- **Tab transitions** — blur crossfade with spring-based pill indicator
+- **Particle stars** — lazy-loaded Three.js background (desktop only)
+- **Magnetic buttons** — spring-physics hover attraction effect
+- **Fully responsive** — optimized for mobile, tablet, and desktop
 
-1. **Responsive Design**: The application is fully responsive, ensuring an optimal user experience across various devices and screen sizes.
-2. **Customizable Layout**: Users can easily modify the application's layout to suit their specific needs and preferences.
-3. **React Hooks**: The application utilizes React Hooks to manage state, side effects, and other aspects of the application's functionality.
-4. **ESLint Integration**: ESLint is used to ensure a maintainable, efficient, and error-free codebase.
-5. **Tailwind CSS**: The application uses Tailwind CSS, a utility-first CSS framework, to enable rapid customization and styling of UI components.
-6. **Server-Side Rendering**: Next.js enables server-side rendering, ensuring fast page loads and improved SEO.
-7. **Static Site Generation**: The application can be generated statically, reducing the need for server resources and improving performance.
-8. **Incremental Static Regeneration**: Next.js enables incremental static regeneration, allowing for efficient updates to the application's content and functionality.
+---
 
-🧰 Tech Stack Table
-====================
-| Technology | Description |
-| --- | --- |
-| **Frontend** | Next.js, React, Tailwind CSS |
-| **Backend** | None (static site generation) |
-| **Tools** | ESLint, PostCSS, Webpack |
+## 🛠 Tech Stack
 
-📁 Project Structure
-======================
-The project's codebase is organized into the following folders:
+| Category | Technologies |
+|---|---|
+| **Framework** | Next.js 16, React 19 |
+| **Animation** | Framer Motion (scroll, springs, layout animations) |
+| **3D** | Three.js, React Three Fiber, Drei |
+| **Styling** | Tailwind CSS, Inter font |
+| **Email** | EmailJS (contact form) |
+| **Deployment** | Vercel |
 
-* **components**: Reusable UI components, such as buttons, forms, and navigation.
-* **pages**: Application pages, such as the home page, about page, and contact page.
-* **public**: Static assets, such as images, videos, and documents.
-* **styles**: Global CSS styles, including Tailwind CSS configurations.
-* **utils**: Utility functions, such as API requests and data processing.
-* **config**: Configuration files, such as ESLint and PostCSS settings.
+---
 
-⚙️ How to Run
-================
-To run the application, follow these steps:
+## 📁 Project Structure
 
-1. **Setup**: Clone the repository using Git: `git clone https://github.com/your-username/my-portfolio.git`
-2. **Environment**: Install the required dependencies using npm or yarn: `npm install` or `yarn install`
-3. **Build**: Build the application using Next.js: `npm run build` or `yarn build`
-4. **Deploy**: Deploy the application to a hosting platform, such as Vercel or Netlify.
+```
+src/
+├── app/
+│   ├── globals.css          # Global styles, custom scrollbar, CSS variables
+│   ├── layout.tsx           # Root layout with SEO metadata
+│   └── page.tsx             # Entry point → renders App
+├── components/
+│   ├── MagneticButton.tsx   # Spring-physics hover button
+│   ├── ParticleBackground.tsx # Three.js star field
+│   ├── ScrollProgress.tsx   # Scroll progress gradient bar
+│   └── SectionWrapper.tsx   # Scroll-linked parallax/fade wrapper
+├── App.tsx                  # Main app shell
+├── Header.tsx               # Scroll-linked header + mobile nav
+├── Home.tsx                 # Hero with typewriter + role descriptions
+├── Features.tsx             # Services grid with stagger
+├── Projects.tsx             # Project cards with hover effects
+├── Resume.tsx               # Tabbed resume with AnimatePresence
+├── Contact.tsx              # Email form with glassmorphism
+└── Footer.tsx               # Minimal footer with gradient divider
+```
 
-🧪 Testing Instructions
-=======================
-To test the application, follow these steps:
+---
 
-1. **Unit Tests**: Run unit tests using Jest: `npm run test` or `yarn test`
-2. **Integration Tests**: Run integration tests using Cypress: `npm run test:integration` or `yarn test:integration`
-3. **End-to-End Tests**: Run end-to-end tests using Cypress: `npm run test:e2e` or `yarn test:e2e`
+## 🚀 Getting Started
 
-📸 Screenshots
-================
-[![Screenshot 1](https://via.placeholder.com/800x600)](https://via.placeholder.com/800x600)
-[![Screenshot 2](https://via.placeholder.com/800x600)](https://via.placeholder.com/800x600)
+```bash
+# Clone
+git clone https://github.com/vishu1803/my-portfolio.git
+cd my-portfolio
 
-📦 API Reference
-==================
-The application does not have a public API. However, the following APIs are used internally:
+# Install
+npm install
 
-* **Next.js API**: Used for server-side rendering and static site generation.
-* **Tailwind CSS API**: Used for styling and customizing UI components.
+# Dev server
+npm run dev
 
-👤 Author
-================
-My Portfolio was created by [Your Name](https://your-website.com).
+# Production build
+npm run build
+```
 
-📝 License
-================
-My Portfolio is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+---
+
+## 📱 Mobile Optimization
+
+- Hamburger menu with fullscreen overlay and body scroll lock
+- Responsive text sizing across all breakpoints
+- Reduced blur and glow sizes on small screens
+- Touch-friendly tap targets (`active:` states)
+- Hidden scroll indicator on mobile
+- Stacked layout with proper spacing
+
+---
+
+## 👤 Author
+
+**Vishwanath Nishad**
+- GitHub: [@vishu1803](https://github.com/vishu1803)
+- LinkedIn: [Vishwanath Nishad](https://www.linkedin.com/in/vishwanath-nishad-69b047233/)
+
+## 📝 License
+
+MIT

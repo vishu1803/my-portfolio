@@ -4,10 +4,9 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SectionWrapper from "./components/SectionWrapper";
 
-// ---------------------- DATA ----------------------
 const education = [
   {
-    year: "2021 - Present",
+    year: "2021 - 2025",
     degree: "B.Tech in Electronics Engineering",
     institution: "Rajkiya Engineering College",
   },
@@ -25,7 +24,7 @@ const education = [
 
 const experience = [
   {
-    year: "2024 - Present",
+    year: "2024 - july ~ 2024 -sep",
     role: "Web Developer Intern",
     company: "F Salon Academy LLP",
     description: "Building and maintaining full-stack web applications, implementing RESTful APIs, and optimizing database performance.",
@@ -43,9 +42,10 @@ interface Skill {
   icon: string;
 }
 
-const skillCategories: { label: string; skills: Skill[] }[] = [
+const skillCategories: { label: string; color: string; skills: Skill[] }[] = [
   {
     label: "Languages & Frameworks",
+    color: "text-[#4F8EF7]",
     skills: [
       { name: "React.js", icon: "/icons/react.svg" },
       { name: "Next.js", icon: "/icons/nextjs.svg" },
@@ -57,6 +57,7 @@ const skillCategories: { label: string; skills: Skill[] }[] = [
   },
   {
     label: "Backend & Data",
+    color: "text-[#7C5CFC]",
     skills: [
       { name: "NestJS", icon: "/icons/nestjs.svg" },
       { name: "Express.js", icon: "/icons/express.svg" },
@@ -69,6 +70,7 @@ const skillCategories: { label: string; skills: Skill[] }[] = [
   },
   {
     label: "Tools & Infrastructure",
+    color: "text-[#E879A8]",
     skills: [
       { name: "Git", icon: "/icons/git.svg" },
       { name: "Docker", icon: "/icons/docker.svg" },
@@ -93,10 +95,7 @@ const contentVariants = {
 
 const staggerContainer = {
   hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.05 },
-  },
+  visible: { opacity: 1, transition: { staggerChildren: 0.04 } },
 };
 
 const staggerItem = {
@@ -104,23 +103,35 @@ const staggerItem = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease } },
 };
 
-// ---------------------- COMPONENT ----------------------
 export default function Resume() {
   const [activeTab, setActiveTab] = useState<Tab>("experience");
 
   return (
     <SectionWrapper
       id="resume"
-      className="min-h-screen bg-[#0a0a0f] text-white py-28 px-6 md:px-20"
+      className="min-h-screen bg-[#060609] text-white py-28 px-5 sm:px-6 md:px-20 relative overflow-hidden"
     >
+      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+
+      {/* Background glow */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `
+            radial-gradient(ellipse 60% 60% at 80% 20%, rgba(124, 92, 252, 0.08) 0%, transparent 70%),
+            radial-gradient(ellipse 60% 60% at 20% 80%, rgba(79, 142, 247, 0.08) 0%, transparent 70%)
+          `,
+        }}
+      />
+
       <motion.div
-        className="text-center mb-16 max-w-2xl mx-auto"
+        className="text-center mb-16 max-w-2xl mx-auto relative z-10"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8, ease }}
       >
-        <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-blue-400/70 mb-4">
+        <p className="text-[11px] font-semibold tracking-[0.25em] uppercase text-[#4F8EF7]/70 mb-4">
           Background
         </p>
         <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
@@ -134,14 +145,14 @@ export default function Resume() {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`relative px-5 py-2 rounded-full text-[13px] font-medium tracking-wide capitalize transition-colors duration-300 ${activeTab === tab ? "text-white" : "text-gray-500 hover:text-gray-300"
+            className={`relative px-5 py-2.5 rounded-full text-[13px] font-medium tracking-wide capitalize transition-colors duration-300 ${activeTab === tab ? "text-white" : "text-[#6b6b80] hover:text-[#8b8b9e]"
               }`}
           >
             {tab}
             {activeTab === tab && (
               <motion.div
                 layoutId="resumeTab"
-                className="absolute inset-0 bg-white/[0.08] rounded-full -z-10"
+                className="absolute inset-0 bg-white/[0.06] border border-white/[0.06] rounded-full -z-10"
                 transition={{ type: "spring", stiffness: 500, damping: 35 }}
               />
             )}
@@ -168,20 +179,19 @@ export default function Resume() {
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.08, duration: 0.4, ease }}
-                  className="bg-white/[0.02] p-6 rounded-2xl border border-white/[0.04]
-                    hover:bg-white/[0.04] hover:border-white/[0.08] transition-all duration-300 group"
+                  className="glass-card p-6 rounded-2xl group"
                 >
                   <div className="flex items-start justify-between flex-wrap gap-3">
                     <div className="flex-1">
                       <h3 className="text-[15px] font-semibold text-white/90 group-hover:text-white transition-colors">
                         {item.role}
                       </h3>
-                      <p className="text-blue-400/70 text-[13px] mt-1">{item.company}</p>
-                      <p className="text-gray-500 text-[13px] mt-2 leading-relaxed">
+                      <p className="text-[#4F8EF7]/70 text-[13px] mt-1 font-medium">{item.company}</p>
+                      <p className="text-[#6b6b80] text-[13px] mt-2 leading-[1.7]">
                         {item.description}
                       </p>
                     </div>
-                    <span className="text-[11px] font-medium text-gray-600 bg-white/[0.03] px-3 py-1 rounded-full border border-white/[0.04] whitespace-nowrap">
+                    <span className="text-[10px] font-semibold text-[#4a4a5e] bg-white/[0.03] px-3 py-1.5 rounded-full border border-white/[0.05] whitespace-nowrap tracking-wide uppercase">
                       {item.year}
                     </span>
                   </div>
@@ -202,7 +212,7 @@ export default function Resume() {
             >
               {skillCategories.map((category) => (
                 <div key={category.label}>
-                  <h3 className="text-[13px] font-semibold mb-4 text-gray-400 tracking-wide">
+                  <h3 className={`text-[13px] font-semibold mb-4 ${category.color} tracking-wide`}>
                     {category.label}
                   </h3>
                   <motion.div
@@ -215,10 +225,7 @@ export default function Resume() {
                       <motion.div
                         key={i}
                         variants={staggerItem}
-                        className="bg-white/[0.02] border border-white/[0.04] p-4 rounded-xl
-                          flex flex-col items-center gap-2.5
-                          hover:bg-white/[0.05] hover:border-white/[0.1] transition-all duration-300
-                          group cursor-default"
+                        className="glass-card p-4 rounded-xl flex flex-col items-center gap-2.5 group cursor-default"
                         whileHover={{ y: -2, transition: { duration: 0.2 } }}
                       >
                         <img
@@ -226,7 +233,7 @@ export default function Resume() {
                           alt={skill.name}
                           className="w-8 h-8 group-hover:scale-110 transition-transform duration-300"
                         />
-                        <p className="text-[11px] font-medium text-gray-500 group-hover:text-gray-300 transition-colors text-center">
+                        <p className="text-[10px] sm:text-[11px] font-medium text-[#6b6b80] group-hover:text-[#8b8b9e] transition-colors text-center leading-tight">
                           {skill.name}
                         </p>
                       </motion.div>
@@ -253,17 +260,16 @@ export default function Resume() {
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.08, duration: 0.4, ease }}
-                  className="bg-white/[0.02] p-6 rounded-2xl border border-white/[0.04]
-                    hover:bg-white/[0.04] hover:border-white/[0.08] transition-all duration-300 group"
+                  className="glass-card p-6 rounded-2xl group"
                 >
                   <div className="flex items-start justify-between flex-wrap gap-3">
                     <div>
                       <h3 className="text-[15px] font-semibold text-white/90 group-hover:text-white transition-colors">
                         {item.degree}
                       </h3>
-                      <p className="text-blue-400/70 text-[13px] mt-1">{item.institution}</p>
+                      <p className="text-[#4F8EF7]/70 text-[13px] mt-1 font-medium">{item.institution}</p>
                     </div>
-                    <span className="text-[11px] font-medium text-gray-600 bg-white/[0.03] px-3 py-1 rounded-full border border-white/[0.04] whitespace-nowrap">
+                    <span className="text-[10px] font-semibold text-[#4a4a5e] bg-white/[0.03] px-3 py-1.5 rounded-full border border-white/[0.05] whitespace-nowrap tracking-wide uppercase">
                       {item.year}
                     </span>
                   </div>
