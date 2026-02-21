@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import MagneticButton from "./components/MagneticButton";
 import profileImage from "./assets/profile.jpg";
@@ -69,23 +69,22 @@ export default function Home() {
         px-5 sm:px-6 md:px-20 pt-24 pb-16 md:pt-28 md:pb-0 text-white
         bg-[#060609] relative overflow-hidden"
     >
-      {/* Background glow — CSS gradients (not clipped by overflow) */}
-      <motion.div
+      {/* Background glow */}
+      <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          y: bgY,
           background: `
-            radial-gradient(ellipse 80% 60% at 15% 20%, rgba(79, 142, 247, 0.15) 0%, transparent 70%),
-            radial-gradient(ellipse 80% 60% at 85% 80%, rgba(124, 92, 252, 0.15) 0%, transparent 70%),
-            radial-gradient(ellipse 50% 50% at 50% 50%, rgba(232, 121, 168, 0.06) 0%, transparent 70%)
+            radial-gradient(ellipse 80% 60% at 15% 20%, rgba(79, 142, 247, 0.18) 0%, transparent 70%),
+            radial-gradient(ellipse 80% 60% at 85% 80%, rgba(124, 92, 252, 0.18) 0%, transparent 70%),
+            radial-gradient(ellipse 50% 50% at 50% 50%, rgba(232, 121, 168, 0.08) 0%, transparent 70%)
           `,
         }}
       />
 
       {/* Grid pattern overlay */}
-      <div className="absolute inset-0 opacity-[0.015] pointer-events-none"
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
         style={{
-          backgroundImage: `linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)`,
           backgroundSize: '60px 60px',
         }}
       />
@@ -156,16 +155,17 @@ export default function Home() {
           </AnimatePresence>
         </div>
 
-        {/* Dynamic description */}
-        <div className="min-h-[60px] mt-5 md:mt-6">
+        {/* Dynamic description — fixed height container */}
+        <div className="relative mt-5 md:mt-6" style={{ height: '52px' }}>
           <AnimatePresence mode="wait">
             <motion.p
               key={currentRole}
-              className="text-[#6b6b80] max-w-lg mx-auto md:mx-0 text-[13px] sm:text-[14px] md:text-[15px] leading-[1.7]"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.5, ease }}
+              className="absolute top-0 left-0 right-0 text-[#6b6b80] max-w-lg text-[13px] sm:text-[14px] md:text-[15px] leading-[1.7]"
+              style={{ textAlign: 'inherit' }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4, ease }}
             >
               {descriptions[currentRole]}
             </motion.p>

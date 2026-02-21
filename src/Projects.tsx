@@ -93,12 +93,13 @@ export default function Projects() {
     >
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
+      {/* Background glow */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse 70% 60% at 10% 30%, rgba(79, 142, 247, 0.15) 0%, transparent 70%),
-            radial-gradient(ellipse 70% 60% at 90% 80%, rgba(124, 92, 252, 0.15) 0%, transparent 70%)
+            radial-gradient(ellipse 70% 60% at 10% 30%, rgba(79, 142, 247, 0.18) 0%, transparent 70%),
+            radial-gradient(ellipse 70% 60% at 90% 80%, rgba(124, 92, 252, 0.18) 0%, transparent 70%)
           `,
         }}
       />

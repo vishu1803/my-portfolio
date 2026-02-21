@@ -5,7 +5,7 @@ import "./globals.css";
 export const metadata: Metadata = {
     title: "Vishwanath Nishad — Full Stack Developer",
     description:
-        "Portfolio of Vishwanath Nishad — Full Stack Developer specializing in MERN stack, React Native, and modern web applications.",
+        "Portfolio of Vishwanath Nishad — Full Stack Developer specializing in Software Devlopment, Backend, and modern web applications.",
 };
 
 export default function RootLayout({
