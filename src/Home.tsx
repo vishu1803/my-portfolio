@@ -75,9 +75,9 @@ export default function Home() {
         style={{
           y: bgY,
           background: `
-            radial-gradient(ellipse 80% 60% at 15% 20%, rgba(79, 142, 247, 0.08) 0%, transparent 70%),
-            radial-gradient(ellipse 80% 60% at 85% 80%, rgba(124, 92, 252, 0.08) 0%, transparent 70%),
-            radial-gradient(ellipse 50% 50% at 50% 50%, rgba(232, 121, 168, 0.04) 0%, transparent 70%)
+            radial-gradient(ellipse 80% 60% at 15% 20%, rgba(79, 142, 247, 0.15) 0%, transparent 70%),
+            radial-gradient(ellipse 80% 60% at 85% 80%, rgba(124, 92, 252, 0.15) 0%, transparent 70%),
+            radial-gradient(ellipse 50% 50% at 50% 50%, rgba(232, 121, 168, 0.06) 0%, transparent 70%)
           `,
         }}
       />

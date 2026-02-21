@@ -98,8 +98,8 @@ export default function Features() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse 70% 60% at 80% 10%, rgba(79, 142, 247, 0.08) 0%, transparent 70%),
-            radial-gradient(ellipse 70% 60% at 20% 90%, rgba(124, 92, 252, 0.08) 0%, transparent 70%)
+            radial-gradient(ellipse 70% 60% at 80% 10%, rgba(79, 142, 247, 0.15) 0%, transparent 70%),
+            radial-gradient(ellipse 70% 60% at 20% 90%, rgba(124, 92, 252, 0.15) 0%, transparent 70%)
           `,
         }}
       />
