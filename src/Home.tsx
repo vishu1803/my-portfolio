@@ -3,8 +3,12 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import MagneticButton from "./components/MagneticButton";
+import HeroGlobe from "./components/HeroGlobe";
 import profileImage from "./assets/profile.jpg";
 import Image from "next/image";
+
+// ─── Toggle: set to false to disable globe animation ──────────
+const enableHeroGlobe = true;
 
 const roles = [
   "Full Stack Developer",
@@ -69,14 +73,16 @@ export default function Home() {
         px-5 sm:px-6 md:px-20 pt-24 pb-16 md:pt-28 md:pb-0 text-white
         bg-[#060609] relative overflow-hidden"
     >
+      {/* 3D Floating Particle Globe */}
+      {enableHeroGlobe && <HeroGlobe />}
       {/* Background glow */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse 80% 60% at 15% 20%, rgba(79, 142, 247, 0.18) 0%, transparent 70%),
-            radial-gradient(ellipse 80% 60% at 85% 80%, rgba(124, 92, 252, 0.18) 0%, transparent 70%),
-            radial-gradient(ellipse 50% 50% at 50% 50%, rgba(232, 121, 168, 0.08) 0%, transparent 70%)
+            radial-gradient(ellipse 80% 60% at 15% 20%, rgba(79, 142, 247, 0.25) 0%, transparent 70%),
+            radial-gradient(ellipse 80% 60% at 85% 80%, rgba(124, 92, 252, 0.25) 0%, transparent 70%),
+            radial-gradient(ellipse 50% 50% at 50% 50%, rgba(232, 121, 168, 0.10) 0%, transparent 70%)
           `,
         }}
       />

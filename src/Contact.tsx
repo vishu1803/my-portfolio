@@ -65,8 +65,8 @@ export default function Contact() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse 60% 50% at 30% 30%, rgba(79, 142, 247, 0.18) 0%, transparent 70%),
-            radial-gradient(ellipse 60% 50% at 70% 70%, rgba(124, 92, 252, 0.18) 0%, transparent 70%)
+            radial-gradient(ellipse 60% 50% at 30% 30%, rgba(79, 142, 247, 0.30) 0%, transparent 70%),
+            radial-gradient(ellipse 60% 50% at 70% 70%, rgba(124, 92, 252, 0.30) 0%, transparent 70%)
           `,
         }}
       />

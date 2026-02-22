@@ -118,8 +118,8 @@ export default function Resume() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse 60% 60% at 80% 20%, rgba(124, 92, 252, 0.18) 0%, transparent 70%),
-            radial-gradient(ellipse 60% 60% at 20% 80%, rgba(79, 142, 247, 0.18) 0%, transparent 70%)
+            radial-gradient(ellipse 60% 60% at 80% 20%, rgba(124, 92, 252, 0.30) 0%, transparent 70%),
+            radial-gradient(ellipse 60% 60% at 20% 80%, rgba(79, 142, 247, 0.30) 0%, transparent 70%)
           `,
         }}
       />
