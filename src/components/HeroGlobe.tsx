@@ -22,6 +22,18 @@ function GlobeParticles() {
 
     const baseColors = useMemo(() => COLORS.map((c) => new THREE.Color(c)), []);
 
+    // Velocity & momentum state for smooth movement
+    const motionState = useRef({
+        velX: 0,
+        velY: 0,
+        prevMouseX: 0,
+        prevMouseY: 0,
+        mouseActivity: 0, // 0 = idle, 1 = active cursor
+        // Random wander phase offsets (so each session feels different)
+        wanderSeedX: Math.random() * 1000,
+        wanderSeedY: Math.random() * 1000,
+    });
+
     // Pre-calculate per-particle base data
     const particles = useMemo(() => {
         const temp = [];
@@ -46,7 +58,7 @@ function GlobeParticles() {
 
             // Animation properties for color and size pulsing
             const phase = Math.random() * Math.PI * 2;
-            const speed = 0.8 + Math.random() * 2.0; // Increased base speed
+            const speed = 0.8 + Math.random() * 2.0;
             const colorA = Math.floor(Math.random() * COLORS.length);
             let colorB = Math.floor(Math.random() * COLORS.length);
             if (colorA === colorB) colorB = (colorB + 1) % COLORS.length;
@@ -64,7 +76,6 @@ function GlobeParticles() {
     useMemo(() => {
         if (!meshRef.current) return;
         const dummy = new THREE.Object3D();
-        // const color = new THREE.Color(); // No longer needed here, handled in useFrame
 
         for (let i = 0; i < NUM_PARTICLES; i++) {
             const p = particles[i];
@@ -74,7 +85,6 @@ function GlobeParticles() {
             dummy.updateMatrix();
 
             meshRef.current.setMatrixAt(i, dummy.matrix);
-            // Initial color will be set in useFrame, but we need to set a default for the first render
             if (meshRef.current.instanceColor) {
                 meshRef.current.setColorAt(i, baseColors[p.colorA]);
             }
@@ -82,18 +92,20 @@ function GlobeParticles() {
         meshRef.current.instanceMatrix.needsUpdate = true;
         if (meshRef.current.instanceColor) meshRef.current.instanceColor.needsUpdate = true;
     }, [particles, baseColors]);
+
     useFrame((state) => {
         if (!meshRef.current || !groupRef.current) return;
 
         const time = state.clock.elapsedTime;
+        const delta = Math.min(state.clock.getDelta(), 0.05); // clamped delta
         const dummy = new THREE.Object3D();
         const color = new THREE.Color();
+        const ms = motionState.current;
 
-        // 1. Organic completely watery/jelly deformation
+        // 1. Organic watery/jelly deformation (untouched)
         for (let i = 0; i < NUM_PARTICLES; i++) {
             const p = particles[i];
 
-            // --- Dynamic Size & Color Pulsing ---
             const sizePulse = 0.4 + Math.sin(time * p.speed * 3.0 + p.phase) * 0.6;
             const colorMix = (Math.sin(time * p.speed * 1.5 + p.phase) + 1) / 2;
             color.lerpColors(baseColors[p.colorA], baseColors[p.colorB], colorMix);
@@ -101,33 +113,25 @@ function GlobeParticles() {
             color.offsetHSL(0, 0.4, 0.15);
             meshRef.current.setColorAt(i, color);
 
-            // --- Subtle buzzing drift ---
             const driftX = Math.sin(time * 1.5 + p.phase) * 0.05;
             const driftY = Math.cos(time * 1.8 + p.phase) * 0.05;
             const driftZ = Math.sin(time * 1.3 + p.phase) * 0.05;
 
-            // --- Stable Water Wave Motion ---
             const freq = 1.2;
             const waveSpeed = 1.6;
 
             const wavePrimaryPhase = Math.sin(p.baseX * freq + time * waveSpeed) * Math.cos(p.baseY * freq + time * waveSpeed) * Math.sin(p.baseZ * freq + time * waveSpeed);
-            const wavePrimaryAmp = 0.5;
-            const wavePrimary = wavePrimaryPhase * wavePrimaryAmp;
+            const wavePrimary = wavePrimaryPhase * 0.5;
 
-            const waveSecondaryAmp = 0.2;
-            const waveSecondarySpeed = 1.2;
-            const waveSecondary = Math.sin(time * waveSecondarySpeed) * waveSecondaryAmp;
-
-            // Calculate highly deformed jelly radius
+            const waveSecondary = Math.sin(time * 1.2) * 0.2;
             const currentRadius = RADIUS + wavePrimary + waveSecondary;
 
-            let targetX = p.baseX * currentRadius + driftX;
-            let targetY = p.baseY * currentRadius + driftY;
-            let targetZ = p.baseZ * currentRadius + driftZ;
+            const targetX = p.baseX * currentRadius + driftX;
+            const targetY = p.baseY * currentRadius + driftY;
+            const targetZ = p.baseZ * currentRadius + driftZ;
 
             dummy.position.set(targetX, targetY, targetZ);
 
-            // Stable gentle self-rotation drifting
             dummy.rotation.set(
                 p.rot.x + time * 0.8 * p.speed,
                 p.rot.y + time * 1.2 * p.speed,
@@ -141,30 +145,63 @@ function GlobeParticles() {
         meshRef.current.instanceMatrix.needsUpdate = true;
         if (meshRef.current.instanceColor) meshRef.current.instanceColor.needsUpdate = true;
 
-        // 2. Global globe rotation (continuous gentle spinning)
+        // 2. Global globe rotation
         groupRef.current.rotation.y = time * 0.1;
         groupRef.current.rotation.x = time * 0.05;
 
-        // 3. Stable Translational floating
-        const floatAmp = 0.25;
-        const floatSpeedY = 0.8;
-        const floatSpeedX = 0.6;
+        // ===== 3. CRAWLING MOVEMENT SYSTEM =====
 
-        const floatY = Math.sin(time * floatSpeedY) * floatAmp;
-        const floatX = Math.cos(time * floatSpeedX) * floatAmp;
+        // Detect mouse movement (is cursor active?)
+        const curMouseX = mouse.x * viewport.width;
+        const curMouseY = mouse.y * viewport.height;
+        const mouseDeltaX = curMouseX - ms.prevMouseX;
+        const mouseDeltaY = curMouseY - ms.prevMouseY;
+        const mouseSpeed = Math.sqrt(mouseDeltaX * mouseDeltaX + mouseDeltaY * mouseDeltaY);
 
-        // 4. Global Mouse Interaction (Globe strictly follows cursor from behind)
-        const targetGlobeX = (mouse.x * viewport.width) * 0.35;
-        const targetGlobeY = (mouse.y * viewport.height) * 0.35;
+        // Smoothly ramp mouse activity: rises fast when moving, fades slowly when still
+        if (mouseSpeed > 0.01) {
+            ms.mouseActivity = Math.min(1, ms.mouseActivity + 0.08);
+        } else {
+            ms.mouseActivity = Math.max(0, ms.mouseActivity - 0.012);
+        }
 
-        groupRef.current.position.x += (targetGlobeX - groupRef.current.position.x) * 0.03 + floatX * 0.05;
-        groupRef.current.position.y += (targetGlobeY - groupRef.current.position.y) * 0.03 + floatY * 0.05;
+        ms.prevMouseX = curMouseX;
+        ms.prevMouseY = curMouseY;
 
-        // Slight Parallax tilt
-        const tiltX = mouse.y * 0.4;
-        const tiltY = mouse.x * 0.4;
-        groupRef.current.rotation.x += (tiltX - groupRef.current.rotation.x) * 0.05;
-        groupRef.current.rotation.y += (tiltY - groupRef.current.rotation.y) * 0.05;
+        // --- Cursor-following target (crawl toward cursor slowly) ---
+        const cursorTargetX = curMouseX * 0.35;
+        const cursorTargetY = curMouseY * 0.35;
+
+        // --- Idle random wander target (smooth organic drifting path) ---
+        const wanderX =
+            Math.sin(time * 0.15 + ms.wanderSeedX) * 1.8 +
+            Math.sin(time * 0.37 + ms.wanderSeedX * 2.1) * 0.9 +
+            Math.cos(time * 0.23 + ms.wanderSeedX * 0.7) * 0.6;
+        const wanderY =
+            Math.cos(time * 0.13 + ms.wanderSeedY) * 1.4 +
+            Math.sin(time * 0.31 + ms.wanderSeedY * 1.8) * 0.7 +
+            Math.cos(time * 0.19 + ms.wanderSeedY * 0.5) * 0.5;
+
+        // Blend between cursor target and random wander based on mouse activity
+        const activity = ms.mouseActivity;
+        const targetX = cursorTargetX * activity + wanderX * (1 - activity);
+        const targetY = cursorTargetY * activity + wanderY * (1 - activity);
+
+        // Slow crawling lerp — globe trails behind, never snaps
+        const crawlSpeed = 0.025;
+        groupRef.current.position.x += (targetX - groupRef.current.position.x) * crawlSpeed;
+        groupRef.current.position.y += (targetY - groupRef.current.position.y) * crawlSpeed;
+
+        // Layer gentle floating oscillation on top so it feels alive, not stiff
+        groupRef.current.position.x += Math.cos(time * 0.6) * 0.003;
+        groupRef.current.position.y += Math.sin(time * 0.8) * 0.003;
+
+        // Slight parallax tilt based on globe position
+        const tiltStrength = 0.12;
+        const targetTiltX = groupRef.current.position.y * tiltStrength;
+        const targetTiltY = groupRef.current.position.x * tiltStrength;
+        groupRef.current.rotation.x += (targetTiltX - groupRef.current.rotation.x) * 0.05;
+        groupRef.current.rotation.y += (targetTiltY - groupRef.current.rotation.y) * 0.05;
     });
 
     return (
@@ -199,3 +236,4 @@ export default function HeroGlobe() {
         </div>
     );
 }
+
