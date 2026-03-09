@@ -78,7 +78,8 @@ export default function Resume() {
         {activeTab === "skills" && (
   <div>
     {skills.map((skill, index) => (
-      <div key={index} className="mb-6">
+      <motion.div key={index} className="mb-6"
+        whileHover={{ boxShadow: "0px 0px 10px rgba(59, 130, 246, 0.9)" }}>
         <div className="flex justify-between items-center">
           <h4 className="text-lg font-semibold">{skill.name}</h4>
           <span className="text-gray-400 text-sm">{skill.percentage}%</span>
@@ -90,10 +91,9 @@ export default function Resume() {
             initial={{ width: "0%" }}
             animate={{ width: `${skill.percentage}%` }}
             transition={{ duration: 1 }}
-            whileHover={{ boxShadow: "0px 0px 10px rgba(59, 130, 246, 0.9)" }}
           />
         </div>
-      </div>
+      </motion.div>
     ))}
   </div>
 )}

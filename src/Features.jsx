@@ -55,9 +55,8 @@ export default function Features() {
             <div className="flex justify-center">{feature.icon}</div>
             <h3 className="text-xl font-semibold mt-4">{feature.title}</h3>
             <motion.p
-              className={`mt-2 text-gray-400 transition-opacity duration-300 ${
-                hoveredIndex === index ? "opacity-100" : "opacity-0"
-              }`}
+              className="mt-2 text-gray-400 transition-opacity duration-300"
+              animate={{ opacity: hoveredIndex === index ? 1 : 0 }}
             >
               {feature.description}
             </motion.p>

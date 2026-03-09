@@ -1,0 +1,33 @@
+.footer {
+  padding: 2rem;
+  background-color: #0a0a0a;
+  border-top: 1px solid #333;
+}
+
+.links {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  padding: 0;
+  margin: 0;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.link img {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.link a {
+  color: #aaa;
+  text-decoration: none;
+}
+
+.link a:hover {
+  color: #fff;
+}

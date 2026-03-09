@@ -10,7 +10,7 @@ function VNLogo3D() {
       <ambientLight intensity={1.5} />
       <directionalLight position={[2, 2, 5]} intensity={2} />
       <OrbitControls enableZoom={false} enableRotate={true} />
-      <motion.group whileHover={{ scale: 1.2, filter: "drop-shadow(0px 0px 10px rgba(0, 183, 255, 0.8))" }}>
+      <motion.group whileHover={{ scale: 1.2 }}>
         <Text fontSize={2} color="white" position={[0, 0, 0]} anchorX="center" anchorY="middle">
           VN
         </Text>
