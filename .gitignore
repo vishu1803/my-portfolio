@@ -24,3 +24,18 @@ dist-ssr
 *.sw?
 
 .vercel
+
+# Next.js
+.next/
+out/
+build/
+
+# Temporary and output files
+*_output.txt
+build_output.txt
+dev_output.txt
+error_output.txt
+
+# Leftover Vite files (if migrated from Vite)
+index.html
+vite.config.js
