@@ -5,7 +5,6 @@ A modern, animated portfolio website built with **Next.js**, **Framer Motion**, 
 🔗 **Live**: [vishwanath-nishad.vercel.app](https://vishwanath-nishad.vercel.app)
 ---
 ## ✨ Highlights
-
 - **Typewriter name animation** with gradient blinking cursor
 - **Dynamic role descriptions** — content changes based on active role (Full Stack / Backend / Software Dev)
 - **Scroll progress bar** — spring-based gradient indicator
