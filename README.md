@@ -1,7 +1,6 @@
 # Vishwanath Nishad — Portfolio
 
 A modern, animated portfolio website built with **Next.js**, **Framer Motion**, and **Three.js**. Features Google-style smooth animations, scroll-linked effects, and a fully responsive design.
-
 🔗 **Live**: [vishwanath-nishad.vercel.app](https://vishwanath-nishad.vercel.app)
 ---
 ## ✨ Highlights
