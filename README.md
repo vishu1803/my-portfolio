@@ -29,11 +29,8 @@ A modern, animated portfolio website built with **Next.js**, **Framer Motion**, 
 | **Styling** | Tailwind CSS, Inter font |
 | **Email** | EmailJS (contact form) |
 | **Deployment** | Vercel |
-
 ---
-
 ## 📁 Project Structure
-
 ```
 src/
 ├── app/
