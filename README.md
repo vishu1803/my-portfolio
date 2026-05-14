@@ -18,9 +18,7 @@ A modern, animated portfolio website built with **Next.js**, **Framer Motion**, 
 - **Fully responsive** — optimized for mobile, tablet, and desktop
 
 ---
-
 ## 🛠 Tech Stack
-
 | Category | Technologies |
 |---|---|
 | **Framework** | Next.js 16, React 19 |
