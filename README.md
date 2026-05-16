@@ -16,7 +16,6 @@ A modern, animated portfolio website built with **Next.js**, **Framer Motion**, 
 - **Particle stars** — lazy-loaded Three.js background (desktop only)
 - **Magnetic buttons** — spring-physics hover attraction effect
 - **Fully responsive** — optimized for mobile, tablet, and desktop
-
 ---
 ## 🛠 Tech Stack
 | Category | Technologies |
