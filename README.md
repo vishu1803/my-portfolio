@@ -69,7 +69,6 @@ npm run build
 ```
 
 ---
-
 ## 📱 Mobile Optimization
 
 - Hamburger menu with fullscreen overlay and body scroll lock
