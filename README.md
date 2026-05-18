@@ -79,7 +79,6 @@ npm run build
 - Stacked layout with proper spacing
 
 ---
-
 ## 👤 Author
 
 **Vishwanath Nishad**
