@@ -48,9 +48,7 @@ src/
 ├── Contact.tsx              # Email form with glassmorphism
 └── Footer.tsx               # Minimal footer with gradient divider
 ```
-
 ---
-
 ## 🚀 Getting Started
 
 ```bash
