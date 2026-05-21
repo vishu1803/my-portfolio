@@ -77,7 +77,6 @@ npm run build
 
 ---
 ## 👤 Author
-
 **Vishwanath Nishad**
 - GitHub: [@vishu1803](https://github.com/vishu1803)
 - LinkedIn: [Vishwanath Nishad](https://www.linkedin.com/in/vishwanath-nishad-69b047233/)
