@@ -67,7 +67,6 @@ npm run build
 ```
 ---
 ## 📱 Mobile Optimization
-
 - Hamburger menu with fullscreen overlay and body scroll lock
 - Responsive text sizing across all breakpoints
 - Reduced blur and glow sizes on small screens
