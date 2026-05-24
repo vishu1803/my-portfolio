@@ -73,7 +73,6 @@ npm run build
 - Touch-friendly tap targets (`active:` states)
 - Hidden scroll indicator on mobile
 - Stacked layout with proper spacing
-
 ---
 ## 👤 Author
 **Vishwanath Nishad**
