@@ -50,7 +50,6 @@ src/
 ```
 ---
 ## 🚀 Getting Started
-
 ```bash
 # Clone
 git clone https://github.com/vishu1803/my-portfolio.git
