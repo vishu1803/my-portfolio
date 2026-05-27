@@ -56,7 +56,6 @@ git clone https://github.com/vishu1803/my-portfolio.git
 cd my-portfolio
 # Install
 npm install
-
 # Dev server
 npm run dev
 
