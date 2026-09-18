@@ -5,12 +5,12 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
 const COLORS = [
-    "#4F8EF7", // blue
-    "#7C5CFC", // purple
-    "#E879A8", // pink
-    "#38BDF8", // cyan
-    "#FBBF24", // gold
-    "#818CF8", // indigo
+    "#38BDF8", // starlight cyan
+    "#0EA5E9", // electric sky
+    "#60A5FA", // celestial azure
+    "#818CF8", // deep space indigo
+    "#E2E8F0", // titanium silver
+    "#F8FAFC", // pure white
 ];
 
 // Mobile-aware config

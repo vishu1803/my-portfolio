@@ -7,10 +7,12 @@ import Header from "./Header";
 import Home from "./Home";
 import Features from "./Features";
 import Projects from "./Projects";
+import Skills from "./Skills";
 import Resume from "./Resume";
 import Contact from "./Contact";
 import Footer from "./Footer";
 import ScrollProgress from "./components/ScrollProgress";
+import NobleSpatialTracker from "./components/NobleSpatialTracker";
 
 const ParticleBackground = lazy(
   () => import("./components/ParticleBackground")
@@ -24,6 +26,7 @@ export default function App() {
       transition={{ duration: 1, ease: [0.25, 0.1, 0, 1] }}
     >
       <ScrollProgress />
+      <NobleSpatialTracker />
 
       <Suspense fallback={null}>
         <ParticleBackground />
@@ -32,6 +35,7 @@ export default function App() {
       <Header />
       <Home />
       <Features />
+      <Skills />
       <Projects />
       <Resume />
       <Contact />

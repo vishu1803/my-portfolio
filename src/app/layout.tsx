@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-    title: "Vishwanath Nishad — Full Stack Developer",
+    title: "Vishwanath Nishad — Full Stack Developer Portfolio",
     description:
-        "Portfolio of Vishwanath Nishad — Full Stack Developer specializing in Software Devlopment, Backend, and modern web applications.",
+        "Portfolio of Vishwanath Nishad — Full Stack Developer specializing in Software Development, Backend, and modern web applications.",
 };
 
 export default function RootLayout({
@@ -17,7 +16,6 @@ export default function RootLayout({
         <html lang="en" className="scroll-smooth">
             <body className="antialiased">
                 {children}
-                <Analytics />
             </body>
         </html>
     );

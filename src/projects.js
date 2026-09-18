@@ -1,8 +1,10 @@
+const baseUrl = (typeof import.meta !== "undefined" && import.meta?.env?.BASE_URL) || "/";
+
 export const projects = [
   {
     id: "ai-code-review",
     title: "AI-Powered Code Review Assistant",
-    image: `${import.meta.env.BASE_URL}ai-code-review.png`,
+    image: `${baseUrl}ai-code-review.png`,
     description:
       "An intelligent assistant that analyzes GitHub pull requests to detect style issues, potential bugs, and suggest improvements using OpenAI API and FastAPI.",
     link: "https://github.com/vishu1803/Ai-powered-code-review-assistant/",
@@ -24,7 +26,7 @@ export const projects = [
   {
     id: "product-explorer",
     title: "Product Data Explorer",
-    image: `${import.meta.env.BASE_URL}product-explorer.png`,
+    image: `${baseUrl}product-explorer.png`,
     description:
       "An analytics dashboard for exploring and visualizing large product datasets with REST APIs and interactive charts built using Next.js and NestJS.",
     link: "https://product-explorer-frontend-qp3m.onrender.com/",
@@ -46,7 +48,7 @@ export const projects = [
   {
     id: "task-manager",
     title: "Collaborative Task Manager",
-    image: `${import.meta.env.BASE_URL}task-manager.png`,
+    image: `${baseUrl}task-manager.png`,
     description:
       "A full-stack task management platform supporting team collaboration, task prioritization, and real-time updates using Next.js, Prisma, and PostgreSQL.",
     link: "https://collaborative-task-manager-fc26.vercel.app/",
@@ -68,7 +70,7 @@ export const projects = [
   {
     id: "3d-portfolio",
     title: "3D Portfolio Website",
-    image: `${import.meta.env.BASE_URL}portfolio.png`,
+    image: `${baseUrl}portfolio.png`,
     description:
       "A visually stunning 3D portfolio website built with React, Three.js, and Tailwind CSS, showcasing skills and projects interactively.",
     link: "https://3-d-portfolio-website-one.vercel.app",
@@ -90,7 +92,7 @@ export const projects = [
   {
     id: "object-detection",
     title: "Object Detection Web App",
-    image: `${import.meta.env.BASE_URL}object-detection.png`,
+    image: `${baseUrl}object-detection.png`,
     description:
       "A real-time object detection web app that identifies objects in images and videos using AI-powered machine learning models.",
     link: "https://object-detection-web-app-indol.vercel.app/",
@@ -112,7 +114,7 @@ export const projects = [
   {
     id: "ai-job-search",
     title: "AI Job Search Dashboard",
-    image: `${import.meta.env.BASE_URL}job.png`,
+    image: `${baseUrl}job.png`,
     description:
       "A smart AI-powered job search dashboard that helps users find jobs efficiently with AI recommendations and resume analysis.",
     link: "https://ai-job-search-board.vercel.app",
