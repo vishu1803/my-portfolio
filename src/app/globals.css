@@ -128,6 +128,50 @@ body {
   animation: gradient-shift 6s ease infinite;
 }
 
+/* Streamline Floating Ribbons */
+@keyframes streamline-left {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes streamline-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-streamline-left {
+  animation: streamline-left 72s linear infinite;
+  will-change: transform;
+}
+
+.animate-streamline-right {
+  animation: streamline-right 82s linear infinite;
+  will-change: transform;
+}
+
+.animate-streamline-left-slow {
+  animation: streamline-left 95s linear infinite;
+  will-change: transform;
+}
+
+.animate-streamline-right-slow {
+  animation: streamline-right 105s linear infinite;
+  will-change: transform;
+}
+
+/* Pause animation on hover */
+.pause-hover:hover {
+  animation-play-state: paused;
+}
+
 /* Focus states */
 *:focus-visible {
   outline: 2px solid #89AACC;

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaGithub, FaExternalLinkAlt, FaTimes, FaLayerGroup, FaServer, FaCode } from "react-icons/fa";
 import SectionWrapper from "./components/SectionWrapper";
+import ProjectMockupFrame from "./components/landing/ProjectMockupFrame";
 
 interface Project {
   title: string;
@@ -205,27 +206,15 @@ function ProjectCard({
       )}
 
       <div>
-        {/* Image Preview Container */}
-        <div className="relative overflow-hidden aspect-video bg-black/50">
-          <Image
-            src={project.image}
-            alt={project.title}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            referrerPolicy="no-referrer"
-            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+        {/* Image Preview Container with Obsidian Frame */}
+        <div className="p-3 bg-black/40">
+          <ProjectMockupFrame
+            image={project.image}
+            title={project.title}
+            urlHost={project.link.replace(/^https?:\/\//, "")}
+            badge={project.metrics}
+            aspect="aspect-video"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c14] via-[#0c0c14]/30 to-transparent opacity-80 pointer-events-none" />
-
-          {/* Celestial Tag */}
-          <span className="absolute top-3 left-3 text-[10px] font-mono font-medium px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md text-sky-300 border border-sky-400/30">
-            {project.tag}
-          </span>
-
-          {/* Metric Pill */}
-          <span className="absolute bottom-3 right-3 text-[10px] font-mono px-2.5 py-0.5 rounded-md bg-black/60 backdrop-blur-md text-white/80 border border-white/[0.08]">
-            {project.metrics}
-          </span>
         </div>
 
         {/* Content */}

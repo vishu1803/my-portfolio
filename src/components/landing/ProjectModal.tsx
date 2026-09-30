@@ -1,8 +1,8 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
 import { ProjectItem } from "./SelectedWorks";
+import ProjectMockupFrame from "./ProjectMockupFrame";
 
 interface ProjectModalProps {
   project: ProjectItem | null;
@@ -26,13 +26,13 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-2xl rounded-3xl border border-white/10 bg-surface shadow-2xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto"
+            className="relative w-full max-w-3xl rounded-3xl border border-white/10 bg-[#0B0C0E] shadow-2xl p-6 sm:p-8 max-h-[92vh] overflow-y-auto"
           >
             {/* Close Button */}
             <button
               type="button"
               onClick={onClose}
-              className="absolute top-6 right-6 w-9 h-9 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-text-primary/70 hover:text-text-primary transition-all text-sm font-mono"
+              className="absolute top-6 right-6 w-9 h-9 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-text-primary/70 hover:text-text-primary transition-all text-sm font-mono z-20"
             >
               ✕
             </button>
@@ -48,38 +48,36 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
               </span>
             </div>
 
-            <h3 className="text-3xl sm:text-4xl font-display italic text-text-primary mb-4">
+            <h3 className="text-3xl sm:text-4xl font-display italic text-text-primary mb-6">
               {project.title}
             </h3>
 
-            {/* Media container */}
-            <div className="relative aspect-video rounded-2xl overflow-hidden border border-white/10 mb-6 bg-black">
-              <Image
-                src={project.image}
-                alt={project.title}
-                fill
-                sizes="(max-width: 768px) 100vw, 800px"
-                className="object-cover"
-                referrerPolicy="no-referrer"
+            {/* Software Window Mockup */}
+            <div className="mb-6">
+              <ProjectMockupFrame
+                image={project.image}
+                title={project.title}
+                urlHost={project.urlHost}
+                badge={project.metrics}
+                aspect="aspect-video"
               />
-              <div className="absolute inset-0 halftone-overlay opacity-20 pointer-events-none" />
             </div>
 
             {/* Description */}
-            <p className="text-sm md:text-base text-muted leading-relaxed mb-6">
+            <p className="text-sm md:text-base text-muted leading-relaxed mb-6 font-body">
               {project.description}
             </p>
 
             {/* Tech stack */}
             <div className="mb-8">
               <h4 className="text-xs font-mono uppercase tracking-widest text-text-primary/80 mb-3">
-                Key Technologies
+                Key Technologies & Architecture
               </h4>
               <div className="flex flex-wrap gap-2">
                 {project.tech.map((t) => (
                   <span
                     key={t}
-                    className="px-3 py-1 rounded-full bg-stroke/60 border border-white/10 text-xs font-mono text-text-primary"
+                    className="px-3 py-1 rounded-xl bg-white/[0.04] border border-white/10 text-xs font-mono text-text-primary"
                   >
                     {t}
                   </span>
@@ -88,7 +86,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
             </div>
 
             {/* Action buttons */}
-            <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-stroke">
+            <div className="flex flex-wrap items-center gap-3 pt-5 border-t border-white/10">
               <a
                 href={project.link}
                 target="_blank"

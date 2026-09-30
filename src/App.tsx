@@ -8,13 +8,12 @@ import Navbar from "./components/landing/Navbar";
 import Hero from "./components/landing/Hero";
 import SelectedWorks, { ProjectItem } from "./components/landing/SelectedWorks";
 import Journal, { JournalArticle } from "./components/landing/Journal";
-import Explorations, { ExplorationItem } from "./components/landing/Explorations";
+import Explorations from "./components/landing/Explorations";
 import Stats from "./components/landing/Stats";
 import Footer from "./components/landing/Footer";
 
 import ProjectModal from "./components/landing/ProjectModal";
 import ArticleModal from "./components/landing/ArticleModal";
-import LightboxModal from "./components/landing/LightboxModal";
 import ResumeModal from "./components/landing/ResumeModal";
 
 export default function App() {
@@ -23,7 +22,6 @@ export default function App() {
   // Modal states
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<JournalArticle | null>(null);
-  const [selectedExploration, setSelectedExploration] = useState<ExplorationItem | null>(null);
   const [resumeOpen, setResumeOpen] = useState(false);
 
   return (
@@ -64,8 +62,8 @@ export default function App() {
           {/* Section 4: Journal */}
           <Journal onSelectArticle={(a) => setSelectedArticle(a)} />
 
-          {/* Section 5: Explorations (Parallax Gallery) */}
-          <Explorations onSelectItem={(item) => setSelectedExploration(item)} />
+          {/* Section 5: Explorations (Transformer Lab & Skill Artifacts Streamlines) */}
+          <Explorations />
 
           {/* Section 6: Stats */}
           <Stats />
@@ -83,11 +81,6 @@ export default function App() {
         <ArticleModal
           article={selectedArticle}
           onClose={() => setSelectedArticle(null)}
-        />
-
-        <LightboxModal
-          item={selectedExploration}
-          onClose={() => setSelectedExploration(null)}
         />
 
         <ResumeModal
