@@ -25,45 +25,27 @@ export default function Explorations() {
       {/* Background ambient lighting */}
       <div className="absolute inset-0 bg-radial-gradient pointer-events-none opacity-30" />
 
-      {/* Section Header */}
-      <div className="max-w-[1200px] mx-auto px-6 md:px-10 lg:px-16 mb-12">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              <span className="w-8 h-px bg-stroke" />
-              <span className="text-xs text-muted uppercase tracking-[0.3em] font-mono">
-                Visual Playground
-              </span>
-            </div>
-
-            <h2 className="text-4xl sm:text-5xl md:text-6xl text-text-primary tracking-tight font-body">
-              Transformer{" "}
-              <span className="font-display italic text-text-primary">
-                laboratory
-              </span>
-            </h2>
-
-            <p className="mt-3 text-sm md:text-base text-muted max-w-xl leading-relaxed">
-              An interactive visual laboratory exploring how Large Language Model Transformers work: subword tokenization, multi-head self-attention heatmaps, and autoregressive probability sampling.
-            </p>
+      {/* Centered Section Header */}
+      <div className="max-w-[1200px] mx-auto px-6 md:px-10 lg:px-16 mb-12 sm:mb-16">
+        <div className="text-center max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-3 mb-3">
+            <span className="w-8 h-px bg-stroke" />
+            <span className="text-xs text-muted uppercase tracking-[0.3em] font-mono">
+              Visual Playground
+            </span>
+            <span className="w-8 h-px bg-stroke" />
           </div>
 
-          {/* GitHub Profile & Repos Button */}
-          <div className="hidden md:inline-flex shrink-0">
-            <a
-              href="https://github.com/vishu1803"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative rounded-full text-xs font-mono uppercase tracking-wider px-5 py-2.5 transition-all duration-300 hover:scale-105 border border-stroke bg-surface hover:border-transparent flex items-center gap-2"
-            >
-              <span
-                className="absolute inset-[-2px] rounded-full accent-gradient opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none -z-10"
-                aria-hidden="true"
-              />
-              <span className="text-text-primary">GitHub Profile & Repos</span>
-              <span className="text-sm">↗</span>
-            </a>
-          </div>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl text-text-primary tracking-tight font-body">
+            Transformer{" "}
+            <span className="font-display italic text-text-primary">
+              laboratory
+            </span>
+          </h2>
+
+          <p className="mt-3 text-xs sm:text-sm text-muted leading-relaxed">
+            An interactive visual laboratory exploring how Large Language Model Transformers work: subword tokenization, multi-head self-attention heatmaps, and autoregressive probability sampling.
+          </p>
         </div>
       </div>
 

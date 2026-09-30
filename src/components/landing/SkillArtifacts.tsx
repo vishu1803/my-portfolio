@@ -344,15 +344,12 @@ const STREAM_ROW_4: SkillNode[] = [
 export default function SkillArtifacts() {
   const [activeDomain, setActiveDomain] = useState<SkillDomain>("all");
   const [selectedNode, setSelectedNode] = useState<SkillNode | null>(STREAM_ROW_1[0]);
-  const [speedMode, setSpeedMode] = useState<"normal" | "slow" | "paused">("normal");
 
   const filterMatches = (domain: string) => {
     return activeDomain === "all" || activeDomain === domain;
   };
 
-  const getAnimationClass = (baseClass: string, slowClass: string) => {
-    if (speedMode === "paused") return "[animation-play-state:paused]";
-    if (speedMode === "slow") return slowClass;
+  const getAnimationClass = (baseClass: string, _slowClass?: string) => {
     return baseClass;
   };
 
@@ -426,73 +423,30 @@ export default function SkillArtifacts() {
 
       {/* Main Container - Horizontally constrained and perfectly aligned with the page */}
       <div className="max-w-[1200px] mx-auto px-6 md:px-10 lg:px-16">
-        {/* Header Section */}
-        <div className="mb-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div>
-              <div className="flex items-center gap-3 mb-3">
-                <span className="w-8 h-px bg-stroke" />
-                <span className="text-xs text-muted uppercase tracking-[0.3em] font-mono">
-                  Technical Spectrum
-                </span>
-              </div>
-
-              <h3 className="text-4xl sm:text-5xl md:text-6xl text-text-primary tracking-tight font-body">
-                Systems &{" "}
-                <span className="font-display italic text-text-primary">
-                  technical mastery
-                </span>
-              </h3>
-
-              <p className="mt-3 text-sm md:text-base text-muted max-w-xl leading-relaxed">
-                Continuous streamlines of core engineering competencies, asynchronous backends, compiler tools, and GPU graphics drifting in dynamic synchronization.
-              </p>
-            </div>
-
-            {/* Stream Drift Controls HUD */}
-            <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-surface/80 border border-white/10 backdrop-blur-md text-xs font-mono self-start md:self-auto">
-              <span className="text-muted text-[11px] px-2 uppercase tracking-wider hidden sm:inline">
-                Drift Speed:
-              </span>
-              <button
-                type="button"
-                onClick={() => setSpeedMode("normal")}
-                className={`px-3 py-1.5 rounded-xl transition-all ${
-                  speedMode === "normal"
-                    ? "bg-text-primary text-bg font-semibold shadow-sm"
-                    : "text-muted hover:text-text-primary"
-                }`}
-              >
-                Glide (Slow)
-              </button>
-              <button
-                type="button"
-                onClick={() => setSpeedMode("slow")}
-                className={`px-3 py-1.5 rounded-xl transition-all ${
-                  speedMode === "slow"
-                    ? "bg-text-primary text-bg font-semibold shadow-sm"
-                    : "text-muted hover:text-text-primary"
-                }`}
-              >
-                Ambient (Ultra-Slow)
-              </button>
-              <button
-                type="button"
-                onClick={() => setSpeedMode(speedMode === "paused" ? "normal" : "paused")}
-                className={`px-2.5 py-1.5 rounded-xl transition-all ${
-                  speedMode === "paused"
-                    ? "bg-[#4E85BF] text-white font-semibold"
-                    : "text-muted hover:text-text-primary"
-                }`}
-                title="Toggle pause"
-              >
-                {speedMode === "paused" ? "▶ Resume" : "❚❚ Pause"}
-              </button>
-            </div>
+        {/* Centered Header Section */}
+        <div className="mb-10 text-center max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-3 mb-3">
+            <span className="w-8 h-px bg-stroke" />
+            <span className="text-xs text-muted uppercase tracking-[0.3em] font-mono">
+              Technical Spectrum
+            </span>
+            <span className="w-8 h-px bg-stroke" />
           </div>
 
-          {/* Domain Filter Tabs */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mt-8 border-b border-stroke/40 scrollbar-none">
+          <h3 className="text-3xl sm:text-4xl md:text-5xl text-text-primary tracking-tight font-body">
+            Systems &{" "}
+            <span className="font-display italic text-text-primary">
+              technical mastery
+            </span>
+          </h3>
+
+          <p className="mt-3 text-xs sm:text-sm text-muted leading-relaxed">
+            Continuous streamlines of core engineering competencies, asynchronous backends, compiler tools, and GPU graphics drifting in dynamic synchronization.
+          </p>
+        </div>
+
+        {/* Domain Filter Tabs - Centered */}
+        <div className="flex items-center justify-center gap-1.5 overflow-x-auto pb-2 mb-8 border-b border-stroke/40 scrollbar-none">
             {[
               { id: "all", label: "ALL DOMAINS", count: 28 },
               { id: "ai", label: "AI & COMPILERS", count: 7 },
@@ -620,7 +574,6 @@ export default function SkillArtifacts() {
             )}
           </AnimatePresence>
         </div>
-      </div>
     </section>
   );
 }

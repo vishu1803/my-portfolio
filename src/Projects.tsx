@@ -23,6 +23,44 @@ interface Project {
 
 const projects: Project[] = [
   {
+    title: "AI Career Hub & Workspace Copilot",
+    category: "ai",
+    description:
+      "Full-stack career copilot featuring Job Fit Radar evaluating technical skill profiles against market roles, automated resume alignment, target readiness scoring, and tailored interview workflows.",
+    image: "/ai-career-hub.png",
+    link: "https://github.com/vishu1803/ai-career-hub",
+    github: "https://github.com/vishu1803/ai-career-hub",
+    tag: "Next.js · Gemini/OpenAI · Fullstack",
+    metrics: "75% Readiness Score",
+    architecture: [
+      "Job Fit Radar engine evaluating verified technical skills",
+      "Automated resume alignment and tailored interview questions",
+      "Company readiness benchmark scoring with PostgreSQL persistence",
+      "Next.js App Router with Server Actions and Tailwind CSS",
+    ],
+    accent: "from-[#38BDF8] to-[#818CF8]",
+    accentGlow: "shadow-[#38BDF8]/10",
+  },
+  {
+    title: "AI Context Tracker",
+    category: "ai",
+    description:
+      "Real-time token and context window monitoring companion for LLMs (ChatGPT, Claude). Tracks active context consumption against 128k limits, token burn velocity, response repetition, and instruction drift signals.",
+    image: "/ai-context-tracker.svg",
+    link: "https://github.com/vishu1803/ai-context-tracker",
+    github: "https://github.com/vishu1803/ai-context-tracker",
+    tag: "TypeScript · Chrome Extension · Telemetry",
+    metrics: "128k Token Monitor",
+    architecture: [
+      "Chrome Extension Manifest V3 background service worker",
+      "Live token count regression with sub-token streaming heuristics",
+      "Health signals detector: repetition, drift, and turn velocity",
+      "Obsidian dark mode companion panel with radial SVG gauge",
+    ],
+    accent: "from-[#22D3EE] to-[#0284C7]",
+    accentGlow: "shadow-[#22D3EE]/10",
+  },
+  {
     title: "AI-Powered Code Review System",
     category: "ai",
     description:
