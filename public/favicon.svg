@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0E1117" />
+      <stop offset="100%" stop-color="#060709" />
+    </linearGradient>
+
+    <!-- Accent Gradient -->
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="45%" stop-color="#A2C0DE" />
+      <stop offset="100%" stop-color="#4E85BF" />
+    </linearGradient>
+
+    <!-- Border Glow -->
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.25)" />
+      <stop offset="50%" stop-color="rgba(137,170,204,0.4)" />
+      <stop offset="100%" stop-color="rgba(78,133,191,0.15)" />
+    </linearGradient>
+  </defs>
+
+  <!-- Base Tile with Soft Bevel -->
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#bgGrad)" stroke="url(#borderGrad)" stroke-width="2" />
+
+  <!-- Subtle Radial Glow Behind Monogram -->
+  <circle cx="32" cy="30" r="20" fill="#4E85BF" opacity="0.18" />
+
+  <!-- Architectural 'V' Monogram with Serif & Diagonal Cuts -->
+  <path
+    d="M17 18 H25 L32 40 L39 18 H47 L35.5 48 H28.5 Z"
+    fill="url(#accentGrad)"
+  />
+
+  <!-- Top Accent Jewel Node -->
+  <circle cx="47" cy="18" r="2.5" fill="#89AACC" />
+</svg>
