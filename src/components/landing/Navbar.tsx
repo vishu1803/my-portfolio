@@ -17,7 +17,7 @@ export default function Navbar({ onOpenResume }: NavbarProps) {
       setScrolled(window.scrollY > 100);
 
       // Section tracking
-      const sections = ["home", "work", "journal", "explorations", "contact"];
+      const sections = ["home", "work", "journal", "lab", "skills", "contact"];
       const currentScroll = window.scrollY + 200;
 
       for (const section of sections) {
@@ -83,7 +83,7 @@ export default function Navbar({ onOpenResume }: NavbarProps) {
           <button
             type="button"
             onClick={() => scrollToSection("home")}
-            className={`text-xs sm:text-sm rounded-full px-2.5 sm:px-4 py-1.5 sm:py-2 transition-colors duration-200 ${
+            className={`text-xs sm:text-sm rounded-full px-2 sm:px-3.5 py-1.5 sm:py-2 transition-colors duration-200 ${
               activeSection === "home"
                 ? "text-text-primary bg-stroke/50 font-medium"
                 : "text-muted hover:text-text-primary hover:bg-stroke/50"
@@ -95,13 +95,49 @@ export default function Navbar({ onOpenResume }: NavbarProps) {
           <button
             type="button"
             onClick={() => scrollToSection("work")}
-            className={`text-xs sm:text-sm rounded-full px-2.5 sm:px-4 py-1.5 sm:py-2 transition-colors duration-200 ${
+            className={`text-xs sm:text-sm rounded-full px-2 sm:px-3.5 py-1.5 sm:py-2 transition-colors duration-200 ${
               activeSection === "work"
                 ? "text-text-primary bg-stroke/50 font-medium"
                 : "text-muted hover:text-text-primary hover:bg-stroke/50"
             }`}
           >
             Work
+          </button>
+
+          <button
+            type="button"
+            onClick={() => scrollToSection("skills")}
+            className={`text-xs sm:text-sm rounded-full px-2 sm:px-3.5 py-1.5 sm:py-2 transition-colors duration-200 ${
+              activeSection === "skills"
+                ? "text-text-primary bg-stroke/50 font-medium"
+                : "text-muted hover:text-text-primary hover:bg-stroke/50"
+            }`}
+          >
+            Skills
+          </button>
+
+          <button
+            type="button"
+            onClick={() => scrollToSection("lab")}
+            className={`text-xs sm:text-sm rounded-full px-2 sm:px-3.5 py-1.5 sm:py-2 transition-colors duration-200 ${
+              activeSection === "lab"
+                ? "text-text-primary bg-stroke/50 font-medium"
+                : "text-muted hover:text-text-primary hover:bg-stroke/50"
+            }`}
+          >
+            Lab
+          </button>
+
+          <button
+            type="button"
+            onClick={() => scrollToSection("journal")}
+            className={`text-xs sm:text-sm rounded-full px-2 sm:px-3.5 py-1.5 sm:py-2 transition-colors duration-200 hidden md:inline-block ${
+              activeSection === "journal"
+                ? "text-text-primary bg-stroke/50 font-medium"
+                : "text-muted hover:text-text-primary hover:bg-stroke/50"
+            }`}
+          >
+            Journal
           </button>
 
           <button
@@ -113,33 +149,9 @@ export default function Navbar({ onOpenResume }: NavbarProps) {
                 window.open("/resume.pdf", "_blank");
               }
             }}
-            className="text-xs sm:text-sm rounded-full px-2.5 sm:px-4 py-1.5 sm:py-2 text-muted hover:text-text-primary hover:bg-stroke/50 transition-colors duration-200"
+            className="text-xs sm:text-sm rounded-full px-2 sm:px-3.5 py-1.5 sm:py-2 text-muted hover:text-text-primary hover:bg-stroke/50 transition-colors duration-200 hidden sm:inline-block"
           >
             Resume
-          </button>
-
-          <button
-            type="button"
-            onClick={() => scrollToSection("journal")}
-            className={`text-xs sm:text-sm rounded-full px-2.5 sm:px-4 py-1.5 sm:py-2 transition-colors duration-200 hidden md:inline-block ${
-              activeSection === "journal"
-                ? "text-text-primary bg-stroke/50 font-medium"
-                : "text-muted hover:text-text-primary hover:bg-stroke/50"
-            }`}
-          >
-            Journal
-          </button>
-
-          <button
-            type="button"
-            onClick={() => scrollToSection("explorations")}
-            className={`text-xs sm:text-sm rounded-full px-2.5 sm:px-4 py-1.5 sm:py-2 transition-colors duration-200 hidden lg:inline-block ${
-              activeSection === "explorations"
-                ? "text-text-primary bg-stroke/50 font-medium"
-                : "text-muted hover:text-text-primary hover:bg-stroke/50"
-            }`}
-          >
-            Lab
           </button>
         </div>
 

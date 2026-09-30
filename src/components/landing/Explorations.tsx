@@ -19,7 +19,7 @@ export default function Explorations() {
 
   return (
     <section
-      id="explorations"
+      id="lab"
       className="relative bg-bg overflow-hidden py-24 select-none"
     >
       {/* Background ambient lighting */}

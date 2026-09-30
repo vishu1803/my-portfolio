@@ -7,9 +7,15 @@ interface HlsVideoProps {
   src: string;
   className?: string;
   flipVertical?: boolean;
+  containerClassName?: string;
 }
 
-export default function HlsVideo({ src, className = "", flipVertical = false }: HlsVideoProps) {
+export default function HlsVideo({
+  src,
+  className = "",
+  flipVertical = false,
+  containerClassName,
+}: HlsVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -67,7 +73,11 @@ export default function HlsVideo({ src, className = "", flipVertical = false }: 
   }, [src]);
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div
+      className={`absolute overflow-hidden pointer-events-none ${
+        containerClassName || "inset-0"
+      }`}
+    >
       <video
         ref={videoRef}
         autoPlay

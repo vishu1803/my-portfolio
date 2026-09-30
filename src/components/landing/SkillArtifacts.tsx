@@ -417,7 +417,7 @@ export default function SkillArtifacts() {
   };
 
   return (
-    <section className="relative w-full overflow-hidden py-20 md:py-24 border-t border-stroke/40">
+    <section id="skills" className="relative w-full overflow-hidden py-20 md:py-24 border-t border-stroke/40">
       {/* Background ambient lighting */}
       <div className="absolute inset-0 bg-radial-gradient pointer-events-none opacity-20" />
 
@@ -471,7 +471,6 @@ export default function SkillArtifacts() {
               );
             })}
           </div>
-        </div>
 
         {/* STREAMLINES - UNBOXED & HORIZONTALLY ALIGNED WITH PAGE MARGINS */}
         <div className="relative w-full overflow-hidden space-y-3.5 my-4">
@@ -574,6 +573,7 @@ export default function SkillArtifacts() {
             )}
           </AnimatePresence>
         </div>
+      </div>
     </section>
   );
 }
