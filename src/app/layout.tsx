@@ -2,21 +2,21 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-    title: "Vishwanath Nishad — Full Stack Developer Portfolio",
-    description:
-        "Portfolio of Vishwanath Nishad — Full Stack Developer specializing in Software Development, Backend, and modern web applications.",
+  title: "Vishwanath Nishad — Full Stack Developer Portfolio",
+  description:
+    "Portfolio of Vishwanath Nishad — Full Stack Developer specializing in Software Development, Backend, and modern web applications.",
 };
 
 export default function RootLayout({
-    children,
+  children,
 }: Readonly<{
-    children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-    return (
-        <html lang="en" className="scroll-smooth">
-            <body className="antialiased">
-                {children}
-            </body>
-        </html>
-    );
+  return (
+    <html lang="en" className="scroll-smooth dark">
+      <body className="bg-bg text-text-primary antialiased font-body">
+        {children}
+      </body>
+    </html>
+  );
 }
