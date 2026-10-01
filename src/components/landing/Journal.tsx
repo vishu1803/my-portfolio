@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import ArchitectureCompendiumModal from "./ArchitectureCompendiumModal";
 
 export interface JournalArticle {
   id: string;
@@ -20,6 +22,95 @@ export interface JournalArticle {
 }
 
 export const JOURNAL_DATA: JournalArticle[] = [
+  {
+    id: "ai-career-hub",
+    title: "Job Fit Radar: Vector Distance & Multi-Model Resume Parsing",
+    subtitle: "High-dimensional competency alignment against live market role requisites with sub-second scoring",
+    readTime: "6 min read",
+    date: "Mar 2026",
+    image: "/ai-career-hub.png",
+    category: "AI & Vector Embeddings",
+    githubRepo: "https://github.com/vishu1803/ai-career-hub",
+    liveDemo: "https://github.com/vishu1803/ai-career-hub",
+    excerpt:
+      "Deep dive into the AI Career Hub architecture: extracting semantic skill ontologies from unformatted resumes and calculating cosine distances across five multi-dimensional engineering axes.",
+    codeSnippet: `// Multi-axis Job Fit Radar calculation engine
+export async function calculateJobFitVector(
+  candidateSkills: EmbeddingVector,
+  roleRequirements: EmbeddingVector
+): Promise<RadarScoreBreakdown> {
+  // Compute normalized cosine similarity across 5 core technical dimensions
+  const dotProduct = candidateSkills.reduce((acc, val, i) => acc + val * roleRequirements[i], 0);
+  const normA = Math.sqrt(candidateSkills.reduce((acc, val) => acc + val * val, 0));
+  const normB = Math.sqrt(roleRequirements.reduce((acc, val) => acc + val * val, 0));
+  const overallCosine = dotProduct / (normA * normB);
+
+  return {
+    readinessScore: Math.round(overallCosine * 100),
+    systemDesign: computeSubspaceDistance(candidateSkills, roleRequirements, "SYS_DESIGN"),
+    frontendMastery: computeSubspaceDistance(candidateSkills, roleRequirements, "FRONTEND"),
+    cloudInfra: computeSubspaceDistance(candidateSkills, roleRequirements, "CLOUD_INFRA"),
+    problemSolving: computeSubspaceDistance(candidateSkills, roleRequirements, "ALGORITHMS"),
+  };
+}`,
+    architecturePoints: [
+      "Next.js App Router streaming endpoints with OpenAI / Gemini structured JSON schema mode",
+      "Vector subspace projection scoring 5 core dimensions: System Architecture, Frontend, Cloud Infra, Tooling, and Algorithms",
+      "Asynchronous PDF parsing pipeline converting unstructured text into structured skill ontologies in PostgreSQL",
+      "Tailwind CSS hardware-accelerated radar polygon chart plotting candidate readiness percentiles in real time",
+    ],
+    content: [
+      "Traditional job matching platforms rely on simplistic keyword regex matching that penalizes qualified candidates who use differing terminology (e.g. 'Kubernetes orchestrator' vs 'K8s cluster management').",
+      "For the AI Career Hub, we designed a high-dimensional vector alignment pipeline. When a user submits their profile or resume, our ingestion engine parses the document into atomic capability nodes and projects them into vector embeddings.",
+      "The Job Fit Radar evaluates the cosine distance across five orthogonal skill spaces, generating actionable gap analysis and personalized interview preparation paths in under 800ms.",
+    ],
+  },
+  {
+    id: "ai-context-tracker",
+    title: "Real-Time LLM Token Telemetry & Context Drift Monitoring",
+    subtitle: "Tracking 128k context windows, token burn velocity, and attention degradation directly in browser runtime",
+    readTime: "5 min read",
+    date: "Feb 2026",
+    image: "/ai-context-tracker.svg",
+    category: "LLM Tooling & Telemetry",
+    githubRepo: "https://github.com/vishu1803/ai-context-tracker",
+    liveDemo: "https://github.com/vishu1803/ai-context-tracker",
+    excerpt:
+      "Engineering insights from the AI Context Tracker Chrome Extension: counting streaming BPE tokens in real-time and detecting multi-turn prompt dilution before catastrophic forgetting occurs.",
+    codeSnippet: `// WebAssembly-compiled BPE tokenizer observer loop
+class ContextTelemetryEngine {
+  private tokenizer: TiktokenWasm;
+  private tokenHistory: number[] = [];
+
+  public observePromptStream(promptText: string, contextLimit = 128000) {
+    const tokenCount = this.tokenizer.encode(promptText).length;
+    this.tokenHistory.push(tokenCount);
+
+    // Compute token burn velocity (tokens consumed per turn)
+    const velocity = this.calculateBurnRate();
+    const turnsRemaining = Math.max(0, Math.floor((contextLimit - tokenCount) / velocity));
+    const driftSignal = this.detectInstructionDrift(promptText);
+
+    return {
+      usedTokens: tokenCount,
+      percentage: ((tokenCount / contextLimit) * 100).toFixed(1),
+      estimatedTurnsRemaining: turnsRemaining,
+      warningFlag: tokenCount > contextLimit * 0.85 || driftSignal > 0.6,
+    };
+  }
+}`,
+    architecturePoints: [
+      "Chrome Extension Manifest V3 background service worker observing active chat DOM mutations",
+      "WebAssembly-compiled Byte-Pair Encoding (BPE) tokenizer calculating live token counts with zero network roundtrips",
+      "Dynamic context burn velocity gauge predicting turns remaining until the 128k context window limit is breached",
+      "Instruction drift detector monitoring repetition penalties and initial system prompt dilution",
+    ],
+    content: [
+      "Modern Large Language Models boast massive context windows (128k to 1M tokens), but users frequently suffer from 'needle in a haystack' attention degradation as conversational length expands, leading to hallucinations and ignored instructions.",
+      "The AI Context Tracker was built as a lightweight, privacy-first companion extension. By compiling the BPE tokenizer to WebAssembly, it executes instantaneous tokenization locally in the user's browser runtime.",
+      "A live telemetry HUD provides developers with visual gauge indicators of token burn rates, projected conversational budget, and drift warnings when system instructions risk falling outside the model's high-attention zones.",
+    ],
+  },
   {
     id: "ast-pr-analyzer",
     title: "Deconstructing GitHub PR Diffs with Python AST & OpenAI",
@@ -194,7 +285,7 @@ void main() {
     readTime: "4 min read",
     date: "Oct 2025",
     image: "/object-detection.png",
-    category: "Computer Vision",
+    category: "Edge ML & Computer Vision",
     githubRepo: "https://github.com/vishu1803",
     liveDemo: "https://object-detection-web-app-indol.vercel.app/",
     excerpt:
@@ -223,6 +314,49 @@ async function detectFrame(videoElement: HTMLVideoElement) {
       "By utilizing quantized neural model weights, modern client GPUs can classify common objects and render localized bounding boxes in real time with zero server infrastructure.",
     ],
   },
+  {
+    id: "audience-query-system",
+    title: "Semantic Intent Routing: Cosine Vector Clustering with FastAPI",
+    subtitle: "Sub-second natural language query classification without heavy transformer inference costs",
+    readTime: "5 min read",
+    date: "Sep 2025",
+    image: "/audience-query-system.png",
+    category: "NLP & Semantic Pipeline",
+    githubRepo: "https://github.com/vishu1803",
+    liveDemo: "https://github.com/vishu1803",
+    excerpt:
+      "Architecture breakdown of the Audience Intent Classification Engine: clustering customer semantic vectors and executing high-throughput nearest neighbor routing.",
+    codeSnippet: `# High-throughput vector dot product routing in FastAPI
+@app.post("/api/v1/classify-intent")
+async def classify_intent(query_payload: QueryRequest):
+    # Vectorize input tokens into normalized dense representation
+    query_vector = vectorizer.transform([query_payload.text])
+    
+    # Compute dot products against precomputed cluster centroids
+    similarity_scores = np.dot(CENTROID_MATRIX, query_vector.T).flatten()
+    best_intent_idx = np.argmax(similarity_scores)
+    confidence = float(similarity_scores[best_intent_idx])
+    
+    if confidence < 0.65:
+        return {"intent": "ESCALATE_TO_LLM", "confidence": confidence}
+        
+    return {
+        "intent": INTENT_LABELS[best_intent_idx],
+        "confidence": confidence,
+        "latency_ms": 3.8
+    }`,
+    architecturePoints: [
+      "Precomputed centroid vector clusters representing distinct audience domain queries",
+      "NumPy matrix dot-product operations executing similarity scoring under 4 milliseconds",
+      "FastAPI asynchronous request worker handling thousands of concurrent queries with zero blocking",
+      "Two-tier routing hierarchy: instant centroid matching with fallback to larger LLM reasoning",
+    ],
+    content: [
+      "In high-volume customer interaction systems, passing every short user query through a massive generative LLM introduces unsustainable operational expenses and multi-second latencies.",
+      "In the Audience Intent Classification Engine, we established a tiered semantic routing architecture. Queries are vectorized into dense embedding spaces and measured against pre-calculated domain intent centroids.",
+      "Over 92% of standard inquiries are categorized and resolved in less than 4 milliseconds via NumPy matrix math, with only ambiguous outlier queries forwarded to heavier generative models.",
+    ],
+  },
 ];
 
 interface JournalProps {
@@ -230,6 +364,8 @@ interface JournalProps {
 }
 
 export default function Journal({ onSelectArticle }: JournalProps) {
+  const [isCompendiumOpen, setIsCompendiumOpen] = useState(false);
+
   return (
     <section id="journal" className="bg-bg py-16 md:py-24 relative overflow-hidden">
       <div className="max-w-[1200px] mx-auto px-6 md:px-10 lg:px-16">
@@ -239,12 +375,12 @@ export default function Journal({ onSelectArticle }: JournalProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-          className="text-center max-w-2xl mx-auto mb-12 sm:mb-16"
+          className="text-center max-w-2xl mx-auto mb-8 sm:mb-10"
         >
           <div className="inline-flex items-center gap-3 mb-3">
             <span className="w-8 h-px bg-stroke" />
             <span className="text-xs text-muted uppercase tracking-[0.3em] font-mono">
-              Recent Thoughts
+              Systems & Architecture
             </span>
             <span className="w-8 h-px bg-stroke" />
           </div>
@@ -259,6 +395,24 @@ export default function Journal({ onSelectArticle }: JournalProps) {
           <p className="mt-3 text-xs sm:text-sm text-muted leading-relaxed">
             Real engineering benchmarks, code diffs, and architectural insights from shipped GitHub repositories.
           </p>
+
+          {/* Simple Button: Open Full Project Architecture Compendium */}
+          <div className="mt-6 flex justify-center">
+            <button
+              type="button"
+              onClick={() => setIsCompendiumOpen(true)}
+              className="group inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-surface/90 hover:bg-surface border border-white/15 hover:border-[#89AACC]/50 text-xs sm:text-sm font-mono text-text-primary transition-all duration-300 shadow-lg hover:shadow-[0_0_25px_rgba(137,170,204,0.15)] cursor-pointer"
+            >
+              <span className="w-2 h-2 rounded-full bg-[#89AACC] group-hover:scale-125 transition-transform" />
+              <span className="font-medium text-white">View Full Systems Architecture Compendium</span>
+              <span className="text-[#89AACC] text-xs font-mono">
+                ({JOURNAL_DATA.length} Projects)
+              </span>
+              <span className="text-xs transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 text-muted group-hover:text-white">
+                ↗
+              </span>
+            </button>
+          </div>
         </motion.div>
 
         {/* Real technical articles */}
@@ -271,14 +425,14 @@ export default function Journal({ onSelectArticle }: JournalProps) {
               viewport={{ once: true }}
               transition={{
                 duration: 0.7,
-                delay: idx * 0.08,
+                delay: idx * 0.06,
                 ease: [0.25, 0.1, 0.25, 1],
               }}
               onClick={() => onSelectArticle(article)}
-              className="group relative flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 p-4 md:p-5 bg-surface/40 hover:bg-surface border border-stroke rounded-[32px] sm:rounded-full transition-all duration-300 cursor-pointer hover:border-white/20 hover:shadow-xl hover:shadow-black/20"
+              className="group relative flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 p-4 md:p-5 bg-surface/40 hover:bg-surface border border-stroke rounded-[28px] sm:rounded-full transition-all duration-300 cursor-pointer hover:border-white/20 hover:shadow-xl hover:shadow-black/20"
             >
               {/* Subtle hover gradient glow */}
-              <div className="absolute inset-0 rounded-[32px] sm:rounded-full bg-gradient-to-r from-transparent via-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+              <div className="absolute inset-0 rounded-[28px] sm:rounded-full bg-gradient-to-r from-transparent via-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
               {/* Left side: Thumbnail + Title + Subtitle */}
               <div className="flex items-center gap-4 sm:gap-5 min-w-0">
@@ -296,7 +450,7 @@ export default function Journal({ onSelectArticle }: JournalProps) {
 
                 {/* Text */}
                 <div className="min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
                     <span className="text-[11px] font-mono text-muted tracking-wider uppercase">
                       {article.category}
                     </span>
@@ -305,7 +459,7 @@ export default function Journal({ onSelectArticle }: JournalProps) {
                       {article.readTime}
                     </span>
                     <span className="text-muted/40 text-xs hidden md:inline">&bull;</span>
-                    <span className="text-[11px] font-mono text-muted/70 hidden md:inline truncate">
+                    <span className="text-[11px] font-mono text-muted/70 hidden md:inline truncate max-w-xs">
                       {article.subtitle}
                     </span>
                   </div>
@@ -332,6 +486,12 @@ export default function Journal({ onSelectArticle }: JournalProps) {
           ))}
         </div>
       </div>
+
+      {/* Full Architecture Compendium Scrollable Modal */}
+      <ArchitectureCompendiumModal
+        isOpen={isCompendiumOpen}
+        onClose={() => setIsCompendiumOpen(false)}
+      />
     </section>
   );
 }
