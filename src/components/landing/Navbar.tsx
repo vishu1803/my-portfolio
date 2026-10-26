@@ -11,7 +11,6 @@ const SECTIONS = [
   { id: "home", label: "Home" },
   { id: "case-studies", label: "Cases" },
   { id: "about", label: "Dossier" },
-  { id: "lab", label: "Lab" },
 ];
 
 export default function Navbar({ onOpenResume }: NavbarProps) {

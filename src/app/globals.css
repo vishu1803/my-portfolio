@@ -7,12 +7,12 @@
 :root {
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-display: 'Instrument Serif', Georgia, serif;
-  --bg: 0 0% 4%;
-  --surface: 0 0% 8%;
-  --text: 0 0% 96%;
-  --muted: 0 0% 66%;
+  --bg: 0 0% 3.5%;
+  --surface: 0 0% 6.5%;
+  --text: 40 20% 97%;
+  --muted: 240 5% 65%;
   --stroke: 0 0% 12%;
-  --accent: 0 0% 96%;
+  --accent: 48 100% 50%;
 }
 
 * {
@@ -23,14 +23,15 @@
 
 html {
   scroll-behavior: smooth;
-  background-color: hsl(var(--bg));
+  scroll-padding-top: 6.5rem;
+  background-color: #08090B;
   color-scheme: dark;
 }
 
 body {
   font-family: var(--font-body);
-  background-color: hsl(var(--bg));
-  color: hsl(var(--text));
+  background-color: #08090B;
+  color: #FAF8F5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -42,25 +43,25 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(var(--bg));
+  background: #08090B;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--stroke));
+  background: #1C1E24;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #4E85BF;
+  background: #FFE600;
 }
 
-/* Selection */
+/* High-Contrast Editorial Selection */
 ::selection {
   background: rgba(255, 230, 0, 0.35);
-  color: #ffffff;
+  color: #FFFFFF;
 }
 
-/* VOX-Inspired Editorial Utilities */
+/* VOX-Inspired Editorial Typography Utilities */
 .text-outline {
   -webkit-text-stroke: 1.5px rgba(250, 248, 245, 0.45);
   color: transparent;
@@ -74,7 +75,7 @@ body {
 
 .vox-highlight {
   background: #FFE600;
-  color: #0B0C0E;
+  color: #08090B;
   font-weight: 600;
   padding: 0.1em 0.35em;
   display: inline-block;
@@ -101,6 +102,12 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
 }
 
+/* Halftone overlay pattern */
+.halftone-overlay {
+  background-image: radial-gradient(circle, #000000 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+
 /* Flashlight Interactive Mask System */
 .flashlight-reveal-mask {
   mask-image: radial-gradient(
@@ -122,135 +129,18 @@ body {
     circle var(--torch-radius, 220px) at var(--torch-x, 50%) var(--torch-y, 50%),
     rgba(255, 246, 204, 0.18) 0%,
     rgba(255, 230, 0, 0.08) 35%,
-    rgba(78, 133, 191, 0.04) 65%,
+    rgba(56, 189, 248, 0.04) 65%,
     transparent 100%
   );
 }
 
-/* Accent gradient */
-.accent-gradient {
-  background: linear-gradient(90deg, #89AACC 0%, #4E85BF 100%);
-}
-
-.accent-gradient-reverse {
-  background: linear-gradient(270deg, #89AACC 0%, #4E85BF 100%);
-}
-
-.accent-gradient-text {
-  background: linear-gradient(90deg, #89AACC 0%, #4E85BF 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Halftone overlay pattern */
-.halftone-overlay {
-  background-image: radial-gradient(circle, #000000 1px, transparent 1px);
-  background-size: 4px 4px;
-}
-
-/* Custom Keyframe animations */
-@keyframes scroll-down {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(200%);
-  }
-}
-
-@keyframes role-fade-in {
-  0% {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes gradient-shift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.animate-scroll-down {
-  animation: scroll-down 1.5s ease-in-out infinite;
-}
-
-.animate-role-fade-in {
-  animation: role-fade-in 0.4s ease-out;
-}
-
-.animate-gradient-shift {
-  background-size: 200% 200%;
-  animation: gradient-shift 6s ease infinite;
-}
-
-/* Streamline Floating Ribbons */
-@keyframes streamline-left {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-@keyframes streamline-right {
-  0% {
-    transform: translateX(-50%);
-  }
-  100% {
-    transform: translateX(0%);
-  }
-}
-
-.animate-streamline-left {
-  animation: streamline-left 72s linear infinite;
-  will-change: transform;
-}
-
-.animate-streamline-right {
-  animation: streamline-right 82s linear infinite;
-  will-change: transform;
-}
-
-.animate-streamline-left-slow {
-  animation: streamline-left 95s linear infinite;
-  will-change: transform;
-}
-
-.animate-streamline-right-slow {
-  animation: streamline-right 105s linear infinite;
-  will-change: transform;
-}
-
-/* Pause animation on hover */
-.pause-hover:hover {
-  animation-play-state: paused;
-}
-
-
-/* Accessible navigation and layout foundations. */
-html {
-  scroll-padding-top: 7rem;
-}
-
+/* Accessible navigation and layout foundations */
 main, section, article, nav {
   min-width: 0;
 }
 
 section[id], main[id], h1, h2, h3, h4 {
-  scroll-margin-top: 7rem;
+  scroll-margin-top: 6.5rem;
 }
 
 img, video, canvas {
@@ -269,50 +159,14 @@ button, a, input, select, textarea {
   overscroll-behavior: contain;
 }
 
-.skip-link {
-  position: fixed;
-  top: 0.75rem;
-  left: 0.75rem;
-  z-index: 10000;
-  transform: translateY(-160%);
-  padding: 0.75rem 1rem;
-  border-radius: 0.25rem;
-  color: #08090B;
-  background: #FFE600;
-  font-weight: 600;
-}
-
-.skip-link:focus {
-  transform: translateY(0);
-}
-
-/* A two-tone indicator remains visible on both ivory and dark surfaces. */
+/* High-contrast focus state visible on both dark and ivory backgrounds */
 *:focus-visible {
   outline: 2px solid #FFE600 !important;
   outline-offset: 3px;
-  box-shadow: 0 0 0 5px #101216;
+  box-shadow: 0 0 0 4px #08090B;
 }
 
-.flashlight-static-details > * {
-  height: auto;
-  min-height: 0;
-  min-width: 0;
-}
-
-.flashlight-static-details {
-  overflow-wrap: anywhere;
-}
-
-@media (max-width: 639px) {
-  html {
-    scroll-padding-top: 6rem;
-  }
-  section[id], main[id], h1, h2, h3, h4 {
-    scroll-margin-top: 6rem;
-  }
-}
-
-/* CSS motion is disabled globally; component effects also check this preference. */
+/* Reduced Motion Override */
 @media (prefers-reduced-motion: reduce) {
   html, html:focus-within, * {
     scroll-behavior: auto !important;
@@ -321,7 +175,12 @@ button, a, input, select, textarea {
     animation: none !important;
     transition: none !important;
   }
-  .flashlight-reveal-mask, .flashlight-torch-glow {
+  .flashlight-reveal-mask {
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
+    opacity: 1 !important;
+  }
+  .flashlight-torch-glow {
     display: none !important;
   }
 }
