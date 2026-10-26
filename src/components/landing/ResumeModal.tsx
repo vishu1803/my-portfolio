@@ -49,40 +49,40 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
             <div className="space-y-3 mb-8">
               <a
-                href="/resume.pdf"
+                href="/assets/aistudio/software-vishu_1f0ccd66.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-4 rounded-2xl bg-bg/60 border border-stroke hover:border-white/20 transition-all group"
+                className="flex items-center justify-between p-4 rounded-2xl bg-black/60 border border-white/10 hover:border-[#FFE600]/40 transition-all group"
               >
                 <div>
-                  <h4 className="text-sm font-medium text-text-primary group-hover:text-[#89AACC] transition-colors">
-                    Primary Engineering Resume (PDF)
+                  <h4 className="text-sm font-medium text-white group-hover:text-[#FFE600] transition-colors">
+                    Official Software Engineer Resume (PDF)
                   </h4>
                   <p className="text-xs text-muted font-mono mt-0.5">
-                    Latest revision &bull; Full Stack & Systems
+                    Verified Revision &bull; Full-Stack, Backend &amp; Algorithms
                   </p>
                 </div>
-                <span className="text-xs font-mono text-text-primary px-3 py-1.5 rounded-full bg-stroke/50 group-hover:bg-text-primary group-hover:text-bg transition-colors">
+                <span className="text-xs font-mono text-black px-3.5 py-1.5 rounded-full bg-[#FFE600] group-hover:bg-white transition-colors font-semibold">
                   Download ↓
                 </span>
               </a>
 
               <a
-                href="/resume2.pdf"
+                href="/resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-4 rounded-2xl bg-bg/60 border border-stroke hover:border-white/20 transition-all group"
+                className="flex items-center justify-between p-4 rounded-2xl bg-black/40 border border-white/10 hover:border-white/20 transition-all group"
               >
                 <div>
-                  <h4 className="text-sm font-medium text-text-primary group-hover:text-[#89AACC] transition-colors">
-                    Alternate Technical Curriculum (PDF)
+                  <h4 className="text-sm font-medium text-white/90 group-hover:text-white transition-colors">
+                    Direct Browser Mirror (/resume.pdf)
                   </h4>
                   <p className="text-xs text-muted font-mono mt-0.5">
-                    Detailed Project & Stack Breakdowns
+                    Fast In-Tab Preview &bull; Clean Architecture
                   </p>
                 </div>
-                <span className="text-xs font-mono text-text-primary px-3 py-1.5 rounded-full bg-stroke/50 group-hover:bg-text-primary group-hover:text-bg transition-colors">
-                  View ↗
+                <span className="text-xs font-mono text-white px-3 py-1.5 rounded-full bg-white/10 group-hover:bg-white/20 transition-colors">
+                  Open ↗
                 </span>
               </a>
             </div>

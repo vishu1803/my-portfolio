@@ -5,16 +5,18 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import LoadingScreen from "./components/landing/LoadingScreen";
 import Navbar from "./components/landing/Navbar";
-import Hero from "./components/landing/Hero";
-import SelectedWorks, { ProjectItem } from "./components/landing/SelectedWorks";
-import Journal, { JournalArticle } from "./components/landing/Journal";
+import EditorialHero from "./components/landing/EditorialHero";
+import ProjectCaseStudies from "./components/landing/ProjectCaseStudies";
+import EditorialAbout from "./components/landing/EditorialAbout";
 import Explorations from "./components/landing/Explorations";
-import Stats from "./components/landing/Stats";
-import Footer from "./components/landing/Footer";
+import CollaborateSection from "./components/landing/CollaborateSection";
+import EditorialFooter from "./components/landing/EditorialFooter";
 
 import ProjectModal from "./components/landing/ProjectModal";
 import ArticleModal from "./components/landing/ArticleModal";
 import ResumeModal from "./components/landing/ResumeModal";
+import { ProjectItem } from "./components/landing/SelectedWorks";
+import { JournalArticle } from "./components/landing/Journal";
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -25,8 +27,8 @@ export default function App() {
   const [resumeOpen, setResumeOpen] = useState(false);
 
   return (
-    <div className="relative min-h-screen bg-bg text-text-primary selection:bg-[#4E85BF]/30 selection:text-white">
-      {/* Section 1: Loading Screen */}
+    <div className="relative min-h-screen bg-[#08090B] text-[#FAF8F5] selection:bg-[#FFE600]/30 selection:text-white">
+      {/* Loading Screen */}
       <AnimatePresence>
         {isLoading && (
           <LoadingScreen onComplete={() => setIsLoading(false)} />
@@ -40,37 +42,41 @@ export default function App() {
         transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
         className="w-full"
       >
-        {/* Navbar */}
+        {/* Floating Pill Navbar */}
         <Navbar onOpenResume={() => setResumeOpen(true)} />
 
         <main>
-          {/* Section 2: Hero */}
-          <Hero
+          {/* Section 1: Cinematic VOX-Inspired Editorial Hero with Real Portrait & Flashlight Inspector */}
+          <EditorialHero
             onContactClick={() => {
               const el = document.getElementById("contact");
               if (el) el.scrollIntoView({ behavior: "smooth" });
             }}
             onWorkClick={() => {
-              const el = document.getElementById("work");
+              const el = document.getElementById("case-studies");
               if (el) el.scrollIntoView({ behavior: "smooth" });
             }}
+            onOpenResume={() => setResumeOpen(true)}
           />
 
-          {/* Section 3: Selected Works */}
-          <SelectedWorks onSelectProject={(p) => setSelectedProject(p)} />
+          {/* Section 2: Investigative Documentary Project Case Studies */}
+          <ProjectCaseStudies
+            onSelectProject={(p) => setSelectedProject(p)}
+            onSelectArticle={(a) => setSelectedArticle(a)}
+          />
 
-          {/* Section 4: Journal */}
-          <Journal onSelectArticle={(a) => setSelectedArticle(a)} />
+          {/* Section 3: Personnel Dossier & Verified Resume Experience & Skills */}
+          <EditorialAbout onOpenResume={() => setResumeOpen(true)} />
 
-          {/* Section 5: Explorations (Transformer Lab & Skill Artifacts Streamlines) */}
+          {/* Section 4: Visual Explorations (Transformer Lab & Continuous Spectrum) */}
           <Explorations />
 
-          {/* Section 6: Stats */}
-          <Stats />
+          {/* Section 5: Signature "Let's Collaborate" Ivory Section with Hand & Strings */}
+          <CollaborateSection onOpenResume={() => setResumeOpen(true)} />
         </main>
 
-        {/* Section 7: Contact / Footer */}
-        <Footer onOpenResume={() => setResumeOpen(true)} />
+        {/* Section 6: Editorial Colophon & Station Telemetry Footer */}
+        <EditorialFooter onOpenResume={() => setResumeOpen(true)} />
 
         {/* Interactive Modals */}
         <ProjectModal

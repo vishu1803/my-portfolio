@@ -1,0 +1,679 @@
+"use client";
+
+import { useEffect, useRef, useState, useId } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import gsap from "gsap";
+import { ArrowUpRight, Copy, Check, Mail, Phone, MapPin, Code2, Download, X } from "lucide-react";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
+
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+interface CollaborateSectionProps {
+  onOpenResume?: () => void;
+}
+
+export default function CollaborateSection({ onOpenResume }: CollaborateSectionProps) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const buttonWrapperRef = useRef<HTMLDivElement>(null);
+  const handRef = useRef<SVGGElement>(null);
+  const stringsGroupRef = useRef<SVGGElement>(null);
+
+  const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
+  const [copiedPhone, setCopiedPhone] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [formState, setFormState] = useState({ name: "", email: "", message: "", projectType: "Full-Stack Development" });
+
+  const email = "vishwanatnishad@gmail.com";
+  const phone = "+91 7905087928";
+  const linkedinUrl = "https://linkedin.com/in/vishwanath-nishad";
+  const githubUrl = "https://github.com/vishu1803";
+  const leetcodeUrl = "https://leetcode.com/u/vishwanatnishad";
+  const resumeUrl = "/assets/aistudio/software-vishu_1f0ccd66.pdf";
+
+  // Coordinates for the interactive strings
+  const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
+
+  // Escape key listener for overlay
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOverlayOpen) {
+        setIsOverlayOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    if (isOverlayOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [isOverlayOpen]);
+
+  // GSAP + ScrollTrigger Entrance Animation
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      const paths = section.querySelectorAll<SVGPathElement>(".tension-string");
+      
+      paths.forEach((p) => {
+        const len = p.getTotalLength();
+        gsap.set(p, {
+          strokeDasharray: len,
+          strokeDashoffset: len,
+        });
+      });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top 75%",
+          toggleActions: "play none none none",
+        },
+        defaults: { ease: "power3.out" },
+      });
+
+      tl.from(".collab-eyebrow", {
+        opacity: 0,
+        y: 20,
+        duration: 0.8,
+      })
+      .from(".collab-headline", {
+        opacity: 0,
+        y: 35,
+        duration: 1,
+      }, "-=0.5")
+      .to(paths, {
+        strokeDashoffset: 0,
+        duration: 1.4,
+        stagger: 0.12,
+        ease: "power2.inOut",
+      }, "-=0.6")
+      .from(handRef.current, {
+        opacity: 0,
+        y: 30,
+        x: -20,
+        duration: 1.1,
+        ease: "back.out(1.4)",
+      }, "-=1.0")
+      .from(buttonWrapperRef.current, {
+        scale: 0.92,
+        opacity: 0,
+        y: 20,
+        duration: 0.9,
+        ease: "elastic.out(1, 0.75)",
+      }, "-=0.8");
+
+      // Continuous gentle tension sway on strings
+      gsap.to(paths, {
+        y: "+=3",
+        duration: 2.4,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        stagger: {
+          each: 0.2,
+          from: "random",
+        },
+      });
+
+      // Subtle breath on the hand
+      if (handRef.current) {
+        gsap.to(handRef.current, {
+          y: "+=4",
+          x: "-=2",
+          duration: 3,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+        });
+      }
+    }, section);
+
+    return () => ctx.revert();
+  }, []);
+
+  // Pointer movement tracking for interactive string tension
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
+    const y = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
+    setMouseOffset({ x: Math.max(-1, Math.min(1, x)), y: Math.max(-1, Math.min(1, y)) });
+  };
+
+  const handlePointerLeave = () => {
+    setMouseOffset({ x: 0, y: 0 });
+  };
+
+  const copyEmail = () => {
+    navigator.clipboard.writeText(email);
+    setCopiedEmail(true);
+    setTimeout(() => setCopiedEmail(false), 2200);
+  };
+
+  const copyPhone = () => {
+    navigator.clipboard.writeText(phone);
+    setCopiedPhone(true);
+    setTimeout(() => setCopiedPhone(false), 2200);
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const subject = encodeURIComponent(`Project Inquiry: ${formState.projectType} from ${formState.name}`);
+    const body = encodeURIComponent(`Hi Vishwanath,\n\nName: ${formState.name}\nEmail: ${formState.email}\nProject Type: ${formState.projectType}\n\nMessage:\n${formState.message}\n\nSent from your portfolio collaborate desk.`);
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    setFormSubmitted(true);
+  };
+
+  // String paths computed with dynamic bezier curves reacting slightly to pointer tension
+  const px = mouseOffset.x * 12;
+  const py = mouseOffset.y * 8;
+
+  return (
+    <section
+      id="contact"
+      ref={sectionRef}
+      className="relative w-full bg-[#EAE8E2] text-[#121316] py-24 sm:py-32 md:py-40 px-6 sm:px-10 lg:px-16 overflow-hidden select-none transition-colors duration-500"
+    >
+      {/* Editorial paper grain & soft warm ambient lighting */}
+      <div className="absolute inset-0 opacity-[0.035] pointer-events-none film-grain" />
+      <div className="absolute -top-40 right-0 w-[500px] h-[500px] rounded-full bg-gradient-to-br from-[#FFF5D0]/60 to-transparent blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-40 -left-20 w-[450px] h-[450px] rounded-full bg-gradient-to-tr from-[#D8D4C8]/50 to-transparent blur-3xl pointer-events-none" />
+
+      {/* Top Editorial Registration Marks & Coordinates */}
+      <div className="max-w-[1200px] mx-auto flex items-center justify-between border-b border-[#121316]/15 pb-4 mb-16 text-[11px] font-mono tracking-widest uppercase text-[#121316]/60">
+        <div className="flex items-center gap-3">
+          <span className="w-2 h-2 rounded-full bg-[#FF4B4B]" />
+          <span>DIRECT DISPATCH // SEC-07</span>
+          <span className="hidden sm:inline text-[#121316]/30">&bull;</span>
+          <span className="hidden sm:inline">GORAKHPUR [26.76°N, 83.37°E]</span>
+        </div>
+        <div className="flex items-center gap-4">
+          <span className="hidden md:inline">SYSTEM ARCHITECTURE &bull; FULL-STACK</span>
+          <span className="stamp-box px-2 py-0.5 border-[#121316]/30 text-[#121316]/80 text-[10px]">
+            ACTIVE FOR WORK
+          </span>
+        </div>
+      </div>
+
+      {/* Main Interactive Stage Container */}
+      <div
+        ref={containerRef}
+        onPointerMove={handlePointerMove}
+        onPointerLeave={handlePointerLeave}
+        className="max-w-[1000px] mx-auto relative flex flex-col items-center justify-center min-h-[460px] sm:min-h-[520px]"
+      >
+        {/* Editorial Eyebrow & Title */}
+        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+          <p className="collab-eyebrow text-xs sm:text-sm font-mono tracking-[0.25em] uppercase text-[#121316]/70 mb-3">
+            [ READY TO BUILD THE NEXT SYSTEM? ]
+          </p>
+          <h2 className="collab-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display italic tracking-tight text-[#0B0C0E] leading-[1.05]">
+            Let&apos;s engineer something{" "}
+            <span className="vox-highlight not-italic font-body tracking-normal text-3xl sm:text-4xl md:text-5xl lg:text-6xl px-3 py-0.5 ml-1">
+              impactful.
+            </span>
+          </h2>
+          <p className="mt-4 text-sm sm:text-base text-[#121316]/70 font-body max-w-lg mx-auto leading-relaxed">
+            Available for full-time software engineering roles, distributed backend architectures, and high-performance web applications.
+          </p>
+        </div>
+
+        {/* Central Graphic Composition: Strings + Hand Pulling the Button */}
+        <div className="relative w-full max-w-[650px] h-[220px] sm:h-[260px] flex items-center justify-center">
+          {/* SVG Canvas for Tension Strings and Hand Illustration */}
+          <svg
+            className="absolute inset-0 w-full h-full pointer-events-none overflow-visible"
+            viewBox="0 0 650 260"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            {/* Defs for subtle shadows and line gradients */}
+            <defs>
+              <filter id="handShadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="2" dy="8" stdDeviation="6" floodColor="#000000" floodOpacity="0.18" />
+              </filter>
+            </defs>
+
+            {/* Tension Strings: Connecting Hand Knuckles (around x:130, y:210) to Button Left Bottom (around x:260-310, y:95-115) */}
+            <g ref={stringsGroupRef} className="transition-transform duration-200">
+              {/* String 1 (Thumb tension) */}
+              <path
+                d={`M 148 185 C ${180 + px} ${165 + py}, ${215 + px * 0.5} ${125 + py * 0.5}, 265 102`}
+                stroke="#0E0F12"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                className="tension-string"
+              />
+              {/* String 2 (Index finger tension) */}
+              <path
+                d={`M 154 172 C ${192 + px * 0.8} ${150 + py * 0.8}, ${230 + px * 0.6} ${120 + py * 0.6}, 285 106`}
+                stroke="#0E0F12"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                className="tension-string"
+              />
+              {/* String 3 (Middle finger tension - primary anchor) */}
+              <path
+                d={`M 160 162 C ${202 + px} ${140 + py}, ${245 + px * 0.7} ${116 + py * 0.7}, 310 110`}
+                stroke="#0E0F12"
+                strokeWidth="2.0"
+                strokeLinecap="round"
+                className="tension-string"
+              />
+              {/* String 4 (Ring finger tension) */}
+              <path
+                d={`M 166 156 C ${215 + px * 1.2} ${138 + py * 1.1}, ${265 + px * 0.8} ${122 + py * 0.8}, 335 112`}
+                stroke="#0E0F12"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                className="tension-string"
+              />
+              {/* String 5 (Pinky tension trail) */}
+              <path
+                d={`M 172 152 C ${225 + px * 1.1} ${142 + py * 1.1}, ${285 + px * 0.9} ${128 + py * 0.9}, 360 114`}
+                stroke="#0E0F12"
+                strokeWidth="1.2"
+                strokeDasharray="4 2"
+                className="tension-string opacity-75"
+              />
+            </g>
+
+            {/* Authentic Hand-Drawn Black-and-White Ink Illustration of Human Hand (No Emojis!) */}
+            <g
+              ref={handRef}
+              transform={`translate(${mouseOffset.x * 6}, ${mouseOffset.y * 4})`}
+              filter="url(#handShadow)"
+              className="transition-transform duration-300"
+            >
+              {/* Forearm & Wrist contour */}
+              <path
+                d="M 40 260 C 65 240, 85 220, 115 205 C 125 200, 135 195, 145 190"
+                stroke="#121316"
+                strokeWidth="3.2"
+                strokeLinecap="round"
+                fill="none"
+              />
+              <path
+                d="M 55 260 C 78 245, 98 230, 125 218 C 138 212, 150 205, 160 198"
+                stroke="#121316"
+                strokeWidth="2.8"
+                strokeLinecap="round"
+                fill="none"
+              />
+              
+              {/* Hand base fill */}
+              <path
+                d="M 115 205 C 130 195, 145 185, 155 170 C 165 155, 172 142, 178 135 C 182 130, 188 132, 185 140 C 180 152, 175 165, 170 178 C 168 185, 162 195, 152 208 C 138 220, 115 235, 95 245 Z"
+                fill="#F7F6F2"
+                stroke="#121316"
+                strokeWidth="2.5"
+                strokeLinejoin="round"
+              />
+
+              {/* Fingers gripping and tensioning the cord loops */}
+              {/* Thumb */}
+              <path
+                d="M 132 190 C 136 178, 144 172, 152 178 C 158 182, 156 192, 148 198 C 140 202, 134 198, 132 190 Z"
+                fill="#FAF9F6"
+                stroke="#121316"
+                strokeWidth="2.4"
+              />
+              {/* Index finger gripping */}
+              <path
+                d="M 152 170 C 160 156, 170 148, 176 154 C 180 158, 176 168, 166 176 C 160 180, 154 178, 152 170 Z"
+                fill="#FAF9F6"
+                stroke="#121316"
+                strokeWidth="2.4"
+              />
+              {/* Middle finger */}
+              <path
+                d="M 160 160 C 168 146, 178 140, 184 146 C 188 150, 184 160, 174 168 C 168 172, 162 168, 160 160 Z"
+                fill="#FAF9F6"
+                stroke="#121316"
+                strokeWidth="2.4"
+              />
+              {/* Ring finger */}
+              <path
+                d="M 168 152 C 176 140, 186 136, 190 142 C 194 146, 190 154, 180 162 C 174 166, 170 160, 168 152 Z"
+                fill="#FAF9F6"
+                stroke="#121316"
+                strokeWidth="2.4"
+              />
+
+              {/* Editorial Crosshatch shading on wrist & palm for vintage woodcut/newspaper documentary feel */}
+              <path d="M 90 230 L 105 220" stroke="#121316" strokeWidth="1.2" strokeLinecap="round" />
+              <path d="M 98 234 L 113 224" stroke="#121316" strokeWidth="1.2" strokeLinecap="round" />
+              <path d="M 106 238 L 121 228" stroke="#121316" strokeWidth="1.2" strokeLinecap="round" />
+              <path d="M 120 216 L 132 206" stroke="#121316" strokeWidth="1.2" strokeLinecap="round" />
+              <path d="M 126 220 L 138 210" stroke="#121316" strokeWidth="1.2" strokeLinecap="round" />
+              <path d="M 140 198 L 150 188" stroke="#121316" strokeWidth="1.2" strokeLinecap="round" />
+              
+              {/* Tension knot highlight */}
+              <circle cx="160" cy="168" r="3.5" fill="#121316" />
+            </g>
+          </svg>
+
+          {/* Glossy Jet-Black Pill Button */}
+          <div
+            ref={buttonWrapperRef}
+            className="relative z-20"
+            style={{
+              transform: `translate(${mouseOffset.x * 4}px, ${mouseOffset.y * 3}px)`,
+              transition: "transform 0.15s ease-out",
+            }}
+          >
+            <motion.button
+              type="button"
+              onClick={() => setIsOverlayOpen(true)}
+              whileHover={{ scale: 1.04, y: -3 }}
+              whileTap={{ scale: 0.98, y: 0 }}
+              className="group relative inline-flex items-center gap-4 px-8 sm:px-11 py-4 sm:py-5 rounded-full bg-gradient-to-b from-[#1C1E23] via-[#0E1013] to-[#050607] text-[#FAF8F5] shadow-[0_20px_50px_rgba(0,0,0,0.35),0_4px_12px_rgba(0,0,0,0.25)] border border-white/20 cursor-pointer overflow-hidden transition-all duration-300"
+              aria-label="Open contact and collaboration overlay"
+            >
+              {/* Glossy Top Specular Highlight Edge */}
+              <div className="absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+
+              {/* Sheen light sweep on hover */}
+              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none" />
+
+              {/* Status Indicator */}
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFE600] opacity-75" />
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-[#FFE600]" />
+              </span>
+
+              {/* Button Typography */}
+              <span className="font-mono text-sm sm:text-base font-semibold tracking-[0.2em] uppercase text-white group-hover:text-[#FFE600] transition-colors duration-200">
+                LET&apos;S COLLABORATE
+              </span>
+
+              {/* Arrow Badge */}
+              <span className="w-8 h-8 rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-white text-xs group-hover:bg-[#FFE600] group-hover:text-black group-hover:border-[#FFE600] transition-all duration-300 group-hover:translate-x-1 group-hover:-translate-y-1">
+                ↗
+              </span>
+            </motion.button>
+
+            {/* Subtle drop shadow underneath button */}
+            <div className="absolute -bottom-4 inset-x-6 h-6 bg-black/25 blur-lg rounded-full pointer-events-none" />
+          </div>
+        </div>
+
+        {/* Supporting Micro-Stats Strip */}
+        <div className="mt-14 sm:mt-20 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 max-w-4xl w-full border-t border-[#121316]/15 pt-8 text-center sm:text-left">
+          <div>
+            <div className="text-xs font-mono uppercase text-[#121316]/60 tracking-wider">Direct Channel</div>
+            <div className="text-sm font-semibold text-[#121316] font-mono mt-1 truncate">
+              {email}
+            </div>
+          </div>
+          <div>
+            <div className="text-xs font-mono uppercase text-[#121316]/60 tracking-wider">Direct Voice</div>
+            <div className="text-sm font-semibold text-[#121316] font-mono mt-1">
+              {phone}
+            </div>
+          </div>
+          <div>
+            <div className="text-xs font-mono uppercase text-[#121316]/60 tracking-wider">Verified Discipline</div>
+            <div className="text-sm font-semibold text-[#121316] font-mono mt-1">
+              300+ LeetCode DSA
+            </div>
+          </div>
+          <div>
+            <div className="text-xs font-mono uppercase text-[#121316]/60 tracking-wider">Fast Turnaround</div>
+            <div className="text-sm font-semibold text-[#121316] font-mono mt-1">
+              &lt; 24h Response Time
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* FULL-SCREEN CONTACT DOSSIER OVERLAY */}
+      <AnimatePresence>
+        {isOverlayOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsOverlayOpen(false)}
+            className="fixed inset-0 z-[150] flex items-center justify-center p-4 sm:p-6 md:p-10 bg-black/85 backdrop-blur-md overflow-y-auto"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="collaborate-modal-title"
+          >
+            <motion.div
+              initial={{ scale: 0.94, opacity: 0, y: 25 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.94, opacity: 0, y: 20 }}
+              transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-4xl rounded-3xl bg-[#0E1014] text-[#FAF8F5] border border-white/15 shadow-[0_25px_80px_rgba(0,0,0,0.85)] p-6 sm:p-10 my-auto overflow-hidden"
+            >
+              {/* Header Close Bar */}
+              <div className="flex items-center justify-between border-b border-white/10 pb-5 mb-8">
+                <div className="flex items-center gap-3">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#FFE600]" />
+                  <span className="font-mono text-xs uppercase tracking-widest text-[#FFE600]">
+                    COLLABORATION DOSSIER // DIRECT INBOX
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsOverlayOpen(false)}
+                  className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-white/80 hover:text-white transition-all font-mono text-sm"
+                  aria-label="Close dialog"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Grid: Direct Channels on Left, Dispatch Message on Right */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                {/* Left 5 Cols: Verified Identity & Direct Channels */}
+                <div className="lg:col-span-5 space-y-6">
+                  <div>
+                    <h3 id="collaborate-modal-title" className="text-3xl font-display italic text-white mb-2">
+                      Vishwanath Nishad
+                    </h3>
+                    <p className="text-sm font-body text-white/70 leading-relaxed">
+                      Software Engineer based in Gorakhpur, India. Ready to join engineering teams building reliable, scalable web applications and distributed backend architectures.
+                    </p>
+                  </div>
+
+                  {/* Channel Cards */}
+                  <div className="space-y-3">
+                    {/* Email Card with Copy button */}
+                    <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-between group hover:border-[#FFE600]/40 transition-colors">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-[#FFE600] shrink-0">
+                          <Mail className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-[10px] font-mono uppercase text-white/50">Direct Email</div>
+                          <a href={`mailto:${email}`} className="text-xs sm:text-sm font-mono text-white hover:underline truncate block">
+                            {email}
+                          </a>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={copyEmail}
+                        className="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-xs font-mono text-white/80 flex items-center gap-1 shrink-0"
+                        title="Copy Email to Clipboard"
+                      >
+                        {copiedEmail ? <Check className="w-3.5 h-3.5 text-[#FFE600]" /> : <Copy className="w-3.5 h-3.5" />}
+                        <span className="hidden sm:inline">{copiedEmail ? "Copied" : "Copy"}</span>
+                      </button>
+                    </div>
+
+                    {/* Phone Card */}
+                    <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-between group hover:border-[#FFE600]/40 transition-colors">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-[#FFE600] shrink-0">
+                          <Phone className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-[10px] font-mono uppercase text-white/50">Direct Phone</div>
+                          <a href={`tel:${phone}`} className="text-xs sm:text-sm font-mono text-white hover:underline truncate block">
+                            {phone}
+                          </a>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={copyPhone}
+                        className="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-xs font-mono text-white/80 flex items-center gap-1 shrink-0"
+                        title="Copy Phone"
+                      >
+                        {copiedPhone ? <Check className="w-3.5 h-3.5 text-[#FFE600]" /> : <Copy className="w-3.5 h-3.5" />}
+                        <span className="hidden sm:inline">{copiedPhone ? "Copied" : "Copy"}</span>
+                      </button>
+                    </div>
+
+                    {/* Location Badge */}
+                    <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-white/60 shrink-0">
+                        <MapPin className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-mono uppercase text-white/50">Location</div>
+                        <div className="text-xs sm:text-sm font-mono text-white">
+                          Gorakhpur, Uttar Pradesh, India
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Verified Links */}
+                  <div className="pt-2 flex flex-wrap gap-2">
+                    <a
+                      href={linkedinUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 text-xs font-mono text-white flex items-center gap-1.5 transition-colors"
+                    >
+                      <FaLinkedin className="w-3.5 h-3.5 text-[#38BDF8]" />
+                      <span>LinkedIn</span>
+                      <ArrowUpRight className="w-3 h-3 text-white/50" />
+                    </a>
+                    <a
+                      href={githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 text-xs font-mono text-white flex items-center gap-1.5 transition-colors"
+                    >
+                      <FaGithub className="w-3.5 h-3.5 text-white" />
+                      <span>GitHub</span>
+                      <ArrowUpRight className="w-3 h-3 text-white/50" />
+                    </a>
+                    <a
+                      href={leetcodeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 text-xs font-mono text-white flex items-center gap-1.5 transition-colors"
+                    >
+                      <Code2 className="w-3.5 h-3.5" />
+                      <span>LeetCode (300+)</span>
+                      <ArrowUpRight className="w-3 h-3 text-white/50" />
+                    </a>
+                    <a
+                      href={resumeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 rounded-full bg-[#FFE600]/15 hover:bg-[#FFE600]/25 border border-[#FFE600]/30 text-xs font-mono text-[#FFE600] flex items-center gap-1.5 transition-colors"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Resume (PDF)</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Right 7 Cols: Direct Message Dispatcher Form */}
+                <div className="lg:col-span-7 bg-white/[0.02] border border-white/10 rounded-2xl p-6 sm:p-7">
+                  <h4 className="text-base font-semibold text-white mb-1 flex items-center justify-between">
+                    <span>Send a Dispatch</span>
+                    <span className="text-xs font-mono text-muted">Prefilled Email Client</span>
+                  </h4>
+                  <p className="text-xs text-white/60 mb-5 leading-relaxed">
+                    Fill out your message below to send directly to <span className="text-[#FFE600] font-mono">{email}</span>.
+                  </p>
+
+                  <form onSubmit={handleFormSubmit} className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-mono uppercase text-white/60 mb-1.5">Your Name</label>
+                        <input
+                          type="text"
+                          required
+                          value={formState.name}
+                          onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                          placeholder="Jane Doe / Engineering Lead"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#FFE600] transition-colors font-body"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-mono uppercase text-white/60 mb-1.5">Your Email</label>
+                        <input
+                          type="email"
+                          required
+                          value={formState.email}
+                          onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                          placeholder="jane@company.com"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#FFE600] transition-colors font-body"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-mono uppercase text-white/60 mb-1.5">Inquiry Type</label>
+                      <select
+                        value={formState.projectType}
+                        onChange={(e) => setFormState({ ...formState, projectType: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#14161C] border border-white/10 text-sm text-white focus:outline-none focus:border-[#FFE600] transition-colors font-body"
+                      >
+                        <option value="Full-Time Software Engineer Role">Full-Time Software Engineer Role</option>
+                        <option value="Backend / RESTful API Engineering">Backend / RESTful API Engineering</option>
+                        <option value="Full-Stack Web Application">Full-Stack Web Application</option>
+                        <option value="AI / LLM System Architecture">AI / LLM System Architecture</option>
+                        <option value="General Conversation / Technical Exchange">General Conversation / Technical Exchange</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-mono uppercase text-white/60 mb-1.5">Message / Details</label>
+                      <textarea
+                        required
+                        rows={4}
+                        value={formState.message}
+                        onChange={(e) => setFormState({ ...formState, message: e.target.value })}
+                        placeholder="Tell me about the role, your engineering stack, or problem you are solving..."
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#FFE600] transition-colors font-body resize-none"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full py-3.5 rounded-xl bg-[#FFE600] hover:bg-[#FFE600]/90 text-black font-semibold text-sm font-mono tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-[#FFE600]/20"
+                    >
+                      <span>Transmit Dispatch (Mailto)</span>
+                      <ArrowUpRight className="w-4 h-4" />
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </section>
+  );
+}
