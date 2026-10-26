@@ -45,7 +45,7 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
             <h2 className="font-display text-5xl italic leading-tight sm:text-7xl">Ideas, made <span className="text-outline">tangible.</span></h2>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-muted">From collaborative tools to creative experiments. The problem, the approach, and the source behind each project.</p>
           </div>
-          <motion.button type="button" whileHover={reduced ? undefined : { y: -2 }} whileTap={reduced ? undefined : { scale: 0.98 }} onClick={() => setCompendiumOpen(true)} className="inline-flex shrink-0 items-center justify-center gap-3 self-start rounded-full border border-white/30 px-5 py-3 font-mono text-xs hover:bg-white hover:text-black">
+          <motion.button type="button" whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }} onClick={() => setCompendiumOpen(true)} className="inline-flex shrink-0 items-center justify-center gap-3 self-start rounded-full border border-white/30 px-5 py-3 font-mono text-xs hover:bg-white hover:text-black">
             <BookOpen aria-hidden="true" size={16} /> Project index <span className="text-muted">({CASE_STUDIES.length})</span>
           </motion.button>
         </div>

@@ -46,16 +46,13 @@ export default function EditorialHero({
       }, "-=0.4")
       .from(".hero-title-first", {
         opacity: 0,
-        y: 50,
-        clipPath: "inset(0 0 100% 0)",
-        skewY: 3,
-        duration: 1.1,
+        y: 45,
+        duration: 1,
       }, "-=0.3")
       .from(".hero-title-last", {
         opacity: 0,
-        y: 60,
-        skewY: -3,
-        duration: 1.1,
+        y: 50,
+        duration: 1,
       }, "-=0.8")
       .from(".hero-highlight-bar", {
         opacity: 0,
@@ -82,8 +79,8 @@ export default function EditorialHero({
       .from(portraitFrameRef.current, {
         opacity: 0,
         scale: 0.95,
-        clipPath: "inset(0 0 100% 0)",
-        duration: 1.2,
+        y: 25,
+        duration: 1.1,
         ease: "power2.out",
       }, "-=1.0");
 
@@ -198,8 +195,8 @@ export default function EditorialHero({
           <div className="hero-ctas pt-4 flex flex-wrap items-center gap-4">
             <motion.a
               href="#case-studies"
-              whileHover={reduced ? undefined : { y: -2 }}
-              whileTap={reduced ? undefined : { scale: 0.98 }}
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.98 }}
               className="px-6 sm:px-8 py-3.5 rounded-full bg-[#FAF8F5] hover:bg-white text-[#0B0C0E] text-xs sm:text-sm font-mono uppercase tracking-wider font-semibold transition-[color,background-color,box-shadow] duration-200 flex items-center gap-2 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] cursor-pointer"
             >
               <span>Investigate Case Studies</span>

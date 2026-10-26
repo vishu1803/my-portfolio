@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 
 interface NavbarProps {
   onOpenResume?: () => void;
@@ -16,7 +16,6 @@ const SECTIONS = [
 export default function Navbar({ onOpenResume }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
-  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,8 +48,8 @@ export default function Navbar({ onOpenResume }: NavbarProps) {
           href="#home"
           aria-label="Home — Vishwanath Nishad"
           aria-current={activeSection === "home" ? "location" : undefined}
-          whileHover={reduceMotion ? undefined : { scale: 1.06 }}
-          whileTap={reduceMotion ? undefined : { scale: 0.96 }}
+          whileHover={{ scale: 1.06 }}
+          whileTap={{ scale: 0.96 }}
           className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#FFE600]/70 text-white font-display italic text-sm hover:border-white focus-visible:outline-offset-2"
         >
           VN
@@ -84,8 +83,8 @@ export default function Navbar({ onOpenResume }: NavbarProps) {
         <motion.a
           href="#contact"
           aria-current={activeSection === "contact" ? "location" : undefined}
-          whileHover={reduceMotion ? undefined : { y: -1 }}
-          whileTap={reduceMotion ? undefined : { scale: 0.97 }}
+          whileHover={{ y: -1 }}
+          whileTap={{ scale: 0.97 }}
           className="inline-flex min-h-11 shrink-0 items-center justify-center gap-1 rounded-full border border-white/15 bg-white/5 px-2 sm:px-3.5 font-mono text-[11px] sm:text-sm text-white transition-colors hover:border-[#FFE600] hover:bg-[#FFE600] hover:text-black"
         >
           <span className="sm:hidden">Contact</span>

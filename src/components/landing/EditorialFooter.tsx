@@ -153,7 +153,7 @@ export default function EditorialFooter({ onOpenResume }: EditorialFooterProps) 
             </div>
             <div className="space-y-1.5 text-white/70">
               <div>Station: Gorakhpur, IN</div>
-              <div>Local Time: {localTime || "Loading..."}</div>
+              <div suppressHydrationWarning>Local Time: {localTime || "Loading..."}</div>
               <div className="flex items-center gap-1.5 text-[#FFE600]">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#FFE600] animate-pulse" />
                 <span>Available for Full-Time Roles</span>
@@ -176,7 +176,7 @@ export default function EditorialFooter({ onOpenResume }: EditorialFooterProps) 
 
         {/* Bottom Rights & Integrity */}
         <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-mono text-muted">
-          <div>
+          <div suppressHydrationWarning>
             &copy; {new Date().getFullYear()} Vishwanath Nishad. All rights reserved.
           </div>
           <div className="flex items-center gap-4">

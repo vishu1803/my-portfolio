@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useId } from "react";
-import { motion, AnimatePresence, useReducedMotion, LayoutGroup } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import useAccessibleDialog from "../../hooks/useAccessibleDialog";
 import gsap from "gsap";
 import { ArrowUpRight, Copy, Check, Mail, Phone, MapPin, Code2, Download, X } from "lucide-react";
@@ -16,7 +16,6 @@ interface CollaborateSectionProps {
 export default function CollaborateSection({ onOpenResume }: CollaborateSectionProps) {
   const reduced = useReducedMotion();
   const contactId = useId();
-  const surfaceId = `${contactId}-surface`;
   const pointerSetters = useRef<{ x: (value: number) => void; y: (value: number) => void } | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -146,7 +145,6 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
   const py = 0;
 
   return (
-    <LayoutGroup id={contactId}>
     <section
       id="contact"
       ref={sectionRef}
@@ -335,15 +333,14 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
           {/* Glossy Jet-Black Pill Button */}
           <div
             ref={buttonWrapperRef}
-            className="absolute right-0 top-[40%] z-20 sm:right-8 sm:top-[15%]"
+            className="absolute left-[36%] sm:left-[46%] top-[22%] sm:top-[25%] z-20"
           >
             <motion.button
               type="button"
               onClick={() => { setFormSubmitted(false); setIsOverlayOpen(true); }}
-              layoutId={reduced ? undefined : surfaceId}
               style={{ perspective: 1000, transformPerspective: 1000 }}
-              whileHover={reduced ? undefined : { scale: 1.025, y: -3, rotateX: -4, rotateY: 5 }}
-              whileTap={reduced ? undefined : { scale: 0.98, y: 0, rotateX: 0, rotateY: 0 }}
+              whileHover={{ scale: 1.025, y: -3, rotateX: -4, rotateY: 5 }}
+              whileTap={{ scale: 0.98, y: 0, rotateX: 0, rotateY: 0 }}
               className="group relative inline-flex items-center gap-2.5 sm:gap-4 px-5 sm:px-11 py-4 sm:py-5 rounded-full bg-gradient-to-b from-[#1C1E23] via-[#0E1013] to-[#050607] text-[#FAF8F5] shadow-[0_20px_50px_rgba(0,0,0,0.35),0_4px_12px_rgba(0,0,0,0.25)] border border-white/20 cursor-pointer overflow-hidden transition-[color,background-color,border-color,box-shadow] duration-300"
               aria-label="Open contact and collaboration overlay"
             >
@@ -420,11 +417,10 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
             aria-labelledby={`${contactId}-title`}
           >
             <motion.div
-              layoutId={reduced ? undefined : surfaceId}
-              initial={reduced ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: reduced ? 0 : 0.35, layout: { duration: reduced ? 0 : 0.4, ease: "easeInOut" } }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
               onClick={(e) => e.stopPropagation()}
               className="relative w-full max-w-4xl select-text rounded-3xl bg-[#0E1014] text-[#FAF8F5] border border-white/15 shadow-[0_25px_80px_rgba(0,0,0,0.85)] p-6 sm:p-10 my-auto overflow-hidden"
             >
@@ -659,6 +655,5 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
         )}
       </AnimatePresence>
     </section>
-    </LayoutGroup>
   );
 }

@@ -5,6 +5,11 @@ export const metadata: Metadata = {
   title: "Vishwanath Nishad — Full Stack Developer Portfolio",
   description:
     "Portfolio of Vishwanath Nishad — Full Stack Developer specializing in Software Development, Backend, and modern web applications.",
+  openGraph: {
+    title: "Vishwanath Nishad — Full Stack Developer Portfolio",
+    description:
+      "Portfolio of Vishwanath Nishad — Full Stack Developer specializing in Software Development, Backend, and modern web applications.",
+  },
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
