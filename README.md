@@ -1,79 +1,48 @@
-# Vishwanath Nishad — Portfolio
-A modern, animated portfolio website built with **Next.js**, **Framer Motion**, and **Three.js**. Features Google-style smooth animations, scroll-linked effects, and a fully responsive design.
-🔗 **Live**: [vishwanath-nishad.vercel.app](https://vishwanath-nishad.vercel.app)
----
-## ✨ Highlights
-- **Typewriter name animation** with gradient blinking cursor
-- **Dynamic role descriptions** — content changes based on active role (Full Stack / Backend / Software Dev)
-- **Scroll progress bar** — spring-based gradient indicator
-- **Scroll-linked header** — background blur and opacity transition as you scroll
-- **Active section tracking** — nav pill follows current section via IntersectionObserver
-- **Parallax backgrounds** — subtle scroll-driven glow movement
-- **Section fade-in** — sections smoothly reveal on scroll
-- **Stagger grid animations** — cards animate in sequence
-- **Tab transitions** — blur crossfade with spring-based pill indicator
-- **Particle stars** — lazy-loaded Three.js background (desktop only)
-- **Magnetic buttons** — spring-physics hover attraction effect
-- **Fully responsive** — optimized for mobile, tablet, and desktop
--
-## 🛠 Tech Stack
-| Category | Technologies |
-|---|---|
-| **Framework** | Next.js 16, React 19 |
-| **Animation** | Framer Motion (scroll, springs, layout animations) |
-| **3D** | Three.js, React Three Fiber, Drei |
-| **Styling** | Tailwind CSS, Inter font |
-| **Email** | EmailJS (contact form) |
-| **Deployment** | Vercel |
----
-## 📁 Project Structure
-```
-src/
-├── app/
-│   ├── globals.css          # Global styles, custom scrollbar, CSS variables
-│   ├── layout.tsx           # Root layout with SEO metadata
-│   └── page.tsx             # Entry point → renders App
-├── components/
-│   ├── MagneticButton.tsx   # Spring-physics hover button
-│   ├── ParticleBackground.tsx # Three.js star field
-│   ├── ScrollProgress.tsx   # Scroll progress gradient bar
-│   └── SectionWrapper.tsx   # Scroll-linked parallax/fade wrapper
-├── App.tsx                  # Main app shell
-├── Header.tsx               # Scroll-linked header + mobile nav
-├── Home.tsx                 # Hero with typewriter + role descriptions
-├── Features.tsx             # Services grid with stagger
-├── Projects.tsx             # Project cards with hover effects
-├── Resume.tsx               # Tabbed resume with AnimatePresence
-├── Contact.tsx              # Email form with glassmorphism
-└── Footer.tsx               # Minimal footer with gradient divider
-```
----
-## 🚀 Getting Started
-```bash
-# Clone
-git clone https://github.com/vishu1803/my-portfolio.git
-cd my-portfolio
-# Install
+# Vishwanath Nishad — Editorial Portfolio
+
+A cinematic portfolio built in the existing Next.js / React application: an original portrait opening, source-linked project stories, an interactive inspection light, a teaching laboratory and a hand-and-strings collaboration section.
+
+## Run locally
+
+```sh
 npm install
-# Dev server
 npm run dev
+```
 
-# Production build
+```sh
+npm run typecheck
+npm run lint
+npm run test:content
 npm run build
----
-## 📱 Mobile Optimization
-- Hamburger menu with fullscreen overlay and body scroll lock
-- Responsive text sizing across all breakpoints
-- Reduced blur and glow sizes on small screens
-- Touch-friendly tap targets (`active:` states)
-- Hidden scroll indicator on mobile
-- Stacked layout with proper spacing
----
-## 👤 Author
-**Vishwanath Nishad**
-- GitHub: [@vishu1803](https://github.com/vishu1803)
-- LinkedIn: [Vishwanath Nishad](https://www.linkedin.com/in/vishwanath-nishad-69b047233/)
+npm start
+```
 
-## 📝 License
+The lint command runs ESLint through Node on Windows and Unix and fails on errors, warnings or launch failures. Production uses the standard Next.js server, including local image optimization. The portfolio does not call a runtime AI service or send contact-form messages to a backend.
 
-MIT
+## Experience
+
+- GSAP / ScrollTrigger own the opening typography, portrait mask/parallax, project entrances and illustrated string drawing. Framer Motion owns button feedback and dialog/shared-layout transitions.
+- The flashlight reveals an actual second content layer. A keyboard/tap inspection button exposes the same notes in a static accessible panel. Tracking is event-driven and stops when settled, offscreen or hidden; reduced-motion visitors retain the essential imagery.
+- Navigation uses section anchors, with a compact 320px layout and a skip link. Dialogs use labelled semantics, initial focus, Tab containment, background isolation, Escape and focus restoration.
+- The ivory collaboration section uses an original inline SVG hand and five individually drawn strings. Its button opens a contact dialog and a **Start a Project** email-draft action. Sending happens in the visitor's email app; the site does not claim that a message was delivered.
+- The optional Transformer Laboratory is a labelled local teaching simulation, not a model API or real tokenizer. It loads on demand.
+
+## Content
+
+The supplied resume supports personal/experience information. `src/data/caseStudies.ts` is the shared source for case studies, project notes and the reusable project deck. Public repository links support the additional project descriptions; package names do not establish personal proficiency. Unsupported latency, frame-rate, savings and readiness benchmarks are omitted.
+
+See [content sources](docs/portfolio-content.md) and [implementation verification](docs/implementation-verification.md). The original portrait and supplied resume remain local assets. No new contact credentials or service configuration is required.
+
+## Structure
+
+```text
+src/App.tsx                         Active page composition and reduced-motion configuration
+src/data/caseStudies.ts              Source-linked project content
+src/hooks/useAccessibleDialog.ts     Shared dialog lifecycle and keyboard behavior
+src/components/interactive/          Reusable flashlight
+src/components/landing/              Hero, stories, about, lab launcher, contact and dialogs
+src/components/playground/           Local teaching simulation
+src/app/globals.css                  Typography, masks, responsive/accessibility foundations
+```
+
+GitHub: [vishu1803](https://github.com/vishu1803) · [LinkedIn](https://linkedin.com/in/vishwanath-nishad)

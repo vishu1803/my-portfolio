@@ -1,166 +1,98 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 interface NavbarProps {
   onOpenResume?: () => void;
 }
 
+const SECTIONS = [
+  { id: "home", label: "Home" },
+  { id: "case-studies", label: "Cases" },
+  { id: "about", label: "Dossier" },
+  { id: "lab", label: "Lab" },
+];
+
 export default function Navbar({ onOpenResume }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
-  const [logoHovered, setLogoHovered] = useState(false);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 100);
-
-      // Section tracking
-      const sections = ["home", "case-studies", "about", "lab", "contact"];
-      const currentScroll = window.scrollY + 200;
-
-      for (const section of sections) {
-        const el = document.getElementById(section);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (currentScroll >= top && currentScroll < top + height) {
-            setActiveSection(section);
-            break;
-          }
+      const position = window.scrollY + 180;
+      for (const id of [...SECTIONS.map((section) => section.id), "contact"]) {
+        const section = document.getElementById(id);
+        if (section && position >= section.offsetTop && position < section.offsetTop + section.offsetHeight) {
+          setActiveSection(id);
+          break;
         }
       }
     };
-
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
   }, []);
 
-  const scrollToSection = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 md:pt-6 px-4 pointer-events-none">
+    <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-4 md:pt-6 pointer-events-none">
       <nav
-        className={`pointer-events-auto inline-flex items-center rounded-full backdrop-blur-md border border-white/10 bg-[#0B0C0E]/90 px-2 py-2 transition-all duration-300 ${
-          scrolled ? "shadow-lg shadow-black/60 border-white/20 bg-[#0B0C0E]/95" : ""
-        }`}
+        aria-label="Primary navigation"
+        className={`pointer-events-auto flex max-w-full items-center gap-0.5 rounded-full border border-white/15 bg-[#0B0C0E]/95 p-1.5 sm:gap-1 sm:p-2 backdrop-blur-md transition-[background-color,border-color,box-shadow] duration-300 ${scrolled ? "shadow-lg shadow-black/60 border-white/25" : ""}`}
       >
-        {/* 1. Logo */}
+        <motion.a
+          href="#home"
+          aria-label="Home — Vishwanath Nishad"
+          aria-current={activeSection === "home" ? "location" : undefined}
+          whileHover={reduceMotion ? undefined : { scale: 1.06 }}
+          whileTap={reduceMotion ? undefined : { scale: 0.96 }}
+          className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#FFE600]/70 text-white font-display italic text-sm hover:border-white focus-visible:outline-offset-2"
+        >
+          VN
+        </motion.a>
+
+        <span className="mx-1 hidden h-5 w-px bg-white/10 sm:block" aria-hidden="true" />
+
+        {SECTIONS.map((section) => (
+          <a
+            key={section.id}
+            href={`#${section.id}`}
+            aria-current={activeSection === section.id ? "location" : undefined}
+            className={`${section.id === "home" ? "hidden sm:inline-flex" : "inline-flex"} min-h-11 items-center justify-center whitespace-nowrap rounded-full px-2 sm:px-3 text-[11px] sm:text-sm font-mono transition-colors hover:bg-white/10 hover:text-white ${activeSection === section.id ? "bg-white/10 text-[#FFE600]" : "text-white/75"}`}
+          >
+            {section.label}
+          </a>
+        ))}
+
         <button
           type="button"
-          onClick={() => scrollToSection("home")}
-          onMouseEnter={() => setLogoHovered(true)}
-          onMouseLeave={() => setLogoHovered(false)}
-          className="group relative w-9 h-9 rounded-full p-[1.5px] transition-transform duration-300 hover:scale-110 flex items-center justify-center shrink-0"
-          title="Vishwanath Nishad"
-          aria-label="Home"
+          onClick={() => {
+            if (onOpenResume) onOpenResume();
+            else window.open("/assets/aistudio/software-vishu_1f0ccd66.pdf", "_blank", "noopener,noreferrer");
+          }}
+          className="hidden min-h-11 items-center rounded-full px-3 font-mono text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white sm:inline-flex"
         >
-          <div
-            className={`absolute inset-0 rounded-full transition-all duration-500 ${
-              logoHovered ? "bg-[#FFE600]" : "bg-gradient-to-r from-[#FFE600] to-[#38BDF8]"
-            }`}
-          />
-          <div className="relative w-full h-full rounded-full bg-[#08090B] flex items-center justify-center">
-            <span className="font-display italic text-[13px] text-white tracking-tight">
-              VN
-            </span>
-          </div>
+          Resume
         </button>
 
-        {/* 2. Divider (hidden on mobile) */}
-        <div className="w-px h-5 bg-white/10 mx-1 hidden sm:block" />
-
-        {/* 3. Nav links */}
-        <div className="flex items-center space-x-0.5 sm:space-x-1">
-          <button
-            type="button"
-            onClick={() => scrollToSection("home")}
-            className={`text-xs sm:text-sm rounded-full px-2.5 sm:px-3.5 py-1.5 sm:py-2 transition-colors duration-200 font-mono ${
-              activeSection === "home"
-                ? "text-[#FFE600] bg-white/10 font-medium"
-                : "text-muted hover:text-white hover:bg-white/5"
-            }`}
-          >
-            Home
-          </button>
-
-          <button
-            type="button"
-            onClick={() => scrollToSection("case-studies")}
-            className={`text-xs sm:text-sm rounded-full px-2.5 sm:px-3.5 py-1.5 sm:py-2 transition-colors duration-200 font-mono ${
-              activeSection === "case-studies"
-                ? "text-[#FFE600] bg-white/10 font-medium"
-                : "text-muted hover:text-white hover:bg-white/5"
-            }`}
-          >
-            Cases
-          </button>
-
-          <button
-            type="button"
-            onClick={() => scrollToSection("about")}
-            className={`text-xs sm:text-sm rounded-full px-2.5 sm:px-3.5 py-1.5 sm:py-2 transition-colors duration-200 font-mono ${
-              activeSection === "about"
-                ? "text-[#FFE600] bg-white/10 font-medium"
-                : "text-muted hover:text-white hover:bg-white/5"
-            }`}
-          >
-            Dossier
-          </button>
-
-          <button
-            type="button"
-            onClick={() => scrollToSection("lab")}
-            className={`text-xs sm:text-sm rounded-full px-2.5 sm:px-3.5 py-1.5 sm:py-2 transition-colors duration-200 font-mono ${
-              activeSection === "lab"
-                ? "text-[#FFE600] bg-white/10 font-medium"
-                : "text-muted hover:text-white hover:bg-white/5"
-            }`}
-          >
-            Lab
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              if (onOpenResume) {
-                onOpenResume();
-              } else {
-                window.open("/assets/aistudio/software-vishu_1f0ccd66.pdf", "_blank");
-              }
-            }}
-            className="text-xs sm:text-sm rounded-full px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-muted hover:text-white hover:bg-white/5 transition-colors duration-200 font-mono hidden sm:inline-block"
-          >
-            Resume
-          </button>
-        </div>
-
-        {/* 4. Divider */}
-        <div className="w-px h-5 bg-white/10 mx-1" />
-
-        {/* 5. "Collaborate" button */}
-        <button
-          type="button"
-          onClick={() => scrollToSection("contact")}
-          className="group relative rounded-full p-[1.5px] transition-transform duration-300 hover:scale-105"
+        <span className="mx-0.5 hidden h-5 w-px bg-white/10 sm:block" aria-hidden="true" />
+        <motion.a
+          href="#contact"
+          aria-current={activeSection === "contact" ? "location" : undefined}
+          whileHover={reduceMotion ? undefined : { y: -1 }}
+          whileTap={reduceMotion ? undefined : { scale: 0.97 }}
+          className="inline-flex min-h-11 shrink-0 items-center justify-center gap-1 rounded-full border border-white/15 bg-white/5 px-2 sm:px-3.5 font-mono text-[11px] sm:text-sm text-white transition-colors hover:border-[#FFE600] hover:bg-[#FFE600] hover:text-black"
         >
-          <span
-            className="absolute inset-[-1.5px] rounded-full bg-[#FFE600] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            aria-hidden="true"
-          />
-          <span className="relative flex items-center gap-1.5 rounded-full bg-[#0E1015] px-3.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-white font-mono font-medium backdrop-blur-md border border-white/10 group-hover:bg-[#FFE600] group-hover:text-black transition-colors">
-            <span>Collaborate</span>
-            <span className="text-[11px] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-              ↗
-            </span>
-          </span>
-        </button>
+          <span className="sm:hidden">Contact</span>
+          <span className="hidden sm:inline">Collaborate</span>
+          <span className="hidden sm:inline" aria-hidden="true">↗</span>
+        </motion.a>
       </nav>
     </header>
   );

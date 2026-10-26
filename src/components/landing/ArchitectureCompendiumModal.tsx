@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useId } from "react";
+import useAccessibleDialog from "../../hooks/useAccessibleDialog";
 import Image from "next/image";
 import { JournalArticle, JOURNAL_DATA } from "./Journal";
 
@@ -16,10 +18,16 @@ export default function ArchitectureCompendiumModal({
   onClose,
   initialArticleId,
 }: ArchitectureCompendiumModalProps) {
+  const dialogId = useId();
+  const reduced = useReducedMotion();
+  const dialogRef = useAccessibleDialog(isOpen, onClose);
+
   const [activeTab, setActiveTab] = useState<string>(
     initialArticleId || JOURNAL_DATA[0]?.id || "ai-career-hub"
   );
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (copyTimer.current) clearTimeout(copyTimer.current); }, []);
   const [copiedSnippetId, setCopiedSnippetId] = useState<string | null>(null);
 
   // Sync initial article if provided
@@ -28,46 +36,35 @@ export default function ArchitectureCompendiumModal({
       setActiveTab(initialArticleId);
       const targetEl = document.getElementById(`compendium-${initialArticleId}`);
       if (targetEl) {
-        targetEl.scrollIntoView({ behavior: "smooth" });
+        targetEl.scrollIntoView({ behavior: reduced ? "instant" : "smooth" });
       }
     }
-  }, [initialArticleId, isOpen]);
-
-  // Handle ESC key press
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
-    };
-    if (isOpen) {
-      window.addEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "hidden";
-    }
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "auto";
-    };
-  }, [isOpen, onClose]);
+  }, [initialArticleId, isOpen, reduced]);
 
   const handleScrollToProject = (id: string) => {
     setActiveTab(id);
     const targetEl = document.getElementById(`compendium-${id}`);
     if (targetEl && scrollContainerRef.current) {
-      targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      targetEl.scrollIntoView({ behavior: reduced ? "instant" : "smooth", block: "start" });
     }
   };
 
   const handleCopyCode = (id: string, code: string) => {
-    navigator.clipboard.writeText(code);
+    void navigator.clipboard.writeText(code).catch(() => setCopiedSnippetId(null));
     setCopiedSnippetId(id);
-    setTimeout(() => setCopiedSnippetId(null), 2000);
+    if (copyTimer.current) clearTimeout(copyTimer.current);
+    copyTimer.current = setTimeout(() => setCopiedSnippetId(null), 2000);
   };
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={dialogId}
+          tabIndex={-1}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -75,26 +72,26 @@ export default function ArchitectureCompendiumModal({
           className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md"
         >
           <motion.div
-            initial={{ scale: 0.96, opacity: 0, y: 25 }}
+            initial={reduced ? false : { scale: 0.97, opacity: 0, y: 12 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.96, opacity: 0, y: 20 }}
-            transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
+            exit={reduced ? { opacity: 0 } : { scale: 0.97, opacity: 0, y: 12 }}
+            transition={{ duration: reduced ? 0 : 0.35, ease: [0.25, 0.1, 0.25, 1] }}
             onClick={(e) => e.stopPropagation()}
             className="relative w-full max-w-5xl rounded-3xl border border-white/15 bg-[#0B0C0E] shadow-[0_0_80px_rgba(0,0,0,0.8)] flex flex-col max-h-[92vh] overflow-hidden"
           >
             {/* Top Header Bar */}
             <div className="flex items-center justify-between px-6 sm:px-8 py-5 border-b border-white/10 bg-[#0e1014]/90 backdrop-blur-md z-20 shrink-0">
               <div className="flex items-center gap-3">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#89AACC] animate-pulse" />
+                <span className="w-2.5 h-2.5 rounded-full bg-[#89AACC]" />
                 <div>
-                  <h3 className="text-base sm:text-xl font-medium text-text-primary tracking-tight flex items-center gap-2">
-                    <span>Full Systems Architecture Compendium</span>
+                  <h3 id={dialogId} className="text-base sm:text-xl font-medium text-text-primary tracking-tight flex items-center gap-2">
+                    <span>Project notes & sources</span>
                     <span className="text-xs font-mono px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-muted hidden sm:inline-block">
                       GitHub Top Projects
                     </span>
                   </h3>
                   <p className="text-xs font-mono text-muted mt-0.5">
-                    Engineering benchmarks, data pipelines, trade-offs, and source code
+                    Source-linked project notes, approaches and technologies
                   </p>
                 </div>
               </div>
@@ -102,6 +99,8 @@ export default function ArchitectureCompendiumModal({
               {/* Close Button */}
               <button
                 type="button"
+              data-dialog-close
+              aria-label="Close architecturecompendium"
                 onClick={onClose}
                 className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-text-primary/70 hover:text-text-primary transition-all text-xs sm:text-sm font-mono"
                 title="Close Compendium (Esc)"
@@ -237,6 +236,7 @@ export default function ArchitectureCompendiumModal({
                     </div>
                   )}
 
+                  <a href={article.sourceUrl || article.githubRepo} target="_blank" rel="noopener noreferrer" className="block text-xs text-muted underline underline-offset-4">Source: {article.sourceLabel || "Repository"} ↗</a>
                   {/* In-depth Engineering Analysis Content */}
                   <div className="space-y-4 text-sm sm:text-base text-muted/90 leading-relaxed">
                     {article.content.map((paragraph, pIdx) => (
@@ -248,7 +248,7 @@ export default function ArchitectureCompendiumModal({
                   {article.codeSnippet && (
                     <div className="space-y-2">
                       <div className="flex items-center justify-between px-4 py-2 rounded-t-xl bg-[#12141a] border-t border-x border-white/10 text-xs font-mono text-muted">
-                        <span className="text-[#89AACC]">{"// Production Implementation Extract"}</span>
+                        <span className="text-[#89AACC]">{"// Illustrative pattern — not a repository extract"}</span>
                         <button
                           type="button"
                           onClick={() => handleCopyCode(article.id, article.codeSnippet || "")}

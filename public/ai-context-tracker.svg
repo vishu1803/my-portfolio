@@ -33,7 +33,7 @@
   <text x="315" y="44" fill="#e4e4e7" font-family="system-ui, sans-serif" font-size="15">chatgpt.com</text>
 
   <!-- Main Viewport Split -->
-  <!-- Left Side: ChatGPT Sidebar & Chat (1440px) -->
+  <!-- Left Side: ChatGPT Sidebar &amp; Chat (1440px) -->
   <rect x="0" y="76" width="260" height="1004" fill="#14151a" />
   <text x="32" y="130" fill="#f4f4f5" font-family="system-ui, sans-serif" font-size="15" font-weight="600">+ New chat</text>
   <text x="32" y="180" fill="#a1a1aa" font-family="system-ui, sans-serif" font-size="14">🔍 Search chats</text>
@@ -64,7 +64,7 @@
   <rect x="610" y="300" width="240" height="160" rx="16" fill="#78350f" />
   <text x="630" y="490" fill="#fb923c" font-family="system-ui, sans-serif" font-size="12" font-weight="600">● The Indian Express</text>
   <text x="630" y="525" fill="#ffffff" font-family="system-ui, sans-serif" font-size="15" font-weight="600">Daily Briefing: Hormuz</text>
-  <text x="630" y="550" fill="#a1a1aa" font-family="system-ui, sans-serif" font-size="13">Crisis & Border Policy in focus</text>
+  <text x="630" y="550" fill="#a1a1aa" font-family="system-ui, sans-serif" font-size="13">Crisis &amp; Border Policy in focus</text>
 
   <!-- Card 3 -->
   <rect x="880" y="300" width="240" height="340" rx="16" fill="#17181f" stroke="#2a2b36" stroke-width="1.5" />

@@ -1,20 +1,36 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef, useCallback } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import dynamic from "next/dynamic";
 
-import TransformerLab from "../playground/TransformerLab";
+const TransformerLab = dynamic(() => import("../playground/TransformerLab"), {
+  loading: () => <p role="status" className="p-6 text-sm text-white/80">Loading interactive laboratory…</p>,
+});
 import SkillArtifacts from "./SkillArtifacts";
 
 export default function Explorations() {
   const [isLabOpen, setIsLabOpen] = useState(false);
   const labContainerRef = useRef<HTMLDivElement>(null);
+  const wasOpened = useRef(false);
+  const reduceMotion = useReducedMotion();
+
+  // Stable refs run when their control mounts, never when an unrelated modal
+  // causes App to render again.
+  const restoreLaunchFocus = useCallback((node: HTMLButtonElement | null) => {
+    if (node && wasOpened.current) node.focus({ preventScroll: true });
+  }, []);
+
+  const focusOpenedLab = useCallback((node: HTMLButtonElement | null) => {
+    if (!node) return;
+    node.focus({ preventScroll: true });
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    labContainerRef.current?.scrollIntoView({ behavior: reduced ? "instant" : "smooth", block: "start" });
+  }, []);
 
   const handleOpenLab = () => {
+    wasOpened.current = true;
     setIsLabOpen(true);
-    setTimeout(() => {
-      labContainerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 100);
   };
 
   return (
@@ -52,6 +68,7 @@ export default function Explorations() {
       {/* VISUAL PLAYGROUND INTERACTIVE STAGE */}
       <div
         ref={labContainerRef}
+        id="transformer-workbench"
         className="max-w-[1200px] mx-auto px-6 md:px-10 lg:px-16 mb-20 relative z-30"
       >
         <AnimatePresence mode="wait">
@@ -59,12 +76,11 @@ export default function Explorations() {
             /* EXCITING VISUAL TEASER & LAUNCH CONSOLE */
             <motion.div
               key="teaser-card"
-              initial={{ opacity: 0, y: 15 }}
+              initial={reduceMotion ? false : { opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.4 }}
-              onClick={handleOpenLab}
-              className="group relative w-full rounded-3xl overflow-hidden border border-white/10 bg-[#0B0C0E]/90 hover:border-white/30 backdrop-blur-xl shadow-2xl p-6 sm:p-10 md:p-12 cursor-pointer transition-all duration-500 hover:shadow-[0_0_50px_rgba(137,170,204,0.25)]"
+              exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.98 }}
+              transition={{ duration: reduceMotion ? 0 : 0.4 }}
+              className="group relative w-full rounded-3xl overflow-hidden border border-white/10 bg-[#0B0C0E]/90 hover:border-white/30 backdrop-blur-xl shadow-2xl p-6 sm:p-10 md:p-12 transition-[border-color,box-shadow] duration-500 hover:shadow-[0_0_50px_rgba(137,170,204,0.25)]"
             >
               {/* Animated ambient gradient background */}
               <div className="absolute inset-0 bg-gradient-to-br from-[#10141f] via-transparent to-[#0e1724]/40 opacity-80" />
@@ -77,7 +93,7 @@ export default function Explorations() {
               <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 mb-8 border-b border-white/10 pb-5">
                 <div className="flex items-center gap-3">
                   <span className="flex h-2.5 w-2.5 relative">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#89AACC] opacity-75" />
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-[#89AACC] opacity-75" />
                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#89AACC]" />
                   </span>
                   <span className="font-mono text-xs text-text-primary tracking-widest uppercase">
@@ -102,7 +118,7 @@ export default function Explorations() {
                     Inspect Attention Heads, Scaled Dot-Products & Generation Probabilities
                   </h3>
                   <p className="text-sm md:text-base text-muted font-body leading-relaxed max-w-2xl">
-                    Dive under the hood of modern Large Language Models. Calculate queries and keys, visualize token coreference resolution, and simulate nucleus next-token sampling in real time.
+                    Dive under the hood of modern Large Language Models. Explore illustrative token IDs, compare handcrafted attention patterns, and simulate next-token sampling locally.
                   </p>
                 </div>
 
@@ -110,20 +126,20 @@ export default function Explorations() {
                 <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-xs">
                   <div className="p-3.5 rounded-2xl bg-black/50 border border-white/10 group-hover:border-white/20 transition-all">
                     <span className="text-[10px] text-muted block mb-1">01. TOKENIZATION</span>
-                    <span className="text-sm font-semibold text-text-primary">50,257 BPE</span>
-                    <span className="text-[10px] text-[#89AACC] block mt-0.5">Subword Token IDs</span>
+                    <span className="text-sm font-semibold text-text-primary">Illustrative IDs</span>
+                    <span className="text-[10px] text-[#89AACC] block mt-0.5">Hashed example tokens</span>
                   </div>
 
                   <div className="p-3.5 rounded-2xl bg-black/50 border border-white/10 group-hover:border-white/20 transition-all">
                     <span className="text-[10px] text-muted block mb-1">02. MULTI-HEAD</span>
-                    <span className="text-sm font-semibold text-text-primary">12 Parallel Heads</span>
+                    <span className="text-sm font-semibold text-text-primary">4 demonstration heads</span>
                     <span className="text-[10px] text-[#89AACC] block mt-0.5">Softmax(QKᵀ / √dₖ)</span>
                   </div>
 
                   <div className="p-3.5 rounded-2xl bg-black/50 border border-white/10 group-hover:border-white/20 transition-all">
                     <span className="text-[10px] text-muted block mb-1">03. EMBEDDINGS</span>
-                    <span className="text-sm font-semibold text-text-primary">d_model = 768</span>
-                    <span className="text-[10px] text-[#89AACC] block mt-0.5">Sinusoidal PE Matrix</span>
+                    <span className="text-sm font-semibold text-text-primary">Example dimension: 64</span>
+                    <span className="text-[10px] text-[#89AACC] block mt-0.5">Illustrative positional encoding</span>
                   </div>
 
                   <div className="p-3.5 rounded-2xl bg-black/50 border border-white/10 group-hover:border-white/20 transition-all">
@@ -138,29 +154,38 @@ export default function Explorations() {
               <div className="relative z-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <span className="text-xs font-mono text-muted">
-                    Click anywhere or launch below to start live experimentation:
+                    Use the launch button to explore this interactive teaching simulation:
                   </span>
                 </div>
 
-                <div className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-text-primary text-bg font-mono text-xs font-bold uppercase tracking-wider shadow-xl group-hover:bg-white transition-all transform group-hover:scale-105">
-                  <span className="w-2 h-2 rounded-full bg-[#4E85BF] animate-ping" />
+                <motion.button
+                  ref={restoreLaunchFocus}
+                  type="button"
+                  aria-expanded={isLabOpen}
+                  aria-controls="transformer-workbench"
+                  onClick={handleOpenLab}
+                  whileHover={reduceMotion ? undefined : { scale: 1.03 }}
+                  whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-text-primary text-bg font-mono text-xs font-bold uppercase tracking-wider shadow-xl hover:bg-white transition-colors"
+                >
+                  <span className="w-2 h-2 rounded-full bg-[#4E85BF]" aria-hidden="true" />
                   <span>Launch Interactive Laboratory</span>
-                  <span className="text-sm">↗</span>
-                </div>
+                  <span className="text-sm" aria-hidden="true">↗</span>
+                </motion.button>
               </div>
             </motion.div>
           ) : (
             /* FULL OPENED TRANSFORMER LABORATORY WITH COLLAPSE BAR */
             <motion.div
               key="opened-lab"
-              initial={{ opacity: 0, y: 25 }}
+              initial={reduceMotion ? false : { opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 25 }}
-              transition={{ duration: 0.4 }}
+              exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 25 }}
+              transition={{ duration: reduceMotion ? 0 : 0.4 }}
               className="space-y-4"
             >
               {/* Studio Active Bar with Collapse Controls */}
-              <div className="p-3.5 px-6 rounded-2xl bg-[#0c0d10] border border-white/15 flex items-center justify-between backdrop-blur-md shadow-lg">
+              <div className="p-3.5 sm:px-6 rounded-2xl bg-[#0c0d10] border border-white/15 flex flex-wrap gap-3 items-center justify-between backdrop-blur-md shadow-lg">
                 <div className="flex items-center gap-3">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
                   <span className="text-xs font-mono text-text-primary font-semibold tracking-wider">
@@ -169,6 +194,7 @@ export default function Explorations() {
                 </div>
 
                 <button
+                  ref={focusOpenedLab}
                   type="button"
                   onClick={() => setIsLabOpen(false)}
                   className="px-4 py-1.5 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 text-xs font-mono text-muted hover:text-text-primary transition-all flex items-center gap-1.5"

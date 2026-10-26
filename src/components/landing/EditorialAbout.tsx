@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
+import { useReducedMotion } from "framer-motion";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { 
   Briefcase, 
@@ -24,11 +25,12 @@ interface EditorialAboutProps {
 }
 
 export default function EditorialAbout({ onOpenResume }: EditorialAboutProps) {
+  const reduced = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const el = sectionRef.current;
-    if (!el) return;
+    if (!el || reduced || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
@@ -48,7 +50,7 @@ export default function EditorialAbout({ onOpenResume }: EditorialAboutProps) {
     }, el);
 
     return () => ctx.revert();
-  }, []);
+  }, [reduced]);
 
   const resumePdfPath = "/assets/aistudio/software-vishu_1f0ccd66.pdf";
   const leetcodeUrl = "https://leetcode.com/u/vishwanatnishad";
@@ -108,7 +110,7 @@ export default function EditorialAbout({ onOpenResume }: EditorialAboutProps) {
                 </div>
                 <div>
                   <h3 className="text-base font-semibold text-white">Professional Experience</h3>
-                  <p className="text-xs font-mono text-muted">Verified Internship Record</p>
+                  <p className="text-xs font-mono text-muted">Experience from resume</p>
                 </div>
               </div>
               <span className="stamp-box px-2.5 py-0.5 border-[#FFE600]/40 text-[#FFE600] text-[10px] font-bold">
@@ -127,7 +129,7 @@ export default function EditorialAbout({ onOpenResume }: EditorialAboutProps) {
               </div>
 
               <p className="text-xs sm:text-sm font-body text-white/70 leading-relaxed">
-                Spearheaded core backend API engineering, authentication systems, and client-side performance optimization within an Agile engineering team.
+                Worked on backend APIs, authentication and frontend performance within a remote Agile team, as described in the resume.
               </p>
 
               {/* Specific verified bullet points from resume */}
@@ -178,7 +180,7 @@ export default function EditorialAbout({ onOpenResume }: EditorialAboutProps) {
                 <div className="space-y-2 text-xs font-mono text-white/80 leading-relaxed">
                   <div className="flex items-start gap-2">
                     <span className="text-[#FFE600]">&bull;</span>
-                    <span>Core Mastery: Dynamic Programming, Graph Traversals, Trees, Arrays &amp; Binary Search.</span>
+                    <span>Practice topics: Dynamic Programming, Graph Traversals, Trees, Arrays &amp; Binary Search.</span>
                   </div>
                   <div className="flex items-start gap-2">
                     <span className="text-[#FFE600]">&bull;</span>
@@ -186,7 +188,7 @@ export default function EditorialAbout({ onOpenResume }: EditorialAboutProps) {
                   </div>
                   <div className="flex items-start gap-2">
                     <span className="text-[#FFE600]">&bull;</span>
-                    <span>Proven ability translating complex computational logic into production-grade systems.</span>
+                    <span>Algorithmic practice alongside application development.</span>
                   </div>
                 </div>
               </div>
@@ -215,11 +217,11 @@ export default function EditorialAbout({ onOpenResume }: EditorialAboutProps) {
                 Technical Taxonomy &amp; Core Competencies
               </h3>
               <p className="text-xs font-mono text-muted mt-1">
-                Verified systems, frameworks, languages, and tools from resume &amp; production projects
+                Languages, frameworks and tools named in the supplied resume
               </p>
             </div>
             <span className="text-xs font-mono text-[#FFE600]">
-              SOURCE: RESUME REVISION 2026
+              SOURCE: SUPPLIED RESUME
             </span>
           </div>
 
@@ -231,7 +233,7 @@ export default function EditorialAbout({ onOpenResume }: EditorialAboutProps) {
                 <span>Backend &amp; APIs</span>
               </div>
               <div className="space-y-1.5 text-xs font-mono text-white/90">
-                {["FastAPI (Asynchronous)", "Fastify", "Flask", "Node.js & Express.js", "RESTful Architecture", "Webhook Ingestion"].map((item, i) => (
+                {["FastAPI", "Fastify", "Flask", "Node.js & Express.js"].map((item, i) => (
                   <div key={i} className="flex items-center gap-2 py-1 border-b border-white/5 last:border-b-0">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#FFE600]/60" />
                     <span>{item}</span>
@@ -247,7 +249,7 @@ export default function EditorialAbout({ onOpenResume }: EditorialAboutProps) {
                 <span>Databases &amp; ORMs</span>
               </div>
               <div className="space-y-1.5 text-xs font-mono text-white/90">
-                {["PostgreSQL (Relational)", "Prisma ORM", "Drizzle ORM", "Redis (In-Memory / Cache)", "ACID Transactions", "Query Indexing"].map((item, i) => (
+                {["PostgreSQL", "Prisma ORM", "Drizzle ORM", "Redis"].map((item, i) => (
                   <div key={i} className="flex items-center gap-2 py-1 border-b border-white/5 last:border-b-0">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#38BDF8]/60" />
                     <span>{item}</span>
@@ -263,7 +265,7 @@ export default function EditorialAbout({ onOpenResume }: EditorialAboutProps) {
                 <span>Languages</span>
               </div>
               <div className="space-y-1.5 text-xs font-mono text-white/90">
-                {["Python 3.11", "TypeScript", "JavaScript (ES6+)", "C (Systems Coursework)", "SQL (Postgres)", "HTML5 / CSS3"].map((item, i) => (
+                {["Python", "JavaScript", "TypeScript (Project Stack)", "C (Coursework)"].map((item, i) => (
                   <div key={i} className="flex items-center gap-2 py-1 border-b border-white/5 last:border-b-0">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#FF4B4B]/60" />
                     <span>{item}</span>
@@ -279,7 +281,7 @@ export default function EditorialAbout({ onOpenResume }: EditorialAboutProps) {
                 <span>DevOps &amp; Web</span>
               </div>
               <div className="space-y-1.5 text-xs font-mono text-white/90">
-                {["Next.js (App Router)", "React 19 / 18", "Tailwind CSS", "GitHub Actions CI/CD", "Docker Compose", "Git Workflows & Linux"].map((item, i) => (
+                {["Next.js", "React", "Tailwind CSS", "GitHub Actions", "Docker Compose"].map((item, i) => (
                   <div key={i} className="flex items-center gap-2 py-1 border-b border-white/5 last:border-b-0">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#89AACC]/60" />
                     <span>{item}</span>
@@ -298,13 +300,13 @@ export default function EditorialAbout({ onOpenResume }: EditorialAboutProps) {
             </div>
             <div>
               <div className="text-[11px] font-mono uppercase tracking-wider text-[#FFE600]">
-                ACADEMIC ACCREDITATION // 2021 &ndash; 2025
+                EDUCATION RECORD // 2021 &ndash; 2025
               </div>
               <h4 className="text-xl sm:text-2xl font-display italic text-white mt-1">
                 Bachelor of Technology in Electronics Engineering
               </h4>
               <p className="text-xs sm:text-sm font-mono text-white/80 mt-1">
-                Rajkiya Engineering College &bull; Expected Completion: July 2025
+                Rajkiya Engineering College &bull; Education record: 2021 – July 2025
               </p>
               <p className="text-xs font-mono text-muted mt-2 max-w-2xl leading-relaxed">
                 Relevant Systems Coursework: Data Structures &amp; Algorithms, C, Python, System Modeling, Digital Logic, Operating Systems, Database Management Systems (DBMS), Computer Networks.

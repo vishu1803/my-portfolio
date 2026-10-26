@@ -1,6 +1,8 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useId } from "react";
+import useAccessibleDialog from "../../hooks/useAccessibleDialog";
 import { ProjectItem } from "./SelectedWorks";
 import ProjectMockupFrame from "./ProjectMockupFrame";
 
@@ -10,10 +12,19 @@ interface ProjectModalProps {
 }
 
 export default function ProjectModal({ project, onClose }: ProjectModalProps) {
+  const dialogId = useId();
+  const reduced = useReducedMotion();
+  const dialogRef = useAccessibleDialog(Boolean(project), onClose);
+
   return (
     <AnimatePresence>
       {project && (
         <motion.div
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={dialogId}
+          tabIndex={-1}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -21,16 +32,18 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
           className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md"
         >
           <motion.div
-            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+            initial={reduced ? false : { scale: 0.97, opacity: 0, y: 12 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+            exit={reduced ? { opacity: 0 } : { scale: 0.97, opacity: 0, y: 12 }}
+            transition={{ duration: reduced ? 0 : 0.3, ease: [0.25, 0.1, 0.25, 1] }}
             onClick={(e) => e.stopPropagation()}
             className="relative w-full max-w-3xl rounded-3xl border border-white/10 bg-[#0B0C0E] shadow-2xl p-6 sm:p-8 max-h-[92vh] overflow-y-auto"
           >
             {/* Close Button */}
             <button
               type="button"
+              data-dialog-close
+              aria-label="Close project"
               onClick={onClose}
               className="absolute top-6 right-6 w-9 h-9 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-text-primary/70 hover:text-text-primary transition-all text-sm font-mono z-20"
             >
@@ -48,7 +61,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
               </span>
             </div>
 
-            <h3 className="text-3xl sm:text-4xl font-display italic text-text-primary mb-6">
+            <h3 id={dialogId} className="text-3xl sm:text-4xl font-display italic text-text-primary mb-6">
               {project.title}
             </h3>
 
@@ -93,7 +106,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
                 rel="noopener noreferrer"
                 className="flex-1 py-3 px-6 rounded-full bg-text-primary text-bg font-medium text-xs font-mono tracking-wider uppercase flex items-center justify-center gap-2 hover:bg-white transition-colors"
               >
-                <span>Launch Live Preview</span>
+                <span>Open project</span>
                 <span>↗</span>
               </a>
 

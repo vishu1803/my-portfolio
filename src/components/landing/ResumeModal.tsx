@@ -1,6 +1,8 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useId } from "react";
+import useAccessibleDialog from "../../hooks/useAccessibleDialog";
 
 interface ResumeModalProps {
   isOpen: boolean;
@@ -8,27 +10,37 @@ interface ResumeModalProps {
 }
 
 export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
+  const dialogRef = useAccessibleDialog(isOpen, onClose);
+  const titleId = useId();
+  const reducedMotion = useReducedMotion();
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0 }}
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={titleId}
+          tabIndex={-1}
+          initial={{ opacity: reducedMotion ? 1 : 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md"
+          className="fixed inset-0 z-[200] flex items-center justify-center overflow-y-auto overscroll-contain p-4 sm:p-6 bg-black/85 backdrop-blur-md"
         >
           <motion.div
-            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+            initial={reducedMotion ? false : { scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+            exit={reducedMotion ? { opacity: 0 } : { scale: 0.95, opacity: 0, y: 20 }}
+            transition={{ duration: reducedMotion ? 0 : 0.3, ease: [0.25, 0.1, 0.25, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-xl rounded-3xl border border-white/10 bg-surface shadow-2xl p-6 sm:p-8"
+            className="relative w-full max-w-xl my-auto rounded-3xl border border-white/10 bg-surface shadow-2xl p-6 sm:p-8"
           >
             {/* Close Button */}
             <button
               type="button"
+              data-dialog-close
+              aria-label="Close resume dialog"
               onClick={onClose}
               className="absolute top-6 right-6 w-9 h-9 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-text-primary/70 hover:text-text-primary transition-all text-sm font-mono"
             >
@@ -39,7 +51,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               Curriculum Vitae
             </span>
 
-            <h3 className="text-3xl font-display italic text-text-primary mb-3">
+            <h3 id={titleId} className="text-3xl font-display italic text-text-primary mb-3">
               Vishwanath Nishad
             </h3>
 
@@ -56,10 +68,10 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               >
                 <div>
                   <h4 className="text-sm font-medium text-white group-hover:text-[#FFE600] transition-colors">
-                    Official Software Engineer Resume (PDF)
+                    Software Engineer Resume (PDF)
                   </h4>
                   <p className="text-xs text-muted font-mono mt-0.5">
-                    Verified Revision &bull; Full-Stack, Backend &amp; Algorithms
+                    Resume &bull; Full-Stack, Backend &amp; Algorithms
                   </p>
                 </div>
                 <span className="text-xs font-mono text-black px-3.5 py-1.5 rounded-full bg-[#FFE600] group-hover:bg-white transition-colors font-semibold">
@@ -87,8 +99,8 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               </a>
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-stroke">
-              <span className="text-xs font-mono text-muted">
+            <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-stroke">
+              <span className="text-xs font-mono text-muted break-all">
                 Direct: vishwanatnishad@gmail.com
               </span>
               <button

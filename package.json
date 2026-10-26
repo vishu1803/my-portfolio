@@ -6,7 +6,9 @@
     "dev": "next dev -p 3000 -H 0.0.0.0",
     "build": "next build",
     "start": "next start",
-    "lint": "node lint.js"
+    "lint": "node lint.js",
+    "typecheck": "tsc --noEmit --incremental false",
+    "test:content": "node --test scripts/verify-content.cjs"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

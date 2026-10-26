@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 
 import { styles } from "../styles";
@@ -19,23 +20,25 @@ const ProjectCard = ({
         className='bg-tertiary p-5 rounded-2xl sm:w-[360px] w-full'
       >
         <div className='relative w-full h-[230px]'>
-          <img
+          <Image
             src={image}
-            alt='project_image'
+            alt={title}
+            fill
+            sizes="(max-width: 640px) 100vw, 360px"
             className='w-full h-full object-cover rounded-2xl'
           />
 
           <div className='absolute inset-0 flex justify-end m-3 card-img_hover'>
-            <div
-              onClick={() => window.open(link, "_blank")}
+            <a
+              href={link} target="_blank" rel="noopener noreferrer" aria-label={`View ${title} source`}
               className='black-gradient w-10 h-10 rounded-full flex justify-center items-center cursor-pointer'
             >
-              <img
+              <Image
                 src={github}
-                alt='source code'
+                alt="" width={20} height={20}
                 className='w-1/2 h-1/2 object-contain'
               />
-            </div>
+            </a>
           </div>
         </div>
 

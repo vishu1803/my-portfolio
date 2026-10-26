@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ProjectMockupFrame from "./ProjectMockupFrame";
+import { CASE_STUDIES } from "../../data/caseStudies";
 
 export interface ProjectItem {
   id: string;
@@ -20,142 +21,16 @@ export interface ProjectItem {
   tech: string[];
 }
 
-export const PROJECTS_DATA: ProjectItem[] = [
-  {
-    id: "ai-career-hub",
-    index: "01",
-    title: "AI Career Hub & Workspace Copilot",
-    category: "AI Career Intelligence",
-    tag: "Next.js · Gemini / OpenAI · Fullstack",
-    image: "/ai-career-hub.png",
-    urlHost: "github.com/vishu1803/ai-career-hub",
-    span: "md:col-span-6",
-    link: "https://github.com/vishu1803/ai-career-hub",
-    github: "https://github.com/vishu1803/ai-career-hub",
-    description:
-      "Full-stack career copilot featuring Job Fit Radar evaluating technical skill profiles against market roles, automated resume alignment, target readiness scoring, and tailored interview workflows.",
-    metrics: "75% Readiness Score",
-    tech: ["Next.js", "OpenAI / Gemini", "Job Radar Engine", "PostgreSQL", "Tailwind CSS"],
-  },
-  {
-    id: "ai-context-tracker",
-    index: "02",
-    title: "AI Context Tracker",
-    category: "LLM Tooling & Extension",
-    tag: "TypeScript · Chrome API · LLM Telemetry",
-    image: "/ai-context-tracker.svg",
-    urlHost: "github.com/vishu1803/ai-context-tracker",
-    span: "md:col-span-6",
-    link: "https://github.com/vishu1803/ai-context-tracker",
-    github: "https://github.com/vishu1803/ai-context-tracker",
-    description:
-      "Real-time token and context window monitoring companion for LLMs (ChatGPT, Claude). Tracks active context consumption against 128k limits, token burn velocity, response repetition, and instruction drift signals.",
-    metrics: "128k Token Monitor",
-    tech: ["TypeScript", "Chrome Extension MV3", "Tokenizers", "LLM Telemetry", "Next.js"],
-  },
-  {
-    id: "ai-code-review",
-    index: "03",
-    title: "AI-Powered Code Review Assistant",
-    category: "Automated PR Intelligence",
-    tag: "AI · Python · FastAPI",
-    image: "/ai-code-review.png",
-    urlHost: "github.com/vishu1803/ai-code-review-assistant",
-    span: "md:col-span-6",
-    link: "https://github.com/vishu1803/Ai-powered-code-review-assistant/",
-    github: "https://github.com/vishu1803/Ai-powered-code-review-assistant/",
-    description:
-      "Automated code analysis engine analyzing GitHub pull requests, detecting syntax anomalies, AST patterns, and security vulnerabilities using FastAPI and LLM reasoning.",
-    metrics: "<1.2s Latency",
-    tech: ["FastAPI", "Python 3.11", "GitHub Webhooks", "AST Parsers", "LLMs"],
-  },
-  {
-    id: "product-explorer",
-    index: "04",
-    title: "Product Data Explorer & Analytics",
-    category: "High-Throughput Analytics",
-    tag: "Next.js · Redis · Analytics",
-    image: "/product-explorer.png",
-    urlHost: "product-explorer-frontend.onrender.com",
-    span: "md:col-span-6",
-    link: "https://product-explorer-frontend-qp3m.onrender.com/",
-    github: "https://github.com/vishu1803",
-    description:
-      "High-throughput analytics platform aggregating real-time data, dynamic query indexing, interactive time-series charts, and multi-faceted parametric filtering.",
-    metrics: "10k+ Records",
-    tech: ["Next.js", "Redis Caching", "Canvas Charts", "REST APIs"],
-  },
-  {
-    id: "task-manager",
-    index: "05",
-    title: "Collaborative Task Workflow Manager",
-    category: "Distributed Workflow",
-    tag: "Next.js · Prisma · PostgreSQL",
-    image: "/task-manager.png",
-    urlHost: "collaborative-task-manager.vercel.app",
-    span: "md:col-span-6",
-    link: "https://collaborative-task-manager-fc26.vercel.app/",
-    github: "https://github.com/vishu1803",
-    description:
-      "Distributed team workflow platform featuring granular Role-Based Access Control (RBAC), multi-tenant workspaces, atomic state mutations, and relational PostgreSQL persistence.",
-    metrics: "ACID Safe",
-    tech: ["Next.js", "Prisma ORM", "PostgreSQL", "NextAuth RBAC"],
-  },
-  {
-    id: "3d-portfolio",
-    index: "06",
-    title: "3D Spatial Portfolio & WebGL Studio",
-    category: "Spatial Digital Experience",
-    tag: "React · Three.js · GLSL",
-    image: "/portfolio.png",
-    urlHost: "3-d-portfolio-website-one.vercel.app",
-    span: "md:col-span-6",
-    link: "https://3-d-portfolio-website-one.vercel.app",
-    github: "https://github.com/vishu1803/3D-portfolio-website",
-    description:
-      "Interactive 3D digital experience built with React Three Fiber and Three.js, incorporating custom GLSL shaders, camera lerping, and mathematical geometry physics.",
-    metrics: "Locked 60 FPS",
-    tech: ["Three.js", "React Three Fiber", "GLSL Shaders", "Framer Motion"],
-  },
-  {
-    id: "object-detection",
-    index: "07",
-    title: "Edge Vision & Object Detector",
-    category: "Edge ML & Computer Vision",
-    tag: "TensorFlow.js · WebGL · Canvas",
-    image: "/object-detection.png",
-    urlHost: "object-detection-web-app.vercel.app",
-    span: "md:col-span-6",
-    link: "https://object-detection-web-app-indol.vercel.app/",
-    github: "https://github.com/vishu1803",
-    description:
-      "Client-side edge vision application running real-time object classification and bounding box regression directly inside the browser using WebGL hardware acceleration.",
-    metrics: "30+ FPS Edge",
-    tech: ["TensorFlow.js", "COCO-SSD", "WebGL Shaders", "HTML5 Canvas"],
-  },
-  {
-    id: "audience-query",
-    index: "08",
-    title: "Audience Intent Classification Engine",
-    category: "NLP & Semantic Pipeline",
-    tag: "Python · Embeddings · FastAPI",
-    image: "/audience-query-system.png",
-    urlHost: "github.com/vishu1803/audience-query-system",
-    span: "md:col-span-6",
-    link: "https://github.com/vishu1803",
-    github: "https://github.com/vishu1803",
-    description:
-      "Natural language processing pipeline clustering intent patterns, semantic token embeddings, and audience query routing with sub-second latency.",
-    metrics: "94% Accuracy",
-    tech: ["Python", "FastAPI", "Vector Embeddings", "Transformers"],
-  },
-];
+export const PROJECTS_DATA: ProjectItem[] = CASE_STUDIES.map((study, index) => ({
+  id: study.id, index: String(index + 1).padStart(2, "0"), title: study.title,
+  category: study.category, tag: study.category, image: study.image,
+  urlHost: study.liveDemo ? new URL(study.liveDemo).hostname : "github.com",
+  span: "col-span-1", link: study.liveDemo || study.github, github: study.github,
+  description: study.solution, metrics: study.focus, tech: study.tech,
+}));
 
-interface SelectedWorksProps {
-  onSelectProject: (project: ProjectItem) => void;
-}
+interface SelectedWorksProps { onSelectProject: (project: ProjectItem) => void; }
 
-// Preset visual offsets for the card stack
 const DECK_OFFSETS = [
   { rot: 0, x: 0, y: 0 },
   { rot: 2.2, x: 8, y: 10 },

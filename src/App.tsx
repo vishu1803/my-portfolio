@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { MotionConfig } from "framer-motion";
 
-import LoadingScreen from "./components/landing/LoadingScreen";
 import Navbar from "./components/landing/Navbar";
 import EditorialHero from "./components/landing/EditorialHero";
 import ProjectCaseStudies from "./components/landing/ProjectCaseStudies";
@@ -19,7 +18,6 @@ import { ProjectItem } from "./components/landing/SelectedWorks";
 import { JournalArticle } from "./components/landing/Journal";
 
 export default function App() {
-  const [isLoading, setIsLoading] = useState(true);
 
   // Modal states
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
@@ -27,34 +25,23 @@ export default function App() {
   const [resumeOpen, setResumeOpen] = useState(false);
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="relative min-h-screen bg-[#08090B] text-[#FAF8F5] selection:bg-[#FFE600]/30 selection:text-white">
-      {/* Loading Screen */}
-      <AnimatePresence>
-        {isLoading && (
-          <LoadingScreen onComplete={() => setIsLoading(false)} />
-        )}
-      </AnimatePresence>
-
-      {/* Main Page Layout */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isLoading ? 0 : 1 }}
-        transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-        className="w-full"
-      >
+      <a className="skip-link" href="#main-content">Skip to content</a>
+      <div className="w-full">
         {/* Floating Pill Navbar */}
         <Navbar onOpenResume={() => setResumeOpen(true)} />
 
-        <main>
+        <main id="main-content" tabIndex={-1}>
           {/* Section 1: Cinematic VOX-Inspired Editorial Hero with Real Portrait & Flashlight Inspector */}
           <EditorialHero
             onContactClick={() => {
               const el = document.getElementById("contact");
-              if (el) el.scrollIntoView({ behavior: "smooth" });
+              if (el) el.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
             }}
             onWorkClick={() => {
               const el = document.getElementById("case-studies");
-              if (el) el.scrollIntoView({ behavior: "smooth" });
+              if (el) el.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
             }}
             onOpenResume={() => setResumeOpen(true)}
           />
@@ -93,7 +80,8 @@ export default function App() {
           isOpen={resumeOpen}
           onClose={() => setResumeOpen(false)}
         />
-      </motion.div>
+      </div>
     </div>
+    </MotionConfig>
   );
 }

@@ -10,7 +10,7 @@
   --bg: 0 0% 4%;
   --surface: 0 0% 8%;
   --text: 0 0% 96%;
-  --muted: 0 0% 53%;
+  --muted: 0 0% 66%;
   --stroke: 0 0% 12%;
   --accent: 0 0% 96%;
 }
@@ -127,18 +127,6 @@ body {
   );
 }
 
-/* Reduced Motion Override */
-@media (prefers-reduced-motion: reduce) {
-  .flashlight-reveal-mask {
-    mask-image: none !important;
-    -webkit-mask-image: none !important;
-    opacity: 1 !important;
-  }
-  .flashlight-torch-glow {
-    display: none !important;
-  }
-}
-
 /* Accent gradient */
 .accent-gradient {
   background: linear-gradient(90deg, #89AACC 0%, #4E85BF 100%);
@@ -251,8 +239,89 @@ body {
   animation-play-state: paused;
 }
 
-/* Focus states */
+
+/* Accessible navigation and layout foundations. */
+html {
+  scroll-padding-top: 7rem;
+}
+
+main, section, article, nav {
+  min-width: 0;
+}
+
+section[id], main[id], h1, h2, h3, h4 {
+  scroll-margin-top: 7rem;
+}
+
+img, video, canvas {
+  max-width: 100%;
+}
+
+p {
+  overflow-wrap: break-word;
+}
+
+button, a, input, select, textarea {
+  touch-action: manipulation;
+}
+
+[role="dialog"] {
+  overscroll-behavior: contain;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 10000;
+  transform: translateY(-160%);
+  padding: 0.75rem 1rem;
+  border-radius: 0.25rem;
+  color: #08090B;
+  background: #FFE600;
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* A two-tone indicator remains visible on both ivory and dark surfaces. */
 *:focus-visible {
-  outline: 2px solid #89AACC;
-  outline-offset: 2px;
+  outline: 2px solid #FFE600 !important;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 5px #101216;
+}
+
+.flashlight-static-details > * {
+  height: auto;
+  min-height: 0;
+  min-width: 0;
+}
+
+.flashlight-static-details {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 639px) {
+  html {
+    scroll-padding-top: 6rem;
+  }
+  section[id], main[id], h1, h2, h3, h4 {
+    scroll-margin-top: 6rem;
+  }
+}
+
+/* CSS motion is disabled globally; component effects also check this preference. */
+@media (prefers-reduced-motion: reduce) {
+  html, html:focus-within, * {
+    scroll-behavior: auto !important;
+  }
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .flashlight-reveal-mask, .flashlight-torch-glow {
+    display: none !important;
+  }
 }

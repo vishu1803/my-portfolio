@@ -31,7 +31,7 @@ export default function EditorialFooter({ onOpenResume }: EditorialFooterProps) 
   }, []);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
   };
 
   const email = "vishwanatnishad@gmail.com";
@@ -50,7 +50,7 @@ export default function EditorialFooter({ onOpenResume }: EditorialFooterProps) 
             <div className="flex items-center gap-2 mb-2">
               <span className="w-2 h-2 rounded-full bg-[#FFE600]" />
               <span className="text-xs font-mono tracking-widest text-[#FFE600] uppercase">
-                COLOPHON // PRODUCTION PORTFOLIO
+                COLOPHON // PERSONAL PORTFOLIO
               </span>
             </div>
             <h3 className="text-2xl sm:text-3xl font-display italic text-white">
@@ -108,7 +108,7 @@ export default function EditorialFooter({ onOpenResume }: EditorialFooterProps) 
 
           <div>
             <div className="text-muted uppercase tracking-wider text-[11px] mb-3">
-              Verified Profiles
+              Profile Links
             </div>
             <div className="space-y-2">
               <div>
@@ -183,7 +183,7 @@ export default function EditorialFooter({ onOpenResume }: EditorialFooterProps) 
             <span className="stamp-box px-2 py-0.5 border-white/20 text-white/70">
               ORIGINAL EDITORIAL SPEC
             </span>
-            <span>VERIFIED FACT-CHECKED RESUME</span>
+            <span>RESUME &amp; PROJECT SOURCES</span>
           </div>
         </div>
       </div>

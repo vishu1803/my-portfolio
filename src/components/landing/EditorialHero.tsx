@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowDown, Download, Sparkles, Terminal, Code2, Cpu } from "lucide-react";
@@ -19,13 +19,14 @@ export default function EditorialHero({
   onWorkClick,
   onOpenResume,
 }: EditorialHeroProps) {
+  const reduced = useReducedMotion();
   const heroRef = useRef<HTMLDivElement>(null);
   const portraitFrameRef = useRef<HTMLDivElement>(null);
 
   // GSAP Sequenced Editorial Entrance
   useEffect(() => {
     const hero = heroRef.current;
-    if (!hero) return;
+    if (!hero || reduced || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
@@ -46,6 +47,7 @@ export default function EditorialHero({
       .from(".hero-title-first", {
         opacity: 0,
         y: 50,
+        clipPath: "inset(0 0 100% 0)",
         skewY: 3,
         duration: 1.1,
       }, "-=0.3")
@@ -80,6 +82,7 @@ export default function EditorialHero({
       .from(portraitFrameRef.current, {
         opacity: 0,
         scale: 0.95,
+        clipPath: "inset(0 0 100% 0)",
         duration: 1.2,
         ease: "power2.out",
       }, "-=1.0");
@@ -99,11 +102,11 @@ export default function EditorialHero({
     }, hero);
 
     return () => ctx.revert();
-  }, []);
+  }, [reduced]);
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+    if (el) el.scrollIntoView({ behavior: reduced ? "instant" : "smooth" });
   };
 
   return (
@@ -121,7 +124,7 @@ export default function EditorialHero({
       {/* Top Editorial Dispatch Bar */}
       <div className="hero-meta-bar max-w-[1280px] w-full mx-auto flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4 mb-8 sm:mb-12 text-[11px] font-mono tracking-wider text-muted uppercase">
         <div className="flex items-center gap-3">
-          <span className="w-2 h-2 rounded-full bg-[#FFE600] animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-[#FFE600]" />
           <span className="text-white font-semibold">DOSSIER // VN-2026</span>
           <span className="text-white/20">&bull;</span>
           <span className="text-muted hidden sm:inline">GORAKHPUR, INDIA [26.76°N, 83.37°E]</span>
@@ -140,20 +143,20 @@ export default function EditorialHero({
         <div className="lg:col-span-7 space-y-6">
           <div className="hero-label inline-flex items-center gap-2.5 text-xs font-mono tracking-[0.25em] text-[#FFE600] uppercase">
             <span className="w-6 h-px bg-[#FFE600]" />
-            <span>SOFTWARE ENGINEER &bull; SYSTEMS ARCHITECT</span>
+            <span>SOFTWARE ENGINEER &bull; FULL-STACK DEVELOPER</span>
           </div>
 
           {/* Massive Editorial Headline */}
           <div className="space-y-1">
             <h1 className="hero-title-first text-6xl sm:text-7xl md:text-8xl lg:text-[6.5rem] xl:text-[7.5rem] font-display italic tracking-tight text-white leading-[0.92]">
-              Vishwanath
+              Vishwanath<span className="sr-only"> Nishad</span>
             </h1>
-            <div className="hero-title-last text-6xl sm:text-7xl md:text-8xl lg:text-[6.5rem] xl:text-[7.5rem] font-display italic tracking-tight leading-[0.92] flex items-center gap-4">
+            <div aria-hidden="true" className="hero-title-last text-6xl sm:text-7xl md:text-8xl lg:text-[6.5rem] xl:text-[7.5rem] font-display italic tracking-tight leading-[0.92] flex items-center gap-4">
               <span className="text-outline hover:text-white transition-colors duration-500">
                 Nishad
               </span>
               <span className="hidden sm:inline-block text-xs font-mono uppercase tracking-widest text-[#FFE600] border border-[#FFE600]/30 px-3 py-1 rounded-full not-italic">
-                VERIFIED PROFILE
+                PERSONAL PROFILE
               </span>
             </div>
           </div>
@@ -179,7 +182,7 @@ export default function EditorialHero({
               { label: "Redis Caching", type: "tech" },
               { label: "Next.js App Router", type: "tech" },
               { label: "Docker Compose", type: "tech" },
-              { label: "Python 3.11", type: "lang" },
+              { label: "Python", type: "lang" },
               { label: "TypeScript", type: "lang" },
             ].map((skill, idx) => (
               <span
@@ -193,14 +196,15 @@ export default function EditorialHero({
 
           {/* CTAs */}
           <div className="hero-ctas pt-4 flex flex-wrap items-center gap-4">
-            <button
-              type="button"
-              onClick={() => scrollTo("case-studies")}
-              className="px-6 sm:px-8 py-3.5 rounded-full bg-[#FAF8F5] hover:bg-white text-[#0B0C0E] text-xs sm:text-sm font-mono uppercase tracking-wider font-semibold transition-all duration-200 flex items-center gap-2 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] cursor-pointer"
+            <motion.a
+              href="#case-studies"
+              whileHover={reduced ? undefined : { y: -2 }}
+              whileTap={reduced ? undefined : { scale: 0.98 }}
+              className="px-6 sm:px-8 py-3.5 rounded-full bg-[#FAF8F5] hover:bg-white text-[#0B0C0E] text-xs sm:text-sm font-mono uppercase tracking-wider font-semibold transition-[color,background-color,box-shadow] duration-200 flex items-center gap-2 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] cursor-pointer"
             >
               <span>Investigate Case Studies</span>
-              <ArrowDown className="w-4 h-4 animate-bounce" />
-            </button>
+              <ArrowDown className="w-4 h-4" />
+            </motion.a>
 
             <button
               type="button"
@@ -208,20 +212,19 @@ export default function EditorialHero({
                 if (onOpenResume) onOpenResume();
                 else window.open("/assets/aistudio/software-vishu_1f0ccd66.pdf", "_blank");
               }}
-              className="px-6 py-3.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs sm:text-sm font-mono tracking-wider uppercase transition-all duration-200 flex items-center gap-2 cursor-pointer hover:border-white/30"
+              className="px-6 py-3.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs sm:text-sm font-mono tracking-wider uppercase transition-[color,background-color,box-shadow] duration-200 flex items-center gap-2 cursor-pointer hover:border-white/30"
             >
               <Download className="w-4 h-4 text-[#FFE600]" />
               <span>Resume Dossier (PDF)</span>
             </button>
 
-            <button
-              type="button"
-              onClick={() => scrollTo("contact")}
+            <a
+              href="#contact"
               className="px-5 py-3.5 rounded-full text-xs sm:text-sm font-mono text-muted hover:text-white transition-colors flex items-center gap-1.5"
             >
               <span>Direct Dispatch</span>
               <span className="text-[#FFE600]">↗</span>
-            </button>
+            </a>
           </div>
         </div>
 
@@ -254,9 +257,9 @@ export default function EditorialHero({
                   {/* Secret Blueprint Metadata */}
                   <div className="relative z-10 flex items-center justify-between border-b border-[#FFE600]/30 pb-3">
                     <span className="bg-[#FFE600] text-black px-2 py-0.5 font-bold tracking-widest uppercase text-[10px]">
-                      SYSTEM TELEMETRY
+                      FIELD NOTES
                     </span>
-                    <span className="text-white/80 text-[10px]">VN-CORE: v2.6.4</span>
+                    <span className="text-white/80 text-[10px]">FROM THE RESUME</span>
                   </div>
 
                   <div className="relative z-10 space-y-4 my-auto py-4">
@@ -269,10 +272,10 @@ export default function EditorialHero({
                     </div>
 
                     <div className="p-3 rounded-xl bg-black/70 border border-[#FFE600]/40 backdrop-blur-md">
-                      <div className="text-[10px] text-white/60 uppercase">Production Webhook Latency</div>
+                      <div className="text-[10px] text-white/60 uppercase">Project Focus</div>
                       <div className="text-sm font-bold text-white flex items-center justify-between mt-1">
-                        <span>AST Diff Parser</span>
-                        <span className="text-[#FFE600]">&lt; 1.2s Turnaround</span>
+                        <span>Pull Request Review</span>
+                        <span className="text-[#FFE600]">Python &amp; APIs</span>
                       </div>
                     </div>
 
@@ -286,8 +289,8 @@ export default function EditorialHero({
                   </div>
 
                   <div className="relative z-10 border-t border-[#FFE600]/30 pt-3 flex items-center justify-between text-[10px] text-white/60">
-                    <span>STATUS: OPERATIONAL</span>
-                    <span className="text-[#FFE600]">X-RAY CONFIRMED</span>
+                    <span>SOFTWARE / SYSTEMS</span>
+                    <span className="text-[#FFE600]">INSPECTION NOTES</span>
                   </div>
                 </div>
               }
@@ -300,7 +303,7 @@ export default function EditorialHero({
                   fill
                   priority
                   sizes="(max-width: 768px) 100vw, 420px"
-                  className="object-cover object-top filter grayscale contrast-110 brightness-95 hover:grayscale-0 hover:contrast-100 transition-all duration-700"
+                  className="object-cover object-top filter grayscale contrast-110 brightness-95 hover:grayscale-0 hover:contrast-100 transition-[filter] duration-700"
                   referrerPolicy="no-referrer"
                 />
                 
@@ -349,7 +352,7 @@ export default function EditorialHero({
           </div>
           <div className="hidden md:flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-[#FF4B4B]" />
-            <span className="text-white/80">Collaborative Task Manager &amp; AST Code Review</span>
+            <span className="text-white/80">Collaborative Task Manager &amp; Code Review</span>
           </div>
         </div>
 

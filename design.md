@@ -1,3 +1,5 @@
+> Historical design exploration. Superseded by the current editorial implementation described in README.md and docs/portfolio-content.md. The old performance, availability and roadmap statements below are not current measured claims or approved acceptance evidence.
+
 # NOBLE MODERN: Architectural Design System & 3D Spatial Manifesto
 > A comprehensive architectural guide to transforming developer portfolios into award-winning, noble 3D digital experiences.
 

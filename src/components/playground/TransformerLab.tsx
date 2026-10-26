@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useMemo, useEffect, useId, useRef } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 
 type TransformerTab = "overview" | "tokenizer" | "attention" | "sampling";
 
@@ -27,6 +27,12 @@ const ATTENTION_HEADS = [
 ];
 
 export default function TransformerLab() {
+  const labId = useId();
+  const reducedMotion = useReducedMotion();
+  const generationTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (generationTimer.current !== null) clearTimeout(generationTimer.current);
+  }, []);
   const [activeTab, setActiveTab] = useState<TransformerTab>("attention");
   const [prompt, setPrompt] = useState(PRESET_PROMPTS[0]);
   const [selectedTokenIndex, setSelectedTokenIndex] = useState<number>(0);
@@ -40,7 +46,7 @@ export default function TransformerLab() {
   // Tokenize the prompt into realistic BPE-style tokens
   const tokens: TokenData[] = useMemo(() => {
     // Basic regex splitting mimicking subword tokenization
-    const rawTokens = prompt.match(/\w+|[^\s\w]/g) || ["Start"];
+    const rawTokens = (prompt.match(/\w+|[^\s\w]/g) || ["Start"]).slice(0, 48);
     return rawTokens.map((t, idx) => ({
       text: t,
       id: 1000 + Math.abs(hashCode(t) % 49000),
@@ -162,15 +168,18 @@ export default function TransformerLab() {
       if (cumProb >= topP) break;
     }
 
-    return finalFiltered;
+    // Truncation changes the sample space. Renormalize before drawing a sample.
+    const remainingMass = finalFiltered.reduce((total, item) => total + item.prob, 0);
+    return finalFiltered.map(item => ({ ...item, prob: item.prob / remainingMass }));
   }, [tokens, prompt, temperature, topK, topP]);
 
   // Step next token into prompt
   const stepNextToken = () => {
-    if (nextTokenCandidates.length === 0) return;
+    if (nextTokenCandidates.length === 0 || generationTimer.current !== null) return;
     setIsGenerating(true);
 
-    setTimeout(() => {
+    generationTimer.current = setTimeout(() => {
+      generationTimer.current = null;
       // Sample token according to probability distribution
       const rand = Math.random();
       let cumulative = 0;
@@ -187,10 +196,13 @@ export default function TransformerLab() {
       setGeneratedTokens((prev) => [...prev, chosen]);
       setPrompt((prev) => prev.trim() + " " + chosen);
       setIsGenerating(false);
-    }, 200);
+    }, reducedMotion ? 0 : 200);
   };
 
   const resetPrompt = (p: string) => {
+    if (generationTimer.current !== null) clearTimeout(generationTimer.current);
+    generationTimer.current = null;
+    setIsGenerating(false);
     setPrompt(p);
     setGeneratedTokens([]);
     setSelectedTokenIndex(0);
@@ -208,8 +220,13 @@ export default function TransformerLab() {
             </span>
           </div>
           <h3 className="text-2xl sm:text-3xl font-display italic text-text-primary tracking-tight">
-            How LLM Transformers Compute Attention & Tokens
+            Explore Transformer Attention & Tokens
           </h3>
+          <p className="mt-3 max-w-2xl text-xs leading-relaxed text-white/80">
+            Interactive teaching simulation. Token splits and IDs are illustrative; attention weights
+            are handcrafted and sampling uses a fixed candidate list. No trained model or live AI
+            service is running. The first 48 tokens are shown to keep the matrix manageable.
+          </p>
         </div>
 
         {/* Tab Navigation */}
@@ -221,6 +238,7 @@ export default function TransformerLab() {
             { id: "overview", label: "4. Architecture Overview" },
           ].map((tab) => (
             <button
+              type="button"
               key={tab.id}
               onClick={() => setActiveTab(tab.id as TransformerTab)}
               className={`px-3.5 py-2 rounded-xl transition-all shrink-0 ${
@@ -238,13 +256,14 @@ export default function TransformerLab() {
       {/* Preset Prompt Selector & Input */}
       <div className="p-4 sm:p-6 border-b border-stroke bg-surface/30">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <label className="text-[11px] font-mono text-muted uppercase tracking-wider">
+          <label htmlFor={`${labId}-prompt`} className="text-[11px] font-mono text-muted uppercase tracking-wider">
             Active Prompt Sequence ({tokens.length} tokens):
           </label>
           <div className="flex items-center gap-1.5 flex-wrap">
             <span className="text-[11px] font-mono text-muted/60">Presets:</span>
             {PRESET_PROMPTS.map((p, idx) => (
               <button
+                type="button"
                 key={idx}
                 onClick={() => resetPrompt(p)}
                 className={`text-[10px] font-mono px-2.5 py-1 rounded-lg border transition-all ${
@@ -262,9 +281,13 @@ export default function TransformerLab() {
         {/* Editable Prompt Bar */}
         <div className="relative">
           <input
+            id={`${labId}-prompt`}
+            name="simulation-prompt"
+            maxLength={512}
+            autoComplete="off"
             type="text"
             value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
+            onChange={(e) => resetPrompt(e.target.value)}
             className="w-full p-3.5 rounded-xl bg-black/60 border border-white/10 text-sm sm:text-base font-mono text-text-primary focus:outline-none focus:border-[#89AACC] transition-all"
             placeholder="Type any sentence to inspect transformer attention and generation..."
           />
@@ -283,7 +306,10 @@ export default function TransformerLab() {
                 <div className="flex items-center gap-1">
                   {ATTENTION_HEADS.map((head) => (
                     <button
+                      type="button"
                       key={head.id}
+                      aria-pressed={selectedHead === head.id}
+                      aria-label={head.name}
                       onClick={() => setSelectedHead(head.id)}
                       className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-all ${
                         selectedHead === head.id
@@ -305,7 +331,7 @@ export default function TransformerLab() {
             {/* Token Sequence Pills (Click to inspect source token) */}
             <div>
               <div className="text-xs font-mono text-muted mb-2 flex items-center justify-between">
-                <span>Click a source token ($Q$) to visualize which target tokens ($K$) it attends to:</span>
+                <span>Select a source token (Q) to inspect its illustrative attention weights (K):</span>
                 <span className="text-[#89AACC]">
                   Selected: &quot;{tokens[selectedTokenIndex]?.text}&quot; (pos {selectedTokenIndex})
                 </span>
@@ -318,7 +344,10 @@ export default function TransformerLab() {
 
                   return (
                     <button
+                      type="button"
                       key={idx}
+                      aria-pressed={isSelected}
+                      aria-label={`Inspect source token ${tok.text}, position ${idx}`}
                       onClick={() => setSelectedTokenIndex(idx)}
                       className={`relative px-3 py-2 rounded-xl text-xs sm:text-sm font-mono transition-all flex flex-col items-center gap-1 border ${
                         isSelected
@@ -341,8 +370,12 @@ export default function TransformerLab() {
               </div>
             </div>
 
-            {/* Live Attention Heatmap Grid */}
-            <div className="p-4 rounded-2xl bg-black/60 border border-white/10 overflow-x-auto">
+            <p role="status" className="sr-only">
+              Illustrative weights from source token {tokens[selectedTokenIndex]?.text}:
+              {tokens.map((token, index) => ` ${token.text}: ${Math.round((attentionWeights[selectedTokenIndex]?.[index] || 0) * 100)} percent.`).join("")}
+            </p>
+            {/* The visual matrix duplicates the keyboard-selectable tokens and text summary. */}
+            <div aria-hidden="true" className="p-4 rounded-2xl bg-black/60 border border-white/10 overflow-x-auto">
               <div className="flex items-center justify-between mb-3 text-xs font-mono text-muted">
                 <span>Attention Matrix Heatmap: Softmax(Q · Kᵀ / √dₖ)</span>
                 <span className="text-[11px] text-muted/70">Rows = Queries (Q), Columns = Keys (K)</span>
@@ -379,8 +412,7 @@ export default function TransformerLab() {
                       return (
                         <div
                           key={j}
-                          onClick={() => setSelectedTokenIndex(i)}
-                          className="w-10 sm:w-12 h-8 rounded-md flex items-center justify-center text-[10px] font-mono cursor-pointer transition-all hover:scale-110"
+                          className="w-10 sm:w-12 h-8 rounded-md flex items-center justify-center text-[10px] font-mono"
                           style={{
                             backgroundColor: `rgba(78, 133, 191, ${score})`,
                             color: score > 0.4 ? "#FFFFFF" : "rgba(255,255,255,0.6)",
@@ -410,10 +442,12 @@ export default function TransformerLab() {
               {/* Temperature Slider */}
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs font-mono">
-                  <span className="text-muted">Temperature ($T$):</span>
+                  <label htmlFor={`${labId}-temperature`} className="text-muted">Temperature (T):</label>
                   <span className="text-text-primary font-bold">{temperature}</span>
                 </div>
                 <input
+                  id={`${labId}-temperature`}
+                  name="temperature"
                   type="range"
                   min="0.1"
                   max="1.8"
@@ -434,10 +468,12 @@ export default function TransformerLab() {
               {/* Top-K Slider */}
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs font-mono">
-                  <span className="text-muted">Top-K Truncation:</span>
+                  <label htmlFor={`${labId}-top-k`} className="text-muted">Top-K Truncation:</label>
                   <span className="text-text-primary font-bold">{topK}</span>
                 </div>
                 <input
+                  id={`${labId}-top-k`}
+                  name="top-k"
                   type="range"
                   min="1"
                   max="8"
@@ -454,10 +490,12 @@ export default function TransformerLab() {
               {/* Top-P Slider */}
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs font-mono">
-                  <span className="text-muted">Top-P (Nucleus):</span>
+                  <label htmlFor={`${labId}-top-p`} className="text-muted">Top-P (Nucleus):</label>
                   <span className="text-text-primary font-bold">{Math.round(topP * 100)}%</span>
                 </div>
                 <input
+                  id={`${labId}-top-p`}
+                  name="top-p"
                   type="range"
                   min="0.4"
                   max="1.0"
@@ -480,17 +518,18 @@ export default function TransformerLab() {
                     Next-Token Softmax Probability Distribution
                   </h4>
                   <p className="text-xs font-mono text-muted mt-0.5">
-                    P(wᵢ) = exp(zᵢ / T) / ∑ exp(zⱼ / T) (Evaluated after linear LM head)
+                    Temperature-scaled example logits, filtered by Top-K / Top-P and renormalized
                   </p>
                 </div>
 
                 {/* Step button */}
                 <button
+                  type="button"
                   onClick={stepNextToken}
                   disabled={isGenerating}
                   className="px-5 py-2.5 rounded-full bg-text-primary text-bg font-mono text-xs font-bold uppercase tracking-wider hover:bg-white transition-all shadow-lg flex items-center gap-1.5"
                 >
-                  <span>{isGenerating ? "Predicting..." : "Step Next Token"}</span>
+                  <span>{isGenerating ? "Sampling…" : "Sample Next Token"}</span>
                   <span>→</span>
                 </button>
               </div>
@@ -509,9 +548,9 @@ export default function TransformerLab() {
                     </div>
                     <div className="w-full h-3 rounded-full bg-surface overflow-hidden border border-white/5">
                       <motion.div
-                        initial={{ width: 0 }}
+                        initial={reducedMotion ? false : { width: 0 }}
                         animate={{ width: `${cand.prob * 100}%` }}
-                        transition={{ duration: 0.3 }}
+                        transition={{ duration: reducedMotion ? 0 : 0.3 }}
                         className="h-full accent-gradient rounded-full"
                       />
                     </div>
@@ -524,7 +563,7 @@ export default function TransformerLab() {
             <div className="p-4 rounded-2xl bg-black/40 border border-white/10 text-xs font-mono">
               <span className="text-muted block mb-1">Cumulative Generated Extension:</span>
               <p className="text-text-primary text-sm font-mono leading-relaxed">
-                {prompt}{" "}
+                {generatedTokens.length === 0 && "Sample a token to extend the prompt above."}
                 {generatedTokens.map((t, idx) => (
                   <span
                     key={idx}
@@ -544,7 +583,7 @@ export default function TransformerLab() {
             {/* Token Table */}
             <div className="p-5 rounded-2xl bg-black/60 border border-white/10">
               <h4 className="text-sm font-mono font-semibold text-text-primary mb-2">
-                Subword Byte-Pair Encoding (BPE) & Positional Embeddings
+                Illustrative Token Splits & Positional Encoding
               </h4>
               <p className="text-xs font-mono text-muted mb-4 leading-relaxed">
                 Because transformers process all tokens simultaneously without recurrence, Positional Encoding (PE) must be added to each token embedding vector (E_token + PE_pos).
@@ -681,9 +720,9 @@ export default function TransformerLab() {
         </div>
 
         <div className="flex items-center gap-4 text-[11px]">
-          <span>Vocabulary: <strong className="text-text-primary">50,257 BPE Tokens</strong></span>
-          <span>Hidden Dimension (d_model): <strong className="text-text-primary">768</strong></span>
-          <span>Heads: <strong className="text-text-primary">12 Heads</strong></span>
+          <span>Token IDs: <strong className="text-text-primary">Illustrative hashes</strong></span>
+          <span>Example positional dimension: <strong className="text-text-primary">64</strong></span>
+          <span>Attention patterns: <strong className="text-text-primary">4 examples</strong></span>
         </div>
       </div>
     </div>

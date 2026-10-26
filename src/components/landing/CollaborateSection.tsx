@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState, useId } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion, LayoutGroup } from "framer-motion";
+import useAccessibleDialog from "../../hooks/useAccessibleDialog";
 import gsap from "gsap";
 import { ArrowUpRight, Copy, Check, Mail, Phone, MapPin, Code2, Download, X } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
@@ -13,6 +14,10 @@ interface CollaborateSectionProps {
 }
 
 export default function CollaborateSection({ onOpenResume }: CollaborateSectionProps) {
+  const reduced = useReducedMotion();
+  const contactId = useId();
+  const surfaceId = `${contactId}-surface`;
+  const pointerSetters = useRef<{ x: (value: number) => void; y: (value: number) => void } | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonWrapperRef = useRef<HTMLDivElement>(null);
@@ -23,7 +28,9 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedPhone, setCopiedPhone] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [formState, setFormState] = useState({ name: "", email: "", message: "", projectType: "Full-Stack Development" });
+  const [copyError, setCopyError] = useState("");
+  const dialogRef = useAccessibleDialog(isOverlayOpen, () => setIsOverlayOpen(false));
+  const [formState, setFormState] = useState({ name: "", email: "", message: "", projectType: "Full-Stack Web Application" });
 
   const email = "vishwanatnishad@gmail.com";
   const phone = "+91 7905087928";
@@ -32,36 +39,26 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
   const leetcodeUrl = "https://leetcode.com/u/vishwanatnishad";
   const resumeUrl = "/assets/aistudio/software-vishu_1f0ccd66.pdf";
 
-  // Coordinates for the interactive strings
-  const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
-
-  // Escape key listener for overlay
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOverlayOpen) {
-        setIsOverlayOpen(false);
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    if (isOverlayOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "";
-    };
-  }, [isOverlayOpen]);
+    if (!copiedEmail && !copiedPhone) return;
+    const timer = window.setTimeout(() => { setCopiedEmail(false); setCopiedPhone(false); }, 2200);
+    return () => window.clearTimeout(timer);
+  }, [copiedEmail, copiedPhone]);
 
   // GSAP + ScrollTrigger Entrance Animation
   useEffect(() => {
     const section = sectionRef.current;
-    if (!section) return;
+    if (!section || reduced || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
+      if (stringsGroupRef.current) {
+        pointerSetters.current = {
+          x: gsap.quickTo(stringsGroupRef.current, "x", { duration: 0.25, ease: "power2.out" }),
+          y: gsap.quickTo(stringsGroupRef.current, "y", { duration: 0.25, ease: "power2.out" }),
+        };
+      }
       const paths = section.querySelectorAll<SVGPathElement>(".tension-string");
       
       paths.forEach((p) => {
@@ -112,58 +109,28 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
         ease: "elastic.out(1, 0.75)",
       }, "-=0.8");
 
-      // Continuous gentle tension sway on strings
-      gsap.to(paths, {
-        y: "+=3",
-        duration: 2.4,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        stagger: {
-          each: 0.2,
-          from: "random",
-        },
-      });
-
-      // Subtle breath on the hand
-      if (handRef.current) {
-        gsap.to(handRef.current, {
-          y: "+=4",
-          x: "-=2",
-          duration: 3,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
-        });
-      }
+      // One restrained pull after the entrance, rather than perpetual offscreen motion.
+      tl.to(paths, { y: 3, duration: 1.2, repeat: 1, yoyo: true, ease: "sine.inOut", stagger: 0.1 }, "-=0.1")
+        .to(handRef.current, { x: -2, y: 4, duration: 1.2, repeat: 1, yoyo: true, ease: "sine.inOut" }, "<");
     }, section);
 
-    return () => ctx.revert();
-  }, []);
+    return () => { pointerSetters.current = null; ctx.revert(); };
+  }, [reduced]);
 
-  // Pointer movement tracking for interactive string tension
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
+    if (reduced || e.pointerType !== "mouse" || !containerRef.current || window.matchMedia("(pointer: coarse)").matches) return;
     const rect = containerRef.current.getBoundingClientRect();
-    const x = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
-    const y = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
-    setMouseOffset({ x: Math.max(-1, Math.min(1, x)), y: Math.max(-1, Math.min(1, y)) });
+    pointerSetters.current?.x(((e.clientX - rect.left) / rect.width - 0.5) * 10);
+    pointerSetters.current?.y(((e.clientY - rect.top) / rect.height - 0.5) * 6);
   };
-
-  const handlePointerLeave = () => {
-    setMouseOffset({ x: 0, y: 0 });
+  const handlePointerLeave = () => { pointerSetters.current?.x(0); pointerSetters.current?.y(0); };
+  const copyEmail = async () => {
+    try { await navigator.clipboard.writeText(email); setCopiedEmail(true); setCopyError(""); }
+    catch { setCopyError("Copy unavailable. Select the email address or open its link."); }
   };
-
-  const copyEmail = () => {
-    navigator.clipboard.writeText(email);
-    setCopiedEmail(true);
-    setTimeout(() => setCopiedEmail(false), 2200);
-  };
-
-  const copyPhone = () => {
-    navigator.clipboard.writeText(phone);
-    setCopiedPhone(true);
-    setTimeout(() => setCopiedPhone(false), 2200);
+  const copyPhone = async () => {
+    try { await navigator.clipboard.writeText(phone); setCopiedPhone(true); setCopyError(""); }
+    catch { setCopyError("Copy unavailable. Select the phone number or open its link."); }
   };
 
   const handleFormSubmit = (e: React.FormEvent) => {
@@ -174,11 +141,12 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
     setFormSubmitted(true);
   };
 
-  // String paths computed with dynamic bezier curves reacting slightly to pointer tension
-  const px = mouseOffset.x * 12;
-  const py = mouseOffset.y * 8;
+  // Fixed SVG geometry; GSAP owns decorative transforms, Framer owns the button.
+  const px = 0;
+  const py = 0;
 
   return (
+    <LayoutGroup id={contactId}>
     <section
       id="contact"
       ref={sectionRef}
@@ -190,7 +158,7 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
       <div className="absolute -bottom-40 -left-20 w-[450px] h-[450px] rounded-full bg-gradient-to-tr from-[#D8D4C8]/50 to-transparent blur-3xl pointer-events-none" />
 
       {/* Top Editorial Registration Marks & Coordinates */}
-      <div className="max-w-[1200px] mx-auto flex items-center justify-between border-b border-[#121316]/15 pb-4 mb-16 text-[11px] font-mono tracking-widest uppercase text-[#121316]/60">
+      <div className="max-w-[1200px] mx-auto flex items-center justify-between border-b border-[#121316]/15 pb-4 mb-16 text-[11px] font-mono tracking-widest uppercase text-[#121316]/75">
         <div className="flex items-center gap-3">
           <span className="w-2 h-2 rounded-full bg-[#FF4B4B]" />
           <span>DIRECT DISPATCH // SEC-07</span>
@@ -229,11 +197,13 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
         </div>
 
         {/* Central Graphic Composition: Strings + Hand Pulling the Button */}
-        <div className="relative w-full max-w-[650px] h-[220px] sm:h-[260px] flex items-center justify-center">
+        <div className="relative w-full max-w-[650px] h-[270px] sm:h-[320px]">
           {/* SVG Canvas for Tension Strings and Hand Illustration */}
           <svg
             className="absolute inset-0 w-full h-full pointer-events-none overflow-visible"
-            viewBox="0 0 650 260"
+            viewBox="0 0 650 360"
+            preserveAspectRatio="xMidYMax meet"
+            aria-hidden="true"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -291,7 +261,6 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
             {/* Authentic Hand-Drawn Black-and-White Ink Illustration of Human Hand (No Emojis!) */}
             <g
               ref={handRef}
-              transform={`translate(${mouseOffset.x * 6}, ${mouseOffset.y * 4})`}
               filter="url(#handShadow)"
               className="transition-transform duration-300"
             >
@@ -366,18 +335,16 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
           {/* Glossy Jet-Black Pill Button */}
           <div
             ref={buttonWrapperRef}
-            className="relative z-20"
-            style={{
-              transform: `translate(${mouseOffset.x * 4}px, ${mouseOffset.y * 3}px)`,
-              transition: "transform 0.15s ease-out",
-            }}
+            className="absolute right-0 top-[40%] z-20 sm:right-8 sm:top-[15%]"
           >
             <motion.button
               type="button"
-              onClick={() => setIsOverlayOpen(true)}
-              whileHover={{ scale: 1.04, y: -3 }}
-              whileTap={{ scale: 0.98, y: 0 }}
-              className="group relative inline-flex items-center gap-4 px-8 sm:px-11 py-4 sm:py-5 rounded-full bg-gradient-to-b from-[#1C1E23] via-[#0E1013] to-[#050607] text-[#FAF8F5] shadow-[0_20px_50px_rgba(0,0,0,0.35),0_4px_12px_rgba(0,0,0,0.25)] border border-white/20 cursor-pointer overflow-hidden transition-all duration-300"
+              onClick={() => { setFormSubmitted(false); setIsOverlayOpen(true); }}
+              layoutId={reduced ? undefined : surfaceId}
+              style={{ perspective: 1000, transformPerspective: 1000 }}
+              whileHover={reduced ? undefined : { scale: 1.025, y: -3, rotateX: -4, rotateY: 5 }}
+              whileTap={reduced ? undefined : { scale: 0.98, y: 0, rotateX: 0, rotateY: 0 }}
+              className="group relative inline-flex items-center gap-2.5 sm:gap-4 px-5 sm:px-11 py-4 sm:py-5 rounded-full bg-gradient-to-b from-[#1C1E23] via-[#0E1013] to-[#050607] text-[#FAF8F5] shadow-[0_20px_50px_rgba(0,0,0,0.35),0_4px_12px_rgba(0,0,0,0.25)] border border-white/20 cursor-pointer overflow-hidden transition-[color,background-color,border-color,box-shadow] duration-300"
               aria-label="Open contact and collaboration overlay"
             >
               {/* Glossy Top Specular Highlight Edge */}
@@ -388,17 +355,17 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
 
               {/* Status Indicator */}
               <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFE600] opacity-75" />
+                <span className="absolute inline-flex h-full w-full rounded-full bg-[#FFE600] opacity-75" />
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-[#FFE600]" />
               </span>
 
               {/* Button Typography */}
-              <span className="font-mono text-sm sm:text-base font-semibold tracking-[0.2em] uppercase text-white group-hover:text-[#FFE600] transition-colors duration-200">
+              <span className="font-mono text-[11px] sm:text-base whitespace-nowrap font-semibold tracking-[0.12em] uppercase text-white group-hover:text-[#FFE600] transition-colors duration-200">
                 LET&apos;S COLLABORATE
               </span>
 
               {/* Arrow Badge */}
-              <span className="w-8 h-8 rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-white text-xs group-hover:bg-[#FFE600] group-hover:text-black group-hover:border-[#FFE600] transition-all duration-300 group-hover:translate-x-1 group-hover:-translate-y-1">
+              <span className="w-6 h-6 sm:w-8 sm:h-8 shrink-0 rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-white text-xs group-hover:bg-[#FFE600] group-hover:text-black group-hover:border-[#FFE600] transition-all duration-300 group-hover:translate-x-1 group-hover:-translate-y-1">
                 ↗
               </span>
             </motion.button>
@@ -411,27 +378,27 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
         {/* Supporting Micro-Stats Strip */}
         <div className="mt-14 sm:mt-20 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 max-w-4xl w-full border-t border-[#121316]/15 pt-8 text-center sm:text-left">
           <div>
-            <div className="text-xs font-mono uppercase text-[#121316]/60 tracking-wider">Direct Channel</div>
-            <div className="text-sm font-semibold text-[#121316] font-mono mt-1 truncate">
+            <div className="text-xs font-mono uppercase text-[#121316]/75 tracking-wider">Direct Channel</div>
+            <div className="text-xs sm:text-sm font-semibold text-[#121316] font-mono mt-1 break-all">
               {email}
             </div>
           </div>
           <div>
-            <div className="text-xs font-mono uppercase text-[#121316]/60 tracking-wider">Direct Voice</div>
+            <div className="text-xs font-mono uppercase text-[#121316]/75 tracking-wider">Direct Voice</div>
             <div className="text-sm font-semibold text-[#121316] font-mono mt-1">
               {phone}
             </div>
           </div>
           <div>
-            <div className="text-xs font-mono uppercase text-[#121316]/60 tracking-wider">Verified Discipline</div>
+            <div className="text-xs font-mono uppercase text-[#121316]/75 tracking-wider">From the resume</div>
             <div className="text-sm font-semibold text-[#121316] font-mono mt-1">
               300+ LeetCode DSA
             </div>
           </div>
           <div>
-            <div className="text-xs font-mono uppercase text-[#121316]/60 tracking-wider">Fast Turnaround</div>
+            <div className="text-xs font-mono uppercase text-[#121316]/75 tracking-wider">Start a conversation</div>
             <div className="text-sm font-semibold text-[#121316] font-mono mt-1">
-              &lt; 24h Response Time
+              Email or LinkedIn
             </div>
           </div>
         </div>
@@ -445,18 +412,21 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsOverlayOpen(false)}
-            className="fixed inset-0 z-[150] flex items-center justify-center p-4 sm:p-6 md:p-10 bg-black/85 backdrop-blur-md overflow-y-auto"
+            className="fixed inset-0 z-[150] flex items-center justify-center p-4 sm:p-6 md:p-10 bg-black/85 backdrop-blur-md overflow-y-auto overscroll-contain"
+            ref={dialogRef}
+            tabIndex={-1}
             role="dialog"
             aria-modal="true"
-            aria-labelledby="collaborate-modal-title"
+            aria-labelledby={`${contactId}-title`}
           >
             <motion.div
-              initial={{ scale: 0.94, opacity: 0, y: 25 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.94, opacity: 0, y: 20 }}
-              transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
+              layoutId={reduced ? undefined : surfaceId}
+              initial={reduced ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: reduced ? 0 : 0.35, layout: { duration: reduced ? 0 : 0.4, ease: "easeInOut" } }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-4xl rounded-3xl bg-[#0E1014] text-[#FAF8F5] border border-white/15 shadow-[0_25px_80px_rgba(0,0,0,0.85)] p-6 sm:p-10 my-auto overflow-hidden"
+              className="relative w-full max-w-4xl select-text rounded-3xl bg-[#0E1014] text-[#FAF8F5] border border-white/15 shadow-[0_25px_80px_rgba(0,0,0,0.85)] p-6 sm:p-10 my-auto overflow-hidden"
             >
               {/* Header Close Bar */}
               <div className="flex items-center justify-between border-b border-white/10 pb-5 mb-8">
@@ -471,6 +441,7 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
                   onClick={() => setIsOverlayOpen(false)}
                   className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-white/80 hover:text-white transition-all font-mono text-sm"
                   aria-label="Close dialog"
+                  data-dialog-close
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -481,7 +452,7 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
                 {/* Left 5 Cols: Verified Identity & Direct Channels */}
                 <div className="lg:col-span-5 space-y-6">
                   <div>
-                    <h3 id="collaborate-modal-title" className="text-3xl font-display italic text-white mb-2">
+                    <h3 id={`${contactId}-title`} className="text-3xl font-display italic text-white mb-2">
                       Vishwanath Nishad
                     </h3>
                     <p className="text-sm font-body text-white/70 leading-relaxed">
@@ -604,15 +575,18 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
                     <span className="text-xs font-mono text-muted">Prefilled Email Client</span>
                   </h4>
                   <p className="text-xs text-white/60 mb-5 leading-relaxed">
-                    Fill out your message below to send directly to <span className="text-[#FFE600] font-mono">{email}</span>.
+                    Prepare an email draft to <span className="text-[#FFE600] font-mono">{email}</span>.
                   </p>
 
                   <form onSubmit={handleFormSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-mono uppercase text-white/60 mb-1.5">Your Name</label>
+                        <label htmlFor={`${contactId}-name`} className="block text-xs font-mono uppercase text-white/60 mb-1.5">Your Name</label>
                         <input
+                          id={`${contactId}-name`}
+                          name="name"
                           type="text"
+                          autoComplete="name"
                           required
                           value={formState.name}
                           onChange={(e) => setFormState({ ...formState, name: e.target.value })}
@@ -621,9 +595,13 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-mono uppercase text-white/60 mb-1.5">Your Email</label>
+                        <label htmlFor={`${contactId}-email`} className="block text-xs font-mono uppercase text-white/60 mb-1.5">Your Email</label>
                         <input
+                          id={`${contactId}-email`}
+                          name="email"
                           type="email"
+                          autoComplete="email"
+                          spellCheck={false}
                           required
                           value={formState.email}
                           onChange={(e) => setFormState({ ...formState, email: e.target.value })}
@@ -634,8 +612,10 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
                     </div>
 
                     <div>
-                      <label className="block text-xs font-mono uppercase text-white/60 mb-1.5">Inquiry Type</label>
+                      <label htmlFor={`${contactId}-project-type`} className="block text-xs font-mono uppercase text-white/60 mb-1.5">Inquiry Type</label>
                       <select
+                          id={`${contactId}-project-type`}
+                          name="project-type"
                         value={formState.projectType}
                         onChange={(e) => setFormState({ ...formState, projectType: e.target.value })}
                         className="w-full px-3.5 py-2.5 rounded-xl bg-[#14161C] border border-white/10 text-sm text-white focus:outline-none focus:border-[#FFE600] transition-colors font-body"
@@ -649,8 +629,10 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
                     </div>
 
                     <div>
-                      <label className="block text-xs font-mono uppercase text-white/60 mb-1.5">Message / Details</label>
+                      <label htmlFor={`${contactId}-message`} className="block text-xs font-mono uppercase text-white/60 mb-1.5">Message / Details</label>
                       <textarea
+                          id={`${contactId}-message`}
+                          name="message"
                         required
                         rows={4}
                         value={formState.message}
@@ -664,9 +646,11 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
                       type="submit"
                       className="w-full py-3.5 rounded-xl bg-[#FFE600] hover:bg-[#FFE600]/90 text-black font-semibold text-sm font-mono tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-[#FFE600]/20"
                     >
-                      <span>Transmit Dispatch (Mailto)</span>
+                      <span>Start a Project</span>
                       <ArrowUpRight className="w-4 h-4" />
                     </button>
+                    <p className="text-xs leading-relaxed text-white/70">Opens your email app. Review and send the draft there.</p>
+                    <p role="status" className="text-xs leading-relaxed text-[#FFE600]">{formSubmitted ? "Your email draft is ready. Send it in your email app." : copyError || (copiedEmail ? "Email copied." : copiedPhone ? "Phone number copied." : "")}</p>
                   </form>
                 </div>
               </div>
@@ -675,5 +659,6 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
         )}
       </AnimatePresence>
     </section>
+    </LayoutGroup>
   );
 }
