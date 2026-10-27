@@ -61,3 +61,22 @@ The visible Pause animations switch uses the same reactive preference as system 
 The existing inline SVG hand and five connected strings are preserved. Three font families remain: condensed display, serif, and system mono. Portrait priority, image sizing, real project links and the email-draft form are preserved.
 
 Dialog focus and keyboard listeners now attach in a layout effect so Escape is ready when a dialog first becomes visible. The word scene holds its transition while a word has keyboard focus. Lenis owns GSAP lag smoothing while active, then restores the default on teardown, keeping wall-clock scroll timing consistent after slow frames.
+
+## Follow-up after PR #9
+
+The hero's opening timeline uses GSAP core independently of ScrollTrigger, so it starts on mobile without waiting for input. Coarse-pointer devices load the scroll plugin on their first interaction; nearby scene observers prepare effects as sections approach the viewport. Desktop project pin spacing initializes eagerly to keep anchor positions reliable. Shared text reveals prepare within 150px instead of measuring every offscreen fragment at startup.
+
+The follow-up also gives dialog titles h2 semantics, hides decorative close symbols, names GitHub/live links, and enforces readable dialog copy and 44px controls. Screenshot descriptions were checked against the actual local assets, including the catalogue loading state and job-board landing page. Browser assertions wait for visible dialogs, completed scroll destinations and removed exit layers instead of assuming fixed transition durations.
+
+The complete follow-up run exposed a chained-dialog focus race: contact could capture the outgoing physics layer rather than the original Hire me control. Contact now passes an explicit button ref to the shared dialog hook for reliable return focus; nested resume dialogs still use their own opener.
+
+## Validation of the retained follow-up
+
+- Production build and its TypeScript validation: passed. Standalone `typecheck`, `lint` and seven content checks: passed.
+- Complete production-browser suite: **33/33 passed**, including the actual mask, connected SVG cords, Matter.js bodies, word keyboard nudging, nested dialogs, focus return, Escape, touch, global pause, runtime system preference changes and clean console/page exceptions.
+- Responsive suite and final visual audit: every chapter fits at 1440px and 390px; mobile project cases stack. All twelve chapter/viewport combinations had zero horizontal overflow and no fully visible controls below 44px. Desktop/mobile hero and hand/string screenshots were visually reviewed.
+- Isolated local-production Lighthouse mobile run (Chrome 153, simulated mobile throttling, 390×844): **performance 78 / accessibility 100**, FCP 1.2s, LCP 1.7s, TBT 860ms, speed index 3.8s and CLS 0.
+
+The requested performance ≥90 gate is **not met**. Accessibility exceeds the ≥95 target and layout shift is zero in that run. Remaining startup JavaScript/main-thread cost needs further work; these results do not certify a production deployment score. Keep the follow-up in draft while that performance requirement remains unresolved.
+
+No additional service configuration is required. A response-time promise and “Open to roles” copy remain unpublished until the owner supplies those facts.

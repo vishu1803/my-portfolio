@@ -51,7 +51,7 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
               onClick={onClose}
               className="absolute top-6 right-6 w-9 h-9 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-text-primary/70 hover:text-text-primary transition-all text-sm font-mono"
             >
-              ✕
+              <span aria-hidden="true">✕</span>
             </button>
 
             {/* Top metadata */}
@@ -69,12 +69,12 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
               </span>
             </div>
 
-            <h3
+            <h2
               id={dialogId}
               className="text-2xl sm:text-4xl font-display italic text-text-primary mb-3"
             >
               {article.title}
-            </h3>
+            </h2>
 
             <p className="text-sm text-[#89AACC] font-mono mb-6 leading-relaxed">
               {article.subtitle}
@@ -155,6 +155,7 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
               <div className="flex items-center gap-3">
                 <a
                   href={article.githubRepo}
+                  aria-label={`GitHub: ${article.title}, source code (opens in a new tab)`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-5 py-2 rounded-full bg-text-primary text-bg text-xs font-mono tracking-wider uppercase font-semibold flex items-center gap-1.5 hover:bg-white transition-colors"
@@ -166,6 +167,7 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
                 {article.liveDemo && (
                   <a
                     href={article.liveDemo}
+                    aria-label={`Live site: ${article.title} (opens in a new tab)`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-5 py-2 rounded-full border border-stroke bg-bg hover:bg-surface text-xs font-mono text-text-primary tracking-wider uppercase flex items-center gap-1.5 transition-colors"

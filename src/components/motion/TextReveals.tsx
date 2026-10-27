@@ -38,13 +38,28 @@ function Reveal({
       kind === "marker"
         ? { scaleX: 1 }
         : { yPercent: 0, y: 0, opacity: 1, filter: "blur(0px)" };
-    const context = gsap.context(() => {
-      gsap.set(target, from);
-    }, node);
+    const context = gsap.context(() => {}, node);
+    let prepared = false;
+    const prepare = () => {
+      if (prepared) return;
+      prepared = true;
+      context.add(() => gsap.set(target, from));
+    };
+    const preparation = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        prepare();
+        preparation.disconnect();
+      },
+      { rootMargin: "150px 0px" },
+    );
+    preparation.observe(node);
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
         observer.disconnect();
+        preparation.disconnect();
+        prepare();
         context.add(() =>
           gsap.to(target, {
             ...to,
@@ -58,6 +73,7 @@ function Reveal({
     observer.observe(node);
     return () => {
       observer.disconnect();
+      preparation.disconnect();
       context.revert();
     };
   }, [kind, reduced]);

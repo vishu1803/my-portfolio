@@ -51,7 +51,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
               onClick={onClose}
               className="absolute top-6 right-6 w-9 h-9 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-text-primary/70 hover:text-text-primary transition-all text-sm font-mono z-20"
             >
-              ✕
+              <span aria-hidden="true">✕</span>
             </button>
 
             {/* Top metadata */}
@@ -65,12 +65,12 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
               </span>
             </div>
 
-            <h3
+            <h2
               id={dialogId}
               className="text-3xl sm:text-4xl font-display italic text-text-primary mb-6"
             >
               {project.title}
-            </h3>
+            </h2>
 
             {/* Software Window Mockup */}
             <div className="mb-6">

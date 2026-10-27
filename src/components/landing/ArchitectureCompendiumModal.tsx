@@ -186,23 +186,25 @@ export default function ArchitectureCompendiumModal({
                       {article.githubRepo && (
                         <a
                           href={article.githubRepo}
+                          aria-label={`GitHub: ${article.title}, source code (opens in a new tab)`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="px-3 py-1 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 text-xs font-mono text-text-primary transition-all flex items-center gap-1.5"
                         >
                           <span>GitHub</span>
-                          <span className="text-[10px]">↗</span>
+                          <span aria-hidden="true" className="text-[10px]">↗</span>
                         </a>
                       )}
                       {article.liveDemo && (
                         <a
                           href={article.liveDemo}
+                          aria-label={`Live site: ${article.title} (opens in a new tab)`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="px-3 py-1 rounded-full bg-[#89AACC]/20 hover:bg-[#89AACC]/30 border border-[#89AACC]/30 text-xs font-mono text-white transition-all flex items-center gap-1.5"
                         >
                           <span>Live Site</span>
-                          <span className="text-[10px]">↗</span>
+                          <span aria-hidden="true" className="text-[10px]">↗</span>
                         </a>
                       )}
                     </div>

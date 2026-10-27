@@ -1,7 +1,7 @@
 "use client";
 import useReducedMotion from "../../hooks/useMotionPreference";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import gsap from "gsap";
@@ -21,7 +21,8 @@ export default function VideoReferenceHero({
   const reduced = useReducedMotion();
   const introReady = useIntroReady();
 
-  useScrollScene(root, !reduced && introReady, (ScrollTrigger) => {
+  useEffect(() => {
+    if(reduced || !introReady) return;
     const context = gsap.context(() => {
       gsap
         .timeline({ delay: 0.08, defaults: { ease: "power3.out" } })
@@ -45,6 +46,11 @@ export default function VideoReferenceHero({
             },
           );
         });
+    }, root);
+    return () => context.revert();
+  }, [reduced,introReady]);
+  useScrollScene(root, !reduced && introReady, () => {
+    const context=gsap.context(()=>{
       if (matchMedia("(min-width: 900px) and (pointer: fine)").matches) {
         gsap.to(portrait.current, {
           y: 36,
@@ -57,8 +63,9 @@ export default function VideoReferenceHero({
           },
         });
       }
-    }, root);
-    return () => context.revert();
+
+    },root);
+    return ()=>context.revert();
   });
 
   return (
