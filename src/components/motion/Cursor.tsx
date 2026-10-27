@@ -1,5 +1,6 @@
 "use client";
 import useReducedMotion from "../../hooks/useMotionPreference";
+import { isLowPowerDevice } from "../../lib/motionQuality";
 import { useRef, useEffect } from "react";
 export default function Cursor() {
   const cursor = useRef<HTMLDivElement>(null);
@@ -12,7 +13,7 @@ export default function Cursor() {
       !node ||
       !dot ||
       !trail ||
-      reduced ||
+      reduced || isLowPowerDevice() ||
       !matchMedia("(pointer:fine)").matches
     )
       return;

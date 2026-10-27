@@ -1,5 +1,6 @@
 "use client";
 import useReducedMotion from "../../hooks/useMotionPreference";
+import { isLowPowerDevice } from "../../lib/motionQuality";
 
 import { useRef, useEffect } from "react";
 import Image from "next/image";
@@ -22,36 +23,48 @@ export default function VideoReferenceHero({
   const introReady = useIntroReady();
 
   useEffect(() => {
-    if(reduced || !introReady) return;
+    const node = root.current;
+    if (!node || reduced || !introReady || isLowPowerDevice()) return;
     const context = gsap.context(() => {
-      gsap
-        .timeline({ delay: 0.08, defaults: { ease: "power3.out" } })
-        .from(".hero-outline", { y: 36, opacity: 0, duration: 0.7 }, 0)
-        .from(".hero-name-line", { yPercent: 110, duration: 0.85 }, 0.15)
-        .from(".hero-note", { y: 18, opacity: 0, duration: 0.65 }, 0.35)
-        .from(".hero-bottom", { y: 24, opacity: 0, duration: 0.7 }, 0.55)
-        .from(".hero-meta", { opacity: 0, duration: 0.5 }, 1.1);
-      root.current
-        ?.querySelectorAll<SVGPathElement>(".hero-ink-path")
-        .forEach((path) => {
+      gsap.timeline({ defaults: { ease: "power4.out" } })
+        .from(".hero-grain", { opacity: 0, duration: .6 }, 0)
+        .from(".hero-note-label,.hero-byline", { opacity: 0, stagger: .08, duration: .5 }, .2)
+        .from(".hero-outline", { clipPath: "inset(0 100% 0 0)", duration: 1 }, .4)
+        .from(".hero-name-line", { yPercent: 110, duration: .9 }, .7)
+        .from(".hero-portrait-intro", { scale: 1.08, opacity: 0, duration: 1.2 }, 1)
+        .from(".hero-bottom", { y: 18, opacity: 0, duration: .65 }, 1.1)
+        .from(".hero-meta", { opacity: 0, duration: .5 }, 1.4);
+      if (node.dataset.lit !== "true") {
+        gsap.set(".hero-language,.hero-red-mark", { opacity: .12 });
+        node.querySelectorAll<SVGPathElement>(".hero-ink-path").forEach(path => {
           const length = path.getTotalLength();
-          gsap.fromTo(
-            path,
-            { strokeDasharray: length, strokeDashoffset: length },
-            {
-              strokeDashoffset: 0,
-              duration: 1.1,
-              delay: 1.1,
-              ease: "power2.inOut",
-            },
-          );
+          gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
         });
+      }
     }, root);
-    return () => context.revert();
-  }, [reduced,introReady]);
+    const lightsOn = (event: Event) => {
+      const animate = (event as CustomEvent<{ animate: boolean }>).detail.animate;
+      context.add(() => {
+        if (!animate) {
+          gsap.set(".hero-language,.hero-red-mark", { opacity: 1, clearProps: "transform" });
+          gsap.set(".hero-ink-path", { strokeDashoffset: 0 });
+          return;
+        }
+        const paths = node.querySelectorAll<SVGPathElement>(".hero-ink-path");
+        gsap.timeline({ defaults: { ease: "power3.out" } })
+          .to(".hero-outline", { opacity: 1, duration: .6 }, 0)
+          .fromTo(".hero-red-mark", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, ease: "back.out(2)", duration: .5 }, .09)
+          .fromTo(".hero-language", { y: 18, opacity: .12 }, { y: 0, opacity: 1, duration: .6 }, .18)
+          .to(paths[0], { strokeDashoffset: 0, duration: .9 }, .3)
+          .to(paths[1], { strokeDashoffset: 0, duration: .6 }, .75);
+      });
+    };
+    node.addEventListener("portfolio:torch-lit", lightsOn);
+    return () => { node.removeEventListener("portfolio:torch-lit", lightsOn); context.revert(); };
+  }, [reduced, introReady]);
   useScrollScene(root, !reduced && introReady, () => {
     const context=gsap.context(()=>{
-      if (matchMedia("(min-width: 900px) and (pointer: fine)").matches) {
+      if (!isLowPowerDevice() && matchMedia("(min-width: 900px) and (pointer: fine)").matches) {
         gsap.to(portrait.current, {
           y: 36,
           ease: "none",
@@ -124,7 +137,7 @@ export default function VideoReferenceHero({
           </p>
         </div>
         <div ref={portrait} className="hero-portrait">
-          <TorchReveal scope={root}>
+          <div className="hero-portrait-intro"><TorchReveal scope={root}>
             <div className="portrait-yellow" aria-hidden="true">
               <span>N° 01</span>
             </div>
@@ -142,7 +155,7 @@ export default function VideoReferenceHero({
                 +
               </span>
             </div>
-          </TorchReveal>
+          </TorchReveal></div>
         </div>
         <div className="hero-identity">
           <p className="micro-label hero-byline">

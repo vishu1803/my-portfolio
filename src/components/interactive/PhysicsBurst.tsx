@@ -1,4 +1,5 @@
 "use client";
+import { isLowPowerDevice } from "../../lib/motionQuality";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type * as MatterTypes from "matter-js";
@@ -145,7 +146,7 @@ export default function PhysicsBurst({
           y: -0.035,
         });
     };
-    if (matchMedia("(pointer:coarse)").matches) {
+    if (matchMedia("(pointer:coarse)").matches || isLowPowerDevice()) {
       root.dataset.physics = "touch";
       timer = window.setTimeout(complete, 1200);
     } else {

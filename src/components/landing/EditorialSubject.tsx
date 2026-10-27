@@ -3,6 +3,8 @@ import useReducedMotion from "../../hooks/useMotionPreference";
 import { useRef } from "react";
 import { LineReveal, BlurIn, MarkerSweep } from "../motion/TextReveals";
 import Image from "next/image";
+import GhostResolve from "../motion/GhostResolve";
+import ClipReveal from "../motion/ClipReveal";
 import gsap from "gsap";
 import useScrollScene from "../../hooks/useScrollScene";
 
@@ -11,30 +13,6 @@ export default function EditorialSubject() {
   const reduced = useReducedMotion();
   useScrollScene(root, !reduced, (ScrollTrigger) => {
     const ctx = gsap.context(() => {
-      gsap.from(".subject-letter", {
-        opacity: 0,
-        filter: "blur(12px)",
-        y: 12,
-        stagger: 0.025,
-        duration: 0.65,
-        scrollTrigger: {
-          trigger: ".subject-title",
-          start: "top 82%",
-          once: true,
-        },
-      });
-      gsap.from(".subject-word", {
-        opacity: 0,
-        y: 15,
-        stagger: 0.09,
-        duration: 0.7,
-        scrollTrigger: {
-          trigger: ".subject-heading",
-          start: "top 80%",
-          end: "bottom 45%",
-          scrub: 0.5,
-        },
-      });
       gsap.fromTo(
         ".subject-portrait img",
         { scale: 1.15, yPercent: 5 },
@@ -77,31 +55,13 @@ export default function EditorialSubject() {
         <span>01 / The subject</span>
         <span>Vishwanath Nishad · Gorakhpur</span>
       </div>
-      <p className="subject-title">
-        <span className="sr-only">The subject.</span>
-        <span aria-hidden="true">
-          {"The subject.".split("").map((letter, index) => (
-            <span className="subject-letter" key={index}>
-              {letter === " " ? " " : letter}
-            </span>
-          ))}
-        </span>
-      </p>
+      <p className="subject-title"><GhostResolve text="The subject." /></p>
       <h2 id="subject-heading" className="subject-heading">
         <LineReveal>Thoughtful interfaces.</LineReveal>
-        <em>
-          <span className="sr-only">Reliable systems underneath.</span>
-          <span aria-hidden="true">
-            {"Reliable systems underneath.".split(" ").map((word) => (
-              <span className="subject-word" key={word}>
-                {word}{" "}
-              </span>
-            ))}
-          </span>
-        </em>
+        <em><GhostResolve text="Reliable systems underneath." /></em>
       </h2>
       <div className="subject-columns">
-        <figure className="subject-portrait">
+        <ClipReveal className="subject-portrait-mask"><figure className="subject-portrait">
           <Image
             src="/vishwanath-portrait.jpg"
             alt="Vishwanath Nishad — portrait in yellow duotone"
@@ -111,7 +71,7 @@ export default function EditorialSubject() {
           <figcaption className="micro-label">
             The person behind the work / 01
           </figcaption>
-        </figure>
+        </figure></ClipReveal>
         <div>
           <div className="subject-bio">
             <p>

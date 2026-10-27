@@ -53,8 +53,8 @@ export default function useMagnetic(
   const reduced = useReducedMotion();
   const x = useMotionValue(0),
     y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 120, damping: 14 }),
-    sy = useSpring(y, { stiffness: 120, damping: 14 });
+  const sx = useSpring(x, { stiffness: 200, damping: 15 }),
+    sy = useSpring(y, { stiffness: 200, damping: 15 });
   useEffect(() => {
     const node = ref.current;
     if (!node || reduced || !matchMedia("(pointer:fine)").matches) {

@@ -56,10 +56,12 @@ npm run build
 npm run test:browser
 ```
 
-The 33-check browser suite starts its own local production server and covers every scene at 1440px and 390px, the real torch mask, pinned project navigation, image tilt, resume viewer, contact focus/Escape/Tab behavior, five connected SVG strings, pill drag suppression, actual physics bodies, clipboard, emulated touch, repeat-visit intro, Space activation, keyboard word nudging, global pause and live reduced-motion changes. It sends no email. To use an existing browser binary, set `BROWSER_EXECUTABLE_PATH`.
+The 37-check browser suite starts its own local production server and covers every scene at 1440px and 390px, the real torch mask, pinned project navigation, image tilt, resume viewer, contact focus/Escape/Tab behavior, five connected SVG strings, pill drag suppression, actual physics bodies, clipboard, emulated touch, repeat-visit intro, Space activation, keyboard word nudging, global pause and live reduced-motion changes. It sends no email. To use an existing browser binary, set `BROWSER_EXECUTABLE_PATH`.
 
 Fonts use `next/font/local` from `public/fonts/` with their OFL licenses; no Google Fonts request is made. GSAP, Framer Motion and Matter.js were existing dependencies; Lenis supplies the coordinated scrolling. Playwright is a development-only verification dependency.
 
 GitHub: [vishu1803](https://github.com/vishu1803) · [LinkedIn](https://linkedin.com/in/vishwanath-nishad)
 
 Readability, contrast pairs and copy changes for review: [readability audit](docs/readability-and-copy.md). The visible Pause animations control uses static end states without overriding system reduced motion.
+
+Animation specification v2: [audit and implementation](docs/animation-spec-v2.md).

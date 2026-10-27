@@ -9,11 +9,14 @@ import {
   LayoutGroup,
   useMotionValue,
   useMotionValueEvent,
+  useSpring,
 } from "framer-motion";
 import dynamic from "next/dynamic";
 const PhysicsBurst = dynamic(() => import("../interactive/PhysicsBurst"), {
   ssr: false,
 });
+import { ENABLE_WORD_BURST } from "../../config/motion";
+import { isLowPowerDevice } from "../../lib/motionQuality";
 import TerminalHeading from "../motion/TerminalHeading";
 import CountUp from "../motion/CountUp";
 import Magnetic from "../motion/Magnetic";
@@ -35,10 +38,12 @@ import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 interface CollaborateSectionProps {
   onOpenResume?: () => void;
+  enableWordBurst?: boolean;
 }
 
 export default function CollaborateSection({
   onOpenResume,
+  enableWordBurst = ENABLE_WORD_BURST,
 }: CollaborateSectionProps) {
   const reduced = useReducedMotion();
   const contactId = useId();
@@ -105,6 +110,19 @@ export default function CollaborateSection({
   const [motionPaused, setMotionPaused] = useState(false);
   const draggedAt = useRef(-Infinity);
   const dragX = useMotionValue(0);
+  const tiltX = useMotionValue(0), tiltY = useMotionValue(0);
+  const rotateX = useSpring(tiltX, { stiffness: 180, damping: 20 });
+  const rotateY = useSpring(tiltY, { stiffness: 180, damping: 20 });
+  useEffect(() => {
+    if (reduced) { tiltX.jump(0); tiltY.jump(0); rotateX.jump(0); rotateY.jump(0); }
+  }, [reduced, tiltX, tiltY, rotateX, rotateY]);
+  const startWords = () => {
+    if (reduced) { setIsOverlayOpen(true); return; }
+    const rect = hireButtonRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setBurstOrigin({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+    setBursting(true);
+  };
   const rig = useCollaborationRig({
     stage: containerRef,
     hand: handRef,
@@ -226,7 +244,7 @@ export default function CollaborateSection({
           ref={containerRef}
           onPointerMove={handlePointerMove}
           onPointerLeave={handlePointerLeave}
-          className={`collab-stage ${bursting ? "is-releasing" : ""}`}
+          className={`collab-stage ${bursting || isOverlayOpen ? "is-releasing" : ""}`}
         >
           <svg
             viewBox="0 0 1000 410"
@@ -294,6 +312,8 @@ export default function CollaborateSection({
                 ),
               )}
             </div>
+            <div className="collab-pill-entrance">
+            <motion.span className="pill-hover-shadow" aria-hidden="true" initial={false} animate={{ opacity: buttonHovered ? 1 : 0 }} transition={{ duration: reduced ? 0 : .25 }} />
             <motion.button
               type="button"
               layoutId="contact-surface"
@@ -301,23 +321,19 @@ export default function CollaborateSection({
                 if (performance.now() - draggedAt.current < 250) return;
                 setButtonHovered(false);
                 setFormSubmitted(false);
-                if (
-                  window.matchMedia("(prefers-reduced-motion: reduce)").matches
-                )
-                  setIsOverlayOpen(true);
-                else {
-                  const rect = event.currentTarget.getBoundingClientRect();
-                  setBurstOrigin({
-                    x: rect.left + rect.width / 2,
-                    y: rect.top + rect.height / 2,
-                  });
-                  setBursting(true);
-                }
+                if (enableWordBurst && !reduced) startWords();
+                else setIsOverlayOpen(true);
               }}
               onHoverStart={() => setButtonHovered(true)}
-              onHoverEnd={() => setButtonHovered(false)}
-              onFocus={() => setButtonHovered(true)}
-              onBlur={() => setButtonHovered(false)}
+              onHoverEnd={() => { setButtonHovered(false); tiltX.set(0); tiltY.set(0); }}
+              onPointerMove={(event) => {
+                if (reduced || isLowPowerDevice() || event.pointerType !== "mouse") return;
+                const rect = event.currentTarget.getBoundingClientRect();
+                tiltX.set((.5 - (event.clientY - rect.top) / rect.height) * 16);
+                tiltY.set(((event.clientX - rect.left) / rect.width - .5) * 16);
+              }}
+              onFocus={() => { setButtonHovered(true); if (!reduced) { tiltX.set(-3); tiltY.set(2); } }}
+              onBlur={() => { setButtonHovered(false); tiltX.set(0); tiltY.set(0); }}
               drag={reduced ? false : "x"}
               dragConstraints={{ left: -24, right: 24 }}
               dragElastic={0.12}
@@ -331,27 +347,31 @@ export default function CollaborateSection({
                 setDragging(false);
               }}
               whileHover={
-                reduced ? undefined : { rotateX: -3, rotateY: 2, scale: 1.02 }
+                reduced ? undefined : { y: -4, scale: 1.03 }
               }
+              whileFocus={reduced ? undefined : { y: -4, scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               style={{
-                transformPerspective: 900,
+                transformPerspective: 800,
+                rotateX, rotateY,
                 x: dragX,
                 touchAction: "pan-y",
               }}
               aria-describedby={`${contactId}-hint`}
               ref={hireButtonRef}
               className="collaborate-pill"
-              aria-label="Hire me — open contact details"
+              aria-label="Let’s collaborate — open contact details"
               aria-haspopup="dialog"
               aria-expanded={isOverlayOpen}
             >
-              <span className="pill-sheen" aria-hidden="true" />
+              <motion.span className="pill-sheen" aria-hidden="true" initial={{ x: "-120%" }} animate={{ x: buttonHovered ? "120%" : "-120%" }} transition={{ duration: reduced ? 0 : .7 }} />
               <span className="pill-dot" aria-hidden="true" />
-              <span>Hire me</span>
+              <span>Let’s collaborate</span>
               <ArrowUpRight size={23} aria-hidden="true" />
-            </motion.button>
+            </motion.button></div>
           </div>
+          <div className="collab-controls">
+          <button type="button" className="collab-word-toggle micro-label" onClick={startWords}>Play with words</button>
           <button
             type="button"
             className="collab-motion-toggle micro-label"
@@ -359,7 +379,7 @@ export default function CollaborateSection({
             onClick={() => setMotionPaused((value) => !value)}
           >
             {motionPaused ? "Resume tug" : "Pause tug"}
-          </button>
+          </button></div>
           <span className="collab-hand-note micro-label" aria-hidden="true">
             Made for working together <span aria-hidden="true">↗</span>
           </span>
@@ -477,7 +497,7 @@ export default function CollaborateSection({
                             href={`mailto:${email}`}
                             className="terminal-primary"
                           >
-                            Email me <span aria-hidden="true">↗</span>
+                            Start a Project <span aria-hidden="true">↗</span>
                           </a>
                         </Magnetic>
                         <Magnetic>

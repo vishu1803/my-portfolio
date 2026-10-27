@@ -7,13 +7,15 @@ const { chromium } = require("playwright");
 let server, browser, desktop;
 const errors = [];
 const base = "http://127.0.0.1:3194";
-const triggerName = "Hire me — open contact details";
+const triggerName = "Let’s collaborate — open contact details";
 const wait = (page, ms = 1400) => page.waitForTimeout(ms);
 async function openPage(options = {}) {
-  const page = await browser.newPage({
-    viewport: { width: 1440, height: 1000 },
-    ...options,
-  });
+  const { lowPower = false, settle = 2400, ...pageOptions } = options;
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, ...pageOptions });
+  await page.addInitScript(({lowPower}) => {
+    Object.defineProperty(Navigator.prototype, "hardwareConcurrency", { configurable: true, get: () => lowPower ? 2 : 8 });
+    Object.defineProperty(Navigator.prototype, "deviceMemory", { configurable: true, get: () => lowPower ? 2 : 8 });
+  }, {lowPower});
   page.on("pageerror", (error) =>
     errors.push(
       `[${options.viewport?.width || 1440}/${options.reducedMotion || "normal"}] ${error.message}`,
@@ -24,7 +26,7 @@ async function openPage(options = {}) {
   });
   await page.goto(base, { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
-  await wait(page, 2400);
+  await wait(page, settle);
   return page;
 }
 async function scroll(page, top) {
@@ -164,6 +166,8 @@ test("first intro curtains finish before the hero entrance and repeat visits ski
     viewport: { width: 1440, height: 1000 },
   });
   await page.addInitScript(() => {
+    Object.defineProperty(Navigator.prototype,"hardwareConcurrency",{configurable:true,get:()=>8});
+    Object.defineProperty(Navigator.prototype,"deviceMemory",{configurable:true,get:()=>8});
     window.__earlyHero = false;
     new MutationObserver(() => {
       const phase = document
@@ -213,7 +217,7 @@ test("torch starts dark and reveals the actual photo and yellow backing with a r
       .evaluate((el) => getComputedStyle(el).opacity),
     "0",
   );
-  const box = await desktop.locator(".hero-photo").boundingBox();
+  const box = await desktop.locator(".torch-dim .hero-photo").boundingBox();
   await desktop.mouse.move(box.x + box.width * 0.55, box.y + box.height * 0.4);
   await wait(desktop, 650);
   assert.equal(await torch.getAttribute("data-active"), "true");
@@ -225,29 +229,26 @@ test("torch starts dark and reveals the actual photo and yellow backing with a r
   );
   assert.equal(
     await torch
-      .locator("img")
+      .locator(".torch-subject img")
       .evaluate((el) => el.complete && el.naturalWidth > 0),
     true,
   );
-  assert.equal(await torch.locator(".portrait-yellow").count(), 1);
+  assert.equal(await torch.locator(".torch-subject .portrait-yellow").count(), 1);
+  assert.equal(await torch.locator(".torch-dim").evaluate(el=>getComputedStyle(el).opacity), "0.1");
+  assert.equal(await torch.locator(".torch-subject").getAttribute("aria-hidden"), "true");
+  assert.equal(await torch.locator(".torch-ambient").evaluate(el=>getComputedStyle(el).opacity), "1");
   await desktop.waitForFunction(()=>Number(getComputedStyle(document.querySelector(".torch-instruction")).opacity)<.01,{},{timeout:15000});
   assert.ok(Number(await desktop.locator(".torch-instruction").evaluate(el=>getComputedStyle(el).opacity))<0.01);
 });
-test("torch keyboard inspection exposes a static portrait and closes again", async () => {
+test("keyboard lights-on reveals permanently and finishes the drawn annotation", async () => {
   const button = desktop.locator(".torch-inspect");
-  await button.focus();
-  await desktop.keyboard.press("Enter");
-  assert.equal(await button.getAttribute("aria-expanded"), "true");
-  assert.equal(
-    await desktop
-      .locator(".torch-subject")
-      .evaluate((el) => getComputedStyle(el).maskImage),
-    "none",
-  );
-  await desktop
-    .getByRole("button", { name: "Hide portrait details", exact: true })
-    .press("Enter");
+  await button.focus(); await desktop.keyboard.press("Enter");
+  await desktop.waitForFunction(()=>document.querySelector("[data-torch]").dataset.revealComplete === "true");
   await desktop.mouse.move(10, 90);
+  assert.equal(await desktop.locator("#home").getAttribute("data-lit"), "true");
+  assert.equal(await desktop.locator(".torch-subject").evaluate(el=>getComputedStyle(el).maskImage), "none");
+  await desktop.waitForFunction(()=>[...document.querySelectorAll(".hero-ink-path")].every(el=>parseFloat(getComputedStyle(el).strokeDashoffset)===0));
+  assert.equal(await button.getAttribute("aria-disabled"), "true");
 });
 test("cursor dot is immediate while its ring lags and hero actions are magnetic", async () => {
   const state = await desktop.evaluate(() => {
@@ -274,7 +275,7 @@ test("cursor dot is immediate while its ring lags and hero actions are magnetic"
   });
   assert.match(state.dot, /500px, 400px/);
   assert.doesNotMatch(state.ring, /500px, 400px/);
-  const magnet = desktop.locator(".hero-actions .magnetic").first();
+  const magnet = desktop.locator(".hero-actions .magnetic > span").first();
   const box = await magnet.boundingBox();
   await desktop.mouse.move(box.x + box.width * 0.8, box.y + box.height * 0.7);
   await wait(desktop, 350);
@@ -461,7 +462,7 @@ test("project notes and project index dialogs escape the pin and preserve focus"
   await desktop.keyboard.press("Escape");
   await wait(desktop, 500);
 });
-test("toolkit preserves meaningful skill groups and lead marker; yellow band continues into evidence", async () => {
+test("toolkit preserves real skill groups and a short yellow accent band", async () => {
   await section(desktop, "toolkit");
   assert.equal(await desktop.locator(".toolkit-row").count(), 4);
   assert.equal(
@@ -594,7 +595,7 @@ test("Enter starts six actual Matter.js word bodies; Escape cancels without late
   await section(page,"contact");
   await page.evaluate(()=>{
     document.addEventListener("click",event=>{
-      const pill=event.target.closest?.(".collaborate-pill");
+      const pill=document.querySelector(".collaborate-pill");
       if(pill){const rect=pill.getBoundingClientRect();window.__pillClickX=rect.left+rect.width/2;}
     },{capture:true,once:true});
     const observer=new MutationObserver(()=>{
@@ -608,7 +609,7 @@ test("Enter starts six actual Matter.js word bodies; Escape cancels without late
     observer.observe(document.body,{subtree:true,attributes:true,attributeFilter:['data-physics']});
   });
   const button = page.getByRole("button", {
-    name: triggerName,
+    name: "Play with words",
     exact: true,
   });
   await button.focus();
@@ -649,14 +650,14 @@ test("Enter starts six actual Matter.js word bodies; Escape cancels without late
   );
   await page.close();
 });
-test("burst automatically transitions to the violet typed contact view", async () => {
+test("primary collaboration action opens ink contact directly with word burst off", async () => {
   const dialog = await contact(desktop);
   assert.equal(await desktop.locator(".physics-burst").count(), 0);
   assert.equal(
     await dialog
       .locator(".terminal-contact-panel")
       .evaluate((el) => getComputedStyle(el).backgroundColor),
-    "rgb(36, 32, 53)",
+    "rgb(16, 16, 20)",
   );
   assert.match(
     await dialog.locator(".terminal-heading").innerText(),
@@ -782,12 +783,8 @@ for (const width of [1440, 390])
       hasTouch: width < 768,
     });
     if (width === 390) {
-      const before = await page.locator("[data-torch]").getAttribute("style");
-      await wait(page, 500);
-      assert.notEqual(
-        await page.locator("[data-torch]").getAttribute("style"),
-        before,
-      );
+      await page.waitForFunction(()=>document.querySelector("[data-torch]").dataset.revealComplete === "true");
+      assert.equal(await page.locator(".torch-subject").evaluate(el=>getComputedStyle(el).maskImage), "none");
     }
     for (const id of [
       "home",
@@ -836,7 +833,7 @@ test("Space activates the pill and contact can return to the beginning through L
   assert.equal(await desktop.getByRole("dialog").count(), 0);
   assert.ok((await desktop.evaluate(() => scrollY)) < 5);
 });
-test("touch tap uses the light burst fallback and reaches contact", async () => {
+test("touch collaboration opens contact directly without a word burst", async () => {
   const page = await openPage({
     viewport: { width: 390, height: 844 },
     isMobile: true,
@@ -844,9 +841,7 @@ test("touch tap uses the light burst fallback and reaches contact", async () => 
   });
   await section(page, "contact");
   await page.getByRole("button", { name: triggerName, exact: true }).tap();
-  await page
-    .locator(".physics-surface[data-physics=touch]")
-    .waitFor({ state: "visible" });
+  assert.equal(await page.locator(".physics-surface").count(), 0);
   await page
     .getByRole("dialog", { name: "Vishwanath Nishad", exact: true })
     .waitFor({ state: "visible", timeout: 15000 });
@@ -902,7 +897,7 @@ test("reduced motion has native scrolling, static torch, vertical cases and dire
 });
 test("runtime reduced-motion changes clean up Lenis, pinned tracks and active rig resources", async () => {
   await desktop.emulateMedia({ reducedMotion: "reduce" });
-  await wait(desktop, 500);
+  await desktop.waitForFunction(()=>!document.documentElement.dataset.scrollEngine,{},{timeout:10000});
   assert.equal(
     await desktop.locator("html").getAttribute("data-scroll-engine"),
     null,
@@ -918,7 +913,7 @@ test("runtime reduced-motion changes clean up Lenis, pinned tracks and active ri
     "reduced",
   );
   await desktop.emulateMedia({ reducedMotion: "no-preference" });
-  await wait(desktop, 600);
+  await desktop.waitForFunction(()=>document.documentElement.dataset.scrollEngine==="lenis",{},{timeout:10000});
   assert.equal(
     await desktop.locator("html").getAttribute("data-scroll-engine"),
     "lenis",
@@ -943,5 +938,49 @@ test("normal-case headings, descriptive links and toolkit lists remain semantic"
  assert.equal(await desktop.locator(".hero-outline").getAttribute("aria-hidden"),"true");
  assert.ok(await desktop.locator(".case-file-image img").first().getAttribute("alt").then(x=>x.includes("task counts")));
 });
+
+test("touch beam drifts then lights on permanently after three visible seconds", async () => {
+  const page = await openPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,settle:50});
+  const torch=page.locator("[data-torch]");
+  await page.waitForFunction(()=>document.querySelector("[data-torch]").dataset.active==="true");
+  const before=await torch.getAttribute("style"); await wait(page,250);
+  assert.notEqual(await torch.getAttribute("style"),before);
+  await page.waitForFunction(()=>document.querySelector("[data-torch]").dataset.revealComplete==="true",{},{timeout:7000});
+  await page.close();
+});
+test("low-power devices use the immediate lit portrait and no idle tug", async () => {
+  const page=await openPage({lowPower:true});
+  assert.equal(await page.locator("[data-torch]").getAttribute("data-quality"),"static");
+  assert.equal(await page.locator(".torch-subject").evaluate(el=>getComputedStyle(el).maskImage),"none");
+  assert.equal(await page.locator(".torch-ambient").evaluate(el=>getComputedStyle(el).display),"none");
+  await section(page,"contact"); await wait(page,1800);
+  const hand=await page.locator(".pulling-hand").getAttribute("transform"); await wait(page,350);
+  assert.equal(await page.locator(".pulling-hand").getAttribute("transform"),hand);
+  await page.close();
+});
+test("ghost copies, reusable masks and interlude extrusion exist without changing accessible copy", async () => {
+  await section(desktop,"subject");
+  await desktop.waitForFunction(()=>document.querySelectorAll(".subject-title .ghost-double").length>0);
+  assert.ok(await desktop.locator("[data-clip-reveal]").count()>=7);
+  assert.equal(await desktop.locator(".prelude-extrusion > span").count(),8);
+  assert.equal(await desktop.locator("#about").getAttribute("data-scene"),"#eae8e2");
+  assert.equal((await desktop.locator(".collaborate-pill").textContent()).trim(),"Let’s collaborate");
+});
+
+
+
+
+test("portrait coverage triggers lights-on without needing a click", async () => {
+  const page = await openPage();
+  const box = await page.locator("[data-torch]").boundingBox();
+  for (let row=0;row<5;row++) for(let col=0;col<6;col++) {
+    await page.mouse.move(box.x+box.width*(col+.5)/6,box.y+box.height*(row+.5)/5,{steps:3});
+    await wait(page,45);
+  }
+  await page.waitForFunction(()=>document.querySelector("#home").dataset.lit==="true",{},{timeout:8000});
+  await page.waitForFunction(()=>document.querySelector("[data-torch]").dataset.revealComplete==="true");
+  await page.close();
+});
+
 test("production console and page exception capture remains clean", () =>
   assert.deepEqual(errors, []));
