@@ -148,7 +148,8 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
     <section
       id="contact"
       ref={sectionRef}
-      className="relative w-full bg-[#EAE8E2] text-[#121316] py-24 sm:py-32 md:py-40 px-6 sm:px-10 lg:px-16 overflow-hidden select-none transition-colors duration-500"
+      aria-labelledby="contact-heading"
+      className="relative w-full bg-[#EAE8E2] text-[#121316] py-24 sm:py-28 md:py-32 px-5 sm:px-10 lg:px-16 overflow-hidden select-none"
     >
       {/* Editorial paper grain & soft warm ambient lighting */}
       <div className="absolute inset-0 opacity-[0.035] pointer-events-none film-grain" />
@@ -156,10 +157,10 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
       <div className="absolute -bottom-40 -left-20 w-[450px] h-[450px] rounded-full bg-gradient-to-tr from-[#D8D4C8]/50 to-transparent blur-3xl pointer-events-none" />
 
       {/* Top Editorial Registration Marks & Coordinates */}
-      <div className="max-w-[1200px] mx-auto flex items-center justify-between border-b border-[#121316]/15 pb-4 mb-16 text-[11px] font-mono tracking-widest uppercase text-[#121316]/75">
+      <div className="max-w-[1200px] mx-auto flex items-center justify-between border-b border-[#121316]/15 pb-4 mb-10 text-[11px] font-mono tracking-widest uppercase text-[#121316]/75">
         <div className="flex items-center gap-3">
           <span className="w-2 h-2 rounded-full bg-[#FF4B4B]" />
-          <span>DIRECT DISPATCH // SEC-07</span>
+          <span>05 / INVITATION TO COLLABORATE</span>
           <span className="hidden sm:inline text-[#121316]/30">&bull;</span>
           <span className="hidden sm:inline">GORAKHPUR [26.76°N, 83.37°E]</span>
         </div>
@@ -176,22 +177,20 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
         ref={containerRef}
         onPointerMove={handlePointerMove}
         onPointerLeave={handlePointerLeave}
-        className="max-w-[1000px] mx-auto relative flex flex-col items-center justify-center min-h-[460px] sm:min-h-[520px]"
+        className="max-w-[1100px] mx-auto relative flex flex-col items-center justify-center min-h-[430px] sm:min-h-[480px]"
       >
-        {/* Editorial Eyebrow & Title */}
-        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-          <p className="collab-eyebrow text-xs sm:text-sm font-mono tracking-[0.25em] uppercase text-[#121316]/70 mb-3">
-            [ READY TO BUILD THE NEXT SYSTEM? ]
+
+        {/* Large typographic treatment follows the film's editorial invitation. */}
+        <div className="relative z-10 w-full max-w-[1000px] mx-auto mb-6 sm:mb-10">
+          <p className="collab-eyebrow font-mono text-[11px] uppercase tracking-[0.18em] text-[#121316]/65 mb-3">
+            05 / ONE GOOD CONVERSATION CAN START SOMETHING GREAT
           </p>
-          <h2 className="collab-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display italic tracking-tight text-[#0B0C0E] leading-[1.05]">
-            Let&apos;s engineer something{" "}
-            <span className="vox-highlight not-italic font-body tracking-normal text-3xl sm:text-4xl md:text-5xl lg:text-6xl px-3 py-0.5 ml-1">
-              impactful.
+          <h2 id="contact-heading" className="collab-headline text-left text-[#101113] leading-[0.84]">
+            <span className="reference-display block text-[clamp(3.5rem,8.7vw,8.6rem)] uppercase tracking-[-0.055em]">PULL ME INTO</span>
+            <span className="font-display italic font-normal block text-[clamp(3.6rem,8.5vw,8.5rem)] tracking-[-0.06em] mt-1">
+              your team.
             </span>
           </h2>
-          <p className="mt-4 text-sm sm:text-base text-[#121316]/70 font-body max-w-lg mx-auto leading-relaxed">
-            Available for full-time software engineering roles, distributed backend architectures, and high-performance web applications.
-          </p>
         </div>
 
         {/* Central Graphic Composition: Strings + Hand Pulling the Button */}
@@ -262,6 +261,9 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
               filter="url(#handShadow)"
               className="transition-transform duration-300"
             >
+              {/* Black jacket sleeve and light cuff echo the illustrated film reference. */}
+              <path d="M -20 219 L 77 206 L 105 286 L -20 316 Z" fill="#101114" stroke="#121316" strokeWidth="2" />
+              <path d="M 72 207 L 95 199 L 126 270 L 102 284 Z" fill="#F8F6F1" stroke="#121316" strokeWidth="2" />
               {/* Forearm & Wrist contour */}
               <path
                 d="M 40 260 C 65 240, 85 220, 115 205 C 125 200, 135 195, 145 190"
@@ -330,10 +332,17 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
             </g>
           </svg>
 
+
+          {/* Hand-lettered fragments appear around the invitation in the reference. */}
+          <span aria-hidden="true" className="pointer-events-none absolute left-[8%] top-[5%] -rotate-[8deg] font-mono text-xs font-black uppercase sm:text-base">SHIP</span>
+          <span aria-hidden="true" className="pointer-events-none absolute right-[8%] top-[8%] rotate-[10deg] font-mono text-[10px] font-black uppercase sm:text-xl">HELLO</span>
+          <span aria-hidden="true" className="pointer-events-none absolute left-[48%] bottom-[14%] rotate-[-6deg] bg-[#FFE600] px-2 py-1 font-mono text-xs font-black uppercase sm:text-lg">TOGETHER</span>
+          <span aria-hidden="true" className="pointer-events-none absolute right-[4%] bottom-[12%] rotate-[8deg] font-display text-2xl italic text-[#CA3544] sm:text-4xl">let's talk</span>
+
           {/* Glossy Jet-Black Pill Button */}
           <div
             ref={buttonWrapperRef}
-            className="absolute left-[36%] sm:left-[46%] top-[22%] sm:top-[25%] z-20"
+            className="absolute left-[37%] sm:left-[46%] top-[22%] sm:top-[25%] z-20"
           >
             <motion.button
               type="button"
@@ -341,8 +350,8 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
               style={{ perspective: 1000, transformPerspective: 1000 }}
               whileHover={{ scale: 1.025, y: -3, rotateX: -4, rotateY: 5 }}
               whileTap={{ scale: 0.98, y: 0, rotateX: 0, rotateY: 0 }}
-              className="group relative inline-flex items-center gap-2.5 sm:gap-4 px-5 sm:px-11 py-4 sm:py-5 rounded-full bg-gradient-to-b from-[#1C1E23] via-[#0E1013] to-[#050607] text-[#FAF8F5] shadow-[0_20px_50px_rgba(0,0,0,0.35),0_4px_12px_rgba(0,0,0,0.25)] border border-white/20 cursor-pointer overflow-hidden transition-[color,background-color,border-color,box-shadow] duration-300"
-              aria-label="Open contact and collaboration overlay"
+              className="group relative inline-flex items-center gap-2.5 sm:gap-4 px-5 sm:px-10 py-4 sm:py-6 rounded-full bg-gradient-to-b from-[#1C1E23] via-[#0E1013] to-[#050607] text-[#FAF8F5] shadow-[0_20px_50px_rgba(0,0,0,0.35),0_4px_12px_rgba(0,0,0,0.25)] border border-[#A84453]/80 ring-[3px] ring-[#A84453]/20 cursor-pointer overflow-hidden transition-[color,background-color,border-color,box-shadow] duration-300"
+              aria-label="Hire me — open contact details and start a project"
             >
               {/* Glossy Top Specular Highlight Edge */}
               <div className="absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
@@ -357,8 +366,8 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
               </span>
 
               {/* Button Typography */}
-              <span className="font-mono text-[11px] sm:text-base whitespace-nowrap font-semibold tracking-[0.12em] uppercase text-white group-hover:text-[#FFE600] transition-colors duration-200">
-                LET&apos;S COLLABORATE
+              <span className="font-mono text-lg sm:text-3xl whitespace-nowrap font-semibold reference-display tracking-[0.12em] uppercase text-white group-hover:text-[#FFE600] transition-colors duration-200">
+                HIRE ME
               </span>
 
               {/* Arrow Badge */}
@@ -372,34 +381,21 @@ export default function CollaborateSection({ onOpenResume }: CollaborateSectionP
           </div>
         </div>
 
-        {/* Supporting Micro-Stats Strip */}
-        <div className="mt-14 sm:mt-20 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 max-w-4xl w-full border-t border-[#121316]/15 pt-8 text-center sm:text-left">
-          <div>
-            <div className="text-xs font-mono uppercase text-[#121316]/75 tracking-wider">Direct Channel</div>
-            <div className="text-xs sm:text-sm font-semibold text-[#121316] font-mono mt-1 break-all">
-              {email}
-            </div>
-          </div>
-          <div>
-            <div className="text-xs font-mono uppercase text-[#121316]/75 tracking-wider">Direct Voice</div>
-            <div className="text-sm font-semibold text-[#121316] font-mono mt-1">
-              {phone}
-            </div>
-          </div>
-          <div>
-            <div className="text-xs font-mono uppercase text-[#121316]/75 tracking-wider">From the resume</div>
-            <div className="text-sm font-semibold text-[#121316] font-mono mt-1">
-              300+ LeetCode DSA
-            </div>
-          </div>
-          <div>
-            <div className="text-xs font-mono uppercase text-[#121316]/75 tracking-wider">Start a conversation</div>
-            <div className="text-sm font-semibold text-[#121316] font-mono mt-1">
-              Email or LinkedIn
-            </div>
+
+        {/* Concise editorial contact strip, without repeated metric cards. */}
+        <div className="mt-10 sm:mt-14 w-full border-t border-black/20 pt-5 flex flex-wrap items-center justify-between gap-4 font-mono text-[11px] uppercase tracking-wide text-[#121316]/75">
+          <span>Prefer it plain? &nbsp;
+            <a href={"mailto:" + email} className="underline underline-offset-4 hover:text-[#C72C43]">{email}</a>
+          </span>
+          <div className="flex items-center gap-4">
+            <a href={resumeUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">Résumé (PDF)</a>
+            <a href={githubUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">GitHub</a>
+            <a href={linkedinUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">LinkedIn</a>
           </div>
         </div>
       </div>
+
+
 
       {/* FULL-SCREEN CONTACT DOSSIER OVERLAY */}
       <AnimatePresence>
