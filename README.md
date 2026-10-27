@@ -30,7 +30,7 @@ The lint command runs ESLint through Node on Windows and Unix and fails on error
 
 The supplied resume supports personal/experience information. `src/data/caseStudies.ts` is the shared source for case studies, project notes and the reusable project deck. Public repository links support the additional project descriptions; package names do not establish personal proficiency. Unsupported latency, frame-rate, savings and readiness benchmarks are omitted.
 
-See [content sources](docs/portfolio-content.md), the [redesign plan](docs/cinematic-implementation-plan.md), and [current verification](docs/cinematic-verification.md). The original portrait and supplied resume remain local assets. No new contact credentials or service configuration is required.
+See [content sources](docs/portfolio-content.md), the [redesign plan](docs/cinematic-implementation-plan.md), [initial verification](docs/cinematic-verification.md), and [motion correction](docs/motion-reference-correction.md). The original portrait and supplied resume remain local assets. No new contact credentials or service configuration is required.
 
 ## Structure
 

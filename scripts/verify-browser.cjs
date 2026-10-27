@@ -16,7 +16,11 @@ async function openPage(options = {}) {
     viewport: { width: 1440, height: 1000 },
     ...options,
   });
-  page.on("pageerror", (e) => errors.push(e.message));
+  page.on("pageerror", (e) =>
+    errors.push(
+      `[${options.viewport?.width || 1440}px; ${options.reducedMotion || "no-preference"}] ${e.message}`,
+    ),
+  );
   page.on("console", (msg) => {
     if (msg.type() === "error") errors.push(msg.text());
   });
@@ -108,6 +112,27 @@ test("opening: identity, bundled display font and real portrait render", async (
     .locator('nav a[href^="#"]')
     .evaluateAll((els) => els.map((el) => el.getAttribute("href")))) {
     assert.equal(await desktop.locator(href).count(), 1);
+  }
+});
+
+test("hero captions remain separated at live and shorter laptop viewports", async () => {
+  for (const viewport of [
+    { width: 1363, height: 936 },
+    { width: 1440, height: 800 },
+    { width: 1280, height: 720 },
+  ]) {
+    const page = await openPage({ viewport });
+    const bounds = await page.evaluate(() => ({
+      note: document.querySelector(".hero-location").getBoundingClientRect()
+        .bottom,
+      byline: document.querySelector(".hero-byline").getBoundingClientRect()
+        .top,
+    }));
+    assert.ok(
+      bounds.byline - bounds.note > 12,
+      JSON.stringify({ viewport, ...bounds }),
+    );
+    await page.close();
   }
 });
 
@@ -248,22 +273,131 @@ test("contact: five independent strings finish drawing; SVG hand and pill are vi
   );
 });
 
-test("contact: strings respond to pointer movement and settle when it leaves", async () => {
+async function verifyCordAnchors(page) {
+  const attachments = await page.evaluate(() => {
+    const button = document
+      .querySelector(".collaborate-pill")
+      .getBoundingClientRect();
+    return [...document.querySelectorAll(".tension-string")].map((path) => {
+      const endpoint = path.getPointAtLength(path.getTotalLength());
+      const point = new DOMPoint(endpoint.x, endpoint.y).matrixTransform(
+        path.getScreenCTM(),
+      );
+      return {
+        x: point.x - button.left,
+        y: point.y - button.top,
+        width: button.width,
+        height: button.height,
+      };
+    });
+  });
+  for (const point of attachments) {
+    assert.ok(
+      point.x >= -3 && point.x <= point.width * 0.13,
+      "Cord detached horizontally: " + JSON.stringify(point),
+    );
+    assert.ok(
+      point.y >= -3 && point.y <= point.height + 3,
+      "Cord detached vertically: " + JSON.stringify(point),
+    );
+  }
+}
+
+test("contact: tug keeps moving after entrance and all five cords remain attached", async () => {
+  await desktop.mouse.move(10, 90);
+  const before = await desktop
+    .locator(".collab-button-wrapper")
+    .evaluate((el) => el.getBoundingClientRect().x);
+  await desktop.waitForTimeout(1200);
+  const after = await desktop
+    .locator(".collab-button-wrapper")
+    .evaluate((el) => el.getBoundingClientRect().x);
+  assert.ok(Math.abs(after - before) > 3, "Tug became static after entrance");
+  await verifyCordAnchors(desktop);
+});
+
+test("contact: pause stops the loop; pointer updates the attached rig", async () => {
+  await desktop.getByRole("button", { name: "Pause tug", exact: true }).click();
+  await desktop.mouse.move(10, 90);
+  await desktop.waitForTimeout(650);
+  const before = await desktop
+    .locator(".tension-string")
+    .first()
+    .getAttribute("d");
+  await desktop.waitForTimeout(300);
+  assert.equal(
+    await desktop.locator(".tension-string").first().getAttribute("d"),
+    before,
+  );
   const stage = await desktop.locator(".collab-stage").boundingBox();
   await desktop.mouse.move(stage.x + stage.width * 0.92, stage.y + 22);
-  await desktop.waitForTimeout(400);
-  const strings = desktop.locator(".tension-string").first().locator("..");
-  assert.ok(
-    await strings.evaluate(
-      (el) => Math.abs(new DOMMatrix(getComputedStyle(el).transform).m41) > 2,
-    ),
+  await desktop.waitForTimeout(650);
+  assert.notEqual(
+    await desktop.locator(".tension-string").first().getAttribute("d"),
+    before,
   );
+  await verifyCordAnchors(desktop);
   await desktop.mouse.move(10, 90);
-  await desktop.waitForTimeout(400);
-  assert.ok(
-    await strings.evaluate(
-      (el) => Math.abs(new DOMMatrix(getComputedStyle(el).transform).m41) < 0.1,
-    ),
+  await desktop.waitForTimeout(650);
+  assert.equal(
+    await desktop.locator(".tension-string").first().getAttribute("d"),
+    before,
+  );
+  await desktop
+    .getByRole("button", { name: "Resume tug", exact: true })
+    .click();
+});
+
+test("contact: hover words reveal and dragging springs back without opening contact", async () => {
+  const button = desktop.getByRole("button", { name: triggerName });
+  await button.hover();
+  await desktop.waitForTimeout(450);
+  assert.equal(await desktop.locator(".collab-word").count(), 4);
+  for (const word of await desktop.locator(".collab-word").all())
+    assert.equal(
+      await word.evaluate((el) => getComputedStyle(el).opacity),
+      "1",
+    );
+  const box = await button.boundingBox();
+  await desktop.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await desktop.mouse.down();
+  await desktop.mouse.move(box.x + box.width / 2 + 22, box.y + box.height / 2, {
+    steps: 10,
+  });
+  await desktop.waitForTimeout(150);
+  await verifyCordAnchors(desktop);
+  await desktop.mouse.up();
+  await desktop.waitForTimeout(650);
+  assert.equal(
+    await desktop.getByRole("dialog").count(),
+    0,
+    "Drag accidentally opened contact",
+  );
+  const translated = await button.evaluate(
+    (el) => new DOMMatrix(getComputedStyle(el).transform).m41,
+  );
+  assert.ok(Math.abs(translated) < 1, "Button did not spring back");
+});
+
+test("contact: leaving the viewport pauses and reentering resumes the rig", async () => {
+  await section(desktop, "home");
+  assert.equal(
+    await desktop.locator(".collab-stage").getAttribute("data-motion"),
+    "paused",
+  );
+  const before = await desktop
+    .locator(".tension-string")
+    .first()
+    .getAttribute("d");
+  await desktop.waitForTimeout(300);
+  assert.equal(
+    await desktop.locator(".tension-string").first().getAttribute("d"),
+    before,
+  );
+  await section(desktop, "contact");
+  assert.equal(
+    await desktop.locator(".collab-stage").getAttribute("data-motion"),
+    "running",
   );
 });
 
@@ -274,6 +408,10 @@ test("contact: keyboard opening focuses close, labels fields and isolates backgr
   await settle(desktop);
   const dialog = desktop.getByRole("dialog");
   assert.equal(await dialog.isVisible(), true);
+  assert.equal(
+    await desktop.locator(".collab-stage").getAttribute("data-motion"),
+    "paused",
+  );
   assert.equal(
     await dialog
       .getByRole("button", { name: "Close dialog", exact: true })
@@ -440,6 +578,43 @@ test("touch: drag reveals the underlying photograph; tap opens static details", 
   await page.close();
 });
 
+test("touch: dragging the collaborate pill tensions the cords without opening contact", async () => {
+  const page = await openPage({
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+  });
+  await section(page, "contact");
+  const button = page.getByRole("button", { name: triggerName });
+  const box = await button.boundingBox();
+  const client = await page.context().newCDPSession(page);
+  const point = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+  await client.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [point],
+  });
+  for (let x = 4; x <= 20; x += 4) {
+    await client.send("Input.dispatchTouchEvent", {
+      type: "touchMove",
+      touchPoints: [{ x: point.x + x, y: point.y }],
+    });
+    await page.waitForTimeout(30);
+  }
+  await verifyCordAnchors(page);
+  await client.send("Input.dispatchTouchEvent", {
+    type: "touchEnd",
+    touchPoints: [],
+  });
+  await page.waitForTimeout(700);
+  assert.equal(await page.getByRole("dialog").count(), 0);
+  await button.tap();
+  await settle(page);
+  assert.equal(await page.getByRole("dialog").count(), 1);
+  await page.keyboard.press("Escape");
+  await settle(page);
+  await page.close();
+});
+
 test("reduced motion: content is readable, torch tracking stops and contact works", async () => {
   const page = await openPage({
     viewport: { width: 390, height: 844 },
@@ -467,6 +642,14 @@ test("reduced motion: content is readable, torch tracking stops and contact work
   );
   await torch.getByRole("button", { name: "Hide details" }).tap();
   await section(page, "contact");
+  assert.equal(
+    await page.locator(".collab-stage").getAttribute("data-motion"),
+    "reduced",
+  );
+  assert.equal(
+    await page.locator(".pulling-hand").getAttribute("transform"),
+    null,
+  );
   assert.equal(await page.locator(".collaborate-pill").isVisible(), true);
   assert.equal(
     await page
