@@ -1,10 +1,9 @@
 "use client";
-
+import useReducedMotion from "../../hooks/useMotionPreference";
 import { useEffect, useRef } from "react";
-import { useReducedMotion } from "framer-motion";
+
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
 export default function ContactPrelude() {
   const root = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
@@ -12,45 +11,51 @@ export default function ContactPrelude() {
     if (reduced || matchMedia("(prefers-reduced-motion: reduce)").matches)
       return;
     gsap.registerPlugin(ScrollTrigger);
-    const ctx = gsap.context(() => {
-      gsap.from(".prelude-title", {
-        yPercent: 70,
-        opacity: 0.25,
-        ease: "none",
-        scrollTrigger: {
-          trigger: root.current,
-          start: "top 94%",
-          end: "top 40%",
-          scrub: 0.4,
-        },
-      });
-      gsap.from(".prelude-rule", {
-        scaleX: 0,
-        transformOrigin: "left",
-        ease: "none",
-        scrollTrigger: {
-          trigger: root.current,
-          start: "top bottom",
-          end: "top 35%",
-          scrub: 0.35,
-        },
-      });
-    }, root);
-    return () => ctx.revert();
+    const media = gsap.matchMedia();
+    media.add("(min-width:768px)", () => {
+      const ctx = gsap.context(() => {
+        gsap
+          .timeline({
+            scrollTrigger: {
+              id: "last-thing-pin",
+              trigger: root.current,
+              start: "top 84px",
+              end: "+=65%",
+              pin: true,
+              pinSpacing: false,
+              scrub: 0.6,
+            },
+          })
+          .fromTo(
+            ".prelude-title",
+            { scale: 0.92, opacity: 0.6 },
+            { scale: 1.07, opacity: 1, ease: "none" },
+            0,
+          )
+          .from(".prelude-line", { opacity: 0, y: 25, stagger: 0.15 }, 0.15);
+      }, root);
+      return () => ctx.revert();
+    });
+    return () => media.revert();
   }, [reduced]);
   return (
-    <section ref={root} className="contact-prelude" aria-label="One last thing">
+    <section
+      ref={root}
+      className="contact-prelude"
+      data-scene="#101014"
+      data-ink="light"
+      aria-label="One last thing"
+    >
       <div className="prelude-rule" aria-hidden="true" />
       <div className="prelude-title-clip">
         <p className="prelude-title">
           ONE LAST THING<span>.</span>
         </p>
       </div>
-      <p className="micro-label">
-        The next chapter starts
-        <br />
-        with a conversation. <span aria-hidden="true">↓</span>
-      </p>
+      <div className="prelude-lines">
+        <p className="prelude-line">The next chapter starts</p>
+        <p className="prelude-line">with a conversation.</p>
+      </div>
     </section>
   );
 }

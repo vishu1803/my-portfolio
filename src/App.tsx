@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { MotionConfig } from "framer-motion";
 
+import MotionSystem from "./components/motion/MotionSystem";
+import EditorialSubject from "./components/landing/EditorialSubject";
 import Navbar from "./components/landing/Navbar";
 import VideoReferenceHero from "./components/landing/VideoReferenceHero";
 import ProjectCaseStudies from "./components/landing/ProjectCaseStudies";
@@ -35,6 +37,7 @@ export default function App() {
           Skip to content
         </a>
         <div className="w-full">
+          <MotionSystem />
           {/* Editorial chapter navigation */}
           <Navbar onOpenResume={() => setResumeOpen(true)} />
 
@@ -42,17 +45,15 @@ export default function App() {
             {/* Section 1: Cinematic VOX-Inspired Editorial Hero with Real Portrait & Flashlight Inspector */}
             <VideoReferenceHero onOpenResume={() => setResumeOpen(true)} />
 
+            <EditorialSubject />
             {/* Section 2: Investigative Documentary Project Case Studies */}
             <ProjectCaseStudies
               onSelectProject={(p) => setSelectedProject(p)}
               onSelectArticle={(a) => setSelectedArticle(a)}
             />
 
-            {/* Section 3: Personnel Dossier & Verified Resume Experience & Skills */}
-            <EditorialAbout onOpenResume={() => setResumeOpen(true)} />
-
-            {/* Toolkit interlude, followed by the hand-and-string invitation */}
             <ReferenceSkillInterlude />
+            <EditorialAbout onOpenResume={() => setResumeOpen(true)} />
             <ContactPrelude />
             <CollaborateSection onOpenResume={() => setResumeOpen(true)} />
           </main>

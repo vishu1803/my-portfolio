@@ -1,14 +1,19 @@
 "use client";
+import useReducedMotion from "../../hooks/useMotionPreference";
 
 import { useEffect, useRef, useState, useId } from "react";
+import { createPortal } from "react-dom";
 import {
   motion,
   AnimatePresence,
   LayoutGroup,
-  useReducedMotion,
   useMotionValue,
   useMotionValueEvent,
 } from "framer-motion";
+import PhysicsBurst from "../interactive/PhysicsBurst";
+import TerminalHeading from "../motion/TerminalHeading";
+import CountUp from "../motion/CountUp";
+import Magnetic from "../motion/Magnetic";
 import PullingHand from "./PullingHand";
 import useAccessibleDialog from "../../hooks/useAccessibleDialog";
 import useCollaborationRig from "../../hooks/useCollaborationRig";
@@ -41,6 +46,23 @@ export default function CollaborateSection({
   const stringsGroupRef = useRef<SVGGElement>(null);
 
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+  const [bursting, setBursting] = useState(false);
+  const [portalReady, setPortalReady] = useState(false);
+  useEffect(() => setPortalReady(true), []);
+  const navigateTimer = useRef<number | null>(null);
+  useEffect(
+    () => () => {
+      if (navigateTimer.current !== null)
+        window.clearTimeout(navigateTimer.current);
+    },
+    [],
+  );
+  useEffect(() => {
+    if (reduced && bursting) {
+      setBursting(false);
+      setIsOverlayOpen(true);
+    }
+  }, [reduced, bursting]);
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedPhone, setCopiedPhone] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -86,8 +108,8 @@ export default function CollaborateSection({
   });
   useMotionValueEvent(dragX, "change", (value) => rig.current?.drag(value));
   useEffect(() => {
-    rig.current?.pause(isOverlayOpen || motionPaused);
-  }, [isOverlayOpen, motionPaused, reduced, rig]);
+    rig.current?.pause(isOverlayOpen || bursting || motionPaused);
+  }, [isOverlayOpen, bursting, motionPaused, reduced, rig]);
   useEffect(() => {
     rig.current?.hover(buttonHovered || dragging);
   }, [buttonHovered, dragging, rig]);
@@ -145,9 +167,11 @@ export default function CollaborateSection({
         ref={sectionRef}
         aria-labelledby="contact-heading"
         className="editorial-collaborate paper-section"
+        data-scene="#eae8e2"
+        data-ink="dark"
       >
         <div className="section-rule micro-label">
-          <span>04 / An open invitation</span>
+          <span>05 / An open invitation</span>
           <span>Let’s make something matter</span>
         </div>
         <div className="collab-intro">
@@ -169,7 +193,7 @@ export default function CollaborateSection({
           ref={containerRef}
           onPointerMove={handlePointerMove}
           onPointerLeave={handlePointerLeave}
-          className="collab-stage"
+          className={`collab-stage ${bursting ? "is-releasing" : ""}`}
         >
           <svg
             viewBox="0 0 1000 410"
@@ -244,7 +268,11 @@ export default function CollaborateSection({
                 if (performance.now() - draggedAt.current < 250) return;
                 setButtonHovered(false);
                 setFormSubmitted(false);
-                setIsOverlayOpen(true);
+                if (
+                  window.matchMedia("(prefers-reduced-motion: reduce)").matches
+                )
+                  setIsOverlayOpen(true);
+                else setBursting(true);
               }}
               onHoverStart={() => setButtonHovered(true)}
               onHoverEnd={() => setButtonHovered(false)}
@@ -279,7 +307,7 @@ export default function CollaborateSection({
             >
               <span className="pill-sheen" aria-hidden="true" />
               <span className="pill-dot" aria-hidden="true" />
-              <span>LET’S COLLABORATE</span>
+              <span>HIRE ME</span>
               <ArrowUpRight size={23} aria-hidden="true" />
             </motion.button>
           </div>
@@ -312,369 +340,456 @@ export default function CollaborateSection({
             </button>
           </div>
         </div>
+        {bursting && (
+          <PhysicsBurst
+            onCancel={() => setBursting(false)}
+            onComplete={() => {
+              setBursting(false);
+              setIsOverlayOpen(true);
+            }}
+          />
+        )}
         {/* FULL-SCREEN CONTACT DOSSIER OVERLAY */}
-        <AnimatePresence>
-          {isOverlayOpen && (
-            <motion.div
-              layoutRoot
-              initial={{ opacity: reduced ? 1 : 0 }}
-              transition={{ duration: reduced ? 0 : 0.22 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsOverlayOpen(false)}
-              className="fixed inset-0 z-[150] flex items-center justify-center p-4 sm:p-6 md:p-10 bg-black/85 backdrop-blur-md overflow-y-auto overscroll-contain"
-              ref={dialogRef}
-              tabIndex={-1}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby={`${contactId}-title`}
-            >
-              <motion.div
-                initial={
-                  reduced ? { opacity: 1 } : { opacity: 0, scale: 0.97, y: 12 }
-                }
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={
-                  reduced ? { opacity: 0 } : { opacity: 0, scale: 0.97, y: 12 }
-                }
-                transition={{
-                  layout: {
-                    type: "spring",
-                    duration: reduced ? 0 : 0.65,
-                    bounce: 0.12,
-                  },
-                  opacity: { duration: reduced ? 0 : 0.2 },
-                }}
-                onClick={(e) => e.stopPropagation()}
-                layoutId="contact-surface"
-                className="contact-overlay-panel relative w-full max-w-4xl select-text rounded-3xl bg-[#0E1014] text-[#FAF8F5] border border-white/15 shadow-[0_25px_80px_rgba(0,0,0,0.85)] p-6 sm:p-10 my-auto overflow-hidden"
-              >
-                {/* Header Close Bar */}
-                <div className="flex items-center justify-between border-b border-white/10 pb-5 mb-8">
-                  <div className="flex items-center gap-3">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#FFE600]" />
-                    <span className="font-mono text-xs uppercase tracking-widest text-[#FFE600]">
-                      LET’S MAKE SOMETHING TOGETHER
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setIsOverlayOpen(false)}
-                    className="w-11 h-11 shrink-0 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-white/80 hover:text-white transition-all font-mono text-sm"
-                    aria-label="Close dialog"
-                    data-dialog-close
+        {portalReady &&
+          createPortal(
+            <AnimatePresence>
+              {isOverlayOpen && (
+                <motion.div
+                  layoutRoot
+                  initial={{ opacity: reduced ? 1 : 0 }}
+                  transition={{ duration: reduced ? 0 : 0.22 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setIsOverlayOpen(false)}
+                  className="fixed inset-0 z-[150] flex items-center justify-center p-4 sm:p-6 md:p-10 bg-black/85 backdrop-blur-md overflow-y-auto overscroll-contain"
+                  ref={dialogRef}
+                  tabIndex={-1}
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby={`${contactId}-title`}
+                >
+                  <motion.div
+                    initial={
+                      reduced
+                        ? { opacity: 1 }
+                        : { opacity: 0, scale: 0.97, y: 12 }
+                    }
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={
+                      reduced
+                        ? { opacity: 0 }
+                        : { opacity: 0, scale: 0.97, y: 12 }
+                    }
+                    transition={{
+                      layout: {
+                        type: "spring",
+                        duration: reduced ? 0 : 0.65,
+                        bounce: 0.12,
+                      },
+                      opacity: { duration: reduced ? 0 : 0.2 },
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                    layoutId="contact-surface"
+                    className="contact-overlay-panel terminal-contact-panel relative w-full max-w-4xl select-text rounded-3xl bg-[#0E1014] text-[#FAF8F5] border border-white/15 shadow-[0_25px_80px_rgba(0,0,0,0.85)] p-6 sm:p-10 my-auto overflow-hidden"
                   >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-
-                {/* Grid: Direct Channels on Left, Dispatch Message on Right */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                  {/* Left 5 Cols: Verified Identity & Direct Channels */}
-                  <div className="lg:col-span-5 space-y-6">
-                    <div>
-                      <h3
-                        id={`${contactId}-title`}
-                        className="text-3xl font-display italic text-white mb-2"
-                      >
-                        Vishwanath Nishad
-                      </h3>
-                      <p className="text-sm font-body text-white/70 leading-relaxed">
-                        Software engineer based in Gorakhpur, India. Working
-                        across web interfaces, backend APIs, and practical
-                        full-stack applications.
-                      </p>
-                    </div>
-
-                    {/* Channel Cards */}
-                    <div className="space-y-3">
-                      {/* Email Card with Copy button */}
-                      <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-between group hover:border-[#FFE600]/40 transition-colors">
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-[#FFE600] shrink-0">
-                            <Mail className="w-4 h-4" />
-                          </div>
-                          <div className="min-w-0">
-                            <div className="text-[10px] font-mono uppercase text-white/50">
-                              Direct Email
-                            </div>
-                            <a
-                              href={`mailto:${email}`}
-                              className="text-xs font-mono leading-relaxed text-white hover:underline [overflow-wrap:anywhere] block"
-                            >
-                              {email}
-                            </a>
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={copyEmail}
-                          className="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-xs font-mono text-white/80 flex items-center gap-1 shrink-0"
-                          title="Copy Email to Clipboard"
-                        >
-                          {copiedEmail ? (
-                            <Check className="w-3.5 h-3.5 text-[#FFE600]" />
-                          ) : (
-                            <Copy className="w-3.5 h-3.5" />
-                          )}
-                          <span className="hidden sm:inline">
-                            {copiedEmail ? "Copied" : "Copy"}
-                          </span>
-                        </button>
+                    {/* Header Close Bar */}
+                    <div className="flex items-center justify-between border-b border-white/10 pb-5 mb-8">
+                      <div className="flex items-center gap-3">
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#FFE600]" />
+                        <span className="font-mono text-xs uppercase tracking-widest text-[#FFE600]">
+                          LET’S MAKE SOMETHING TOGETHER
+                        </span>
                       </div>
-
-                      {/* Phone Card */}
-                      <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-between group hover:border-[#FFE600]/40 transition-colors">
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-[#FFE600] shrink-0">
-                            <Phone className="w-4 h-4" />
-                          </div>
-                          <div className="min-w-0">
-                            <div className="text-[10px] font-mono uppercase text-white/50">
-                              Direct Phone
-                            </div>
-                            <a
-                              href={`tel:${phone}`}
-                              className="text-xs font-mono leading-relaxed text-white hover:underline [overflow-wrap:anywhere] block"
-                            >
-                              {phone}
-                            </a>
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={copyPhone}
-                          className="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-xs font-mono text-white/80 flex items-center gap-1 shrink-0"
-                          title="Copy Phone"
-                        >
-                          {copiedPhone ? (
-                            <Check className="w-3.5 h-3.5 text-[#FFE600]" />
-                          ) : (
-                            <Copy className="w-3.5 h-3.5" />
-                          )}
-                          <span className="hidden sm:inline">
-                            {copiedPhone ? "Copied" : "Copy"}
-                          </span>
-                        </button>
-                      </div>
-
-                      {/* Location Badge */}
-                      <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-white/60 shrink-0">
-                          <MapPin className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <div className="text-[10px] font-mono uppercase text-white/50">
-                            Location
-                          </div>
-                          <div className="text-xs sm:text-sm font-mono text-white">
-                            Gorakhpur, Uttar Pradesh, India
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Verified Links */}
-                    <div className="pt-2 flex flex-wrap gap-2">
-                      <a
-                        href={linkedinUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 text-xs font-mono text-white flex items-center gap-1.5 transition-colors"
-                      >
-                        <FaLinkedin className="w-3.5 h-3.5 text-[#38BDF8]" />
-                        <span>LinkedIn</span>
-                        <ArrowUpRight className="w-3 h-3 text-white/50" />
-                      </a>
-                      <a
-                        href={githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 text-xs font-mono text-white flex items-center gap-1.5 transition-colors"
-                      >
-                        <FaGithub className="w-3.5 h-3.5 text-white" />
-                        <span>GitHub</span>
-                        <ArrowUpRight className="w-3 h-3 text-white/50" />
-                      </a>
-                      <a
-                        href={leetcodeUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 text-xs font-mono text-white flex items-center gap-1.5 transition-colors"
-                      >
-                        <Code2 className="w-3.5 h-3.5" />
-                        <span>LeetCode (300+)</span>
-                        <ArrowUpRight className="w-3 h-3 text-white/50" />
-                      </a>
-                      <a
-                        href={resumeUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-3 py-1.5 rounded-full bg-[#FFE600]/15 hover:bg-[#FFE600]/25 border border-[#FFE600]/30 text-xs font-mono text-[#FFE600] flex items-center gap-1.5 transition-colors"
-                      >
-                        <Download className="w-3.5 h-3.5" />
-                        <span>Resume (PDF)</span>
-                      </a>
-                    </div>
-                  </div>
-
-                  {/* Right 7 Cols: Direct Message Dispatcher Form */}
-                  <div className="lg:col-span-7 bg-white/[0.02] border border-white/10 rounded-2xl p-6 sm:p-7">
-                    <h4 className="text-base font-semibold text-white mb-1 flex items-center justify-between">
-                      <span>Start a conversation</span>
-                      <span className="text-xs font-mono text-muted">
-                        Email draft
-                      </span>
-                    </h4>
-                    <p className="text-xs text-white/60 mb-5 leading-relaxed">
-                      Prepare an email draft to{" "}
-                      <span className="text-[#FFE600] font-mono">{email}</span>.
-                    </p>
-
-                    <form onSubmit={handleFormSubmit} className="space-y-4">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <label
-                            htmlFor={`${contactId}-name`}
-                            className="block text-xs font-mono uppercase text-white/60 mb-1.5"
-                          >
-                            Your Name
-                          </label>
-                          <input
-                            id={`${contactId}-name`}
-                            name="name"
-                            type="text"
-                            autoComplete="name"
-                            required
-                            value={formState.name}
-                            onChange={(e) =>
-                              setFormState({
-                                ...formState,
-                                name: e.target.value,
-                              })
-                            }
-                            placeholder="Jane Doe / Engineering Lead"
-                            className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#FFE600] transition-colors font-body"
-                          />
-                        </div>
-                        <div>
-                          <label
-                            htmlFor={`${contactId}-email`}
-                            className="block text-xs font-mono uppercase text-white/60 mb-1.5"
-                          >
-                            Your Email
-                          </label>
-                          <input
-                            id={`${contactId}-email`}
-                            name="email"
-                            type="email"
-                            autoComplete="email"
-                            spellCheck={false}
-                            required
-                            value={formState.email}
-                            onChange={(e) =>
-                              setFormState({
-                                ...formState,
-                                email: e.target.value,
-                              })
-                            }
-                            placeholder="jane@company.com"
-                            className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#FFE600] transition-colors font-body"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label
-                          htmlFor={`${contactId}-project-type`}
-                          className="block text-xs font-mono uppercase text-white/60 mb-1.5"
-                        >
-                          Inquiry Type
-                        </label>
-                        <select
-                          id={`${contactId}-project-type`}
-                          name="project-type"
-                          value={formState.projectType}
-                          onChange={(e) =>
-                            setFormState({
-                              ...formState,
-                              projectType: e.target.value,
-                            })
-                          }
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-[#14161C] border border-white/10 text-sm text-white focus:outline-none focus:border-[#FFE600] transition-colors font-body"
-                        >
-                          <option value="Full-Time Software Engineer Role">
-                            Full-Time Software Engineer Role
-                          </option>
-                          <option value="Backend / RESTful API Engineering">
-                            Backend / RESTful API Engineering
-                          </option>
-                          <option value="Full-Stack Web Application">
-                            Full-Stack Web Application
-                          </option>
-                          <option value="AI / LLM System Architecture">
-                            AI / LLM System Architecture
-                          </option>
-                          <option value="General Conversation / Technical Exchange">
-                            General Conversation / Technical Exchange
-                          </option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label
-                          htmlFor={`${contactId}-message`}
-                          className="block text-xs font-mono uppercase text-white/60 mb-1.5"
-                        >
-                          Message / Details
-                        </label>
-                        <textarea
-                          id={`${contactId}-message`}
-                          name="message"
-                          required
-                          rows={4}
-                          value={formState.message}
-                          onChange={(e) =>
-                            setFormState({
-                              ...formState,
-                              message: e.target.value,
-                            })
-                          }
-                          placeholder="Tell me about the role, your engineering stack, or problem you are solving..."
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#FFE600] transition-colors font-body resize-none"
-                        />
-                      </div>
-
                       <button
-                        type="submit"
-                        className="w-full py-3.5 rounded-xl bg-[#FFE600] hover:bg-[#FFE600]/90 text-black font-semibold text-sm font-mono tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-[#FFE600]/20"
+                        type="button"
+                        onClick={() => setIsOverlayOpen(false)}
+                        className="w-11 h-11 shrink-0 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-white/80 hover:text-white transition-all font-mono text-sm"
+                        aria-label="Close dialog"
+                        data-dialog-close
                       >
-                        <span>Start a Project</span>
-                        <ArrowUpRight className="w-4 h-4" />
+                        <X className="w-4 h-4" />
                       </button>
-                      <p className="text-xs leading-relaxed text-white/70">
-                        Opens your email app. Review and send the draft there.
+                    </div>
+
+                    <div className="terminal-introduction">
+                      <p className="micro-label">
+                        THE NEXT CHAPTER STARTS HERE.
                       </p>
-                      <p
-                        role="status"
-                        className="text-xs leading-relaxed text-[#FFE600]"
-                      >
-                        {formSubmitted
-                          ? "Your email draft is ready. Send it in your email app."
-                          : copyError ||
-                            (copiedEmail
-                              ? "Email copied."
-                              : copiedPhone
-                                ? "Phone number copied."
-                                : "")}
-                      </p>
-                    </form>
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
+                      <TerminalHeading text="Let’s talk about what we can build." />
+                      <div className="terminal-actions">
+                        <Magnetic>
+                          <a
+                            href={`mailto:${email}`}
+                            className="terminal-primary"
+                          >
+                            Let’s talk ↗
+                          </a>
+                        </Magnetic>
+                        <Magnetic>
+                          <button type="button" onClick={onOpenResume}>
+                            View résumé ↗
+                          </button>
+                        </Magnetic>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsOverlayOpen(false);
+                            navigateTimer.current = window.setTimeout(() => {
+                              const target =
+                                document.getElementById("case-studies");
+                              if (!target) return;
+                              const top = target.dataset.pinStart
+                                ? Number(target.dataset.pinStart)
+                                : target.getBoundingClientRect().top +
+                                  scrollY -
+                                  84;
+                              const event = new CustomEvent(
+                                "portfolio:scroll",
+                                { detail: { top }, cancelable: true },
+                              );
+                              if (window.dispatchEvent(event))
+                                window.scrollTo({
+                                  top,
+                                  behavior: window.matchMedia(
+                                    "(prefers-reduced-motion: reduce)",
+                                  ).matches
+                                    ? "instant"
+                                    : "smooth",
+                                });
+                            }, 80);
+                          }}
+                        >
+                          Explore my work ↓
+                        </button>
+                      </div>
+                      <div className="terminal-stats">
+                        <div>
+                          <CountUp value={6} label="source-linked case files" />
+                          <span className="micro-label">Case files</span>
+                        </div>
+                        <div>
+                          <CountUp
+                            value={300}
+                            suffix="+"
+                            label="LeetCode problems recorded in resume"
+                          />
+                          <span className="micro-label">LeetCode · résumé</span>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Grid: Direct Channels on Left, Dispatch Message on Right */}
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                      {/* Left 5 Cols: Verified Identity & Direct Channels */}
+                      <div className="lg:col-span-5 space-y-6">
+                        <div>
+                          <h3
+                            id={`${contactId}-title`}
+                            className="text-3xl font-display italic text-white mb-2"
+                          >
+                            Vishwanath Nishad
+                          </h3>
+                          <p className="text-sm font-body text-white/70 leading-relaxed">
+                            Software engineer based in Gorakhpur, India. Working
+                            across web interfaces, backend APIs, and practical
+                            full-stack applications.
+                          </p>
+                        </div>
+
+                        {/* Channel Cards */}
+                        <div className="space-y-3">
+                          {/* Email Card with Copy button */}
+                          <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-between group hover:border-[#FFE600]/40 transition-colors">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-[#FFE600] shrink-0">
+                                <Mail className="w-4 h-4" />
+                              </div>
+                              <div className="min-w-0">
+                                <div className="text-[10px] font-mono uppercase text-white/50">
+                                  Direct Email
+                                </div>
+                                <a
+                                  href={`mailto:${email}`}
+                                  className="text-xs font-mono leading-relaxed text-white hover:underline [overflow-wrap:anywhere] block"
+                                >
+                                  {email}
+                                </a>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={copyEmail}
+                              className="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-xs font-mono text-white/80 flex items-center gap-1 shrink-0"
+                              title="Copy Email to Clipboard"
+                            >
+                              {copiedEmail ? (
+                                <Check className="w-3.5 h-3.5 text-[#FFE600]" />
+                              ) : (
+                                <Copy className="w-3.5 h-3.5" />
+                              )}
+                              <span className="hidden sm:inline">
+                                {copiedEmail ? "Copied" : "Copy"}
+                              </span>
+                            </button>
+                          </div>
+
+                          {/* Phone Card */}
+                          <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-between group hover:border-[#FFE600]/40 transition-colors">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-[#FFE600] shrink-0">
+                                <Phone className="w-4 h-4" />
+                              </div>
+                              <div className="min-w-0">
+                                <div className="text-[10px] font-mono uppercase text-white/50">
+                                  Direct Phone
+                                </div>
+                                <a
+                                  href={`tel:${phone}`}
+                                  className="text-xs font-mono leading-relaxed text-white hover:underline [overflow-wrap:anywhere] block"
+                                >
+                                  {phone}
+                                </a>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={copyPhone}
+                              className="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-xs font-mono text-white/80 flex items-center gap-1 shrink-0"
+                              title="Copy Phone"
+                            >
+                              {copiedPhone ? (
+                                <Check className="w-3.5 h-3.5 text-[#FFE600]" />
+                              ) : (
+                                <Copy className="w-3.5 h-3.5" />
+                              )}
+                              <span className="hidden sm:inline">
+                                {copiedPhone ? "Copied" : "Copy"}
+                              </span>
+                            </button>
+                          </div>
+
+                          {/* Location Badge */}
+                          <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-white/60 shrink-0">
+                              <MapPin className="w-4 h-4" />
+                            </div>
+                            <div>
+                              <div className="text-[10px] font-mono uppercase text-white/50">
+                                Location
+                              </div>
+                              <div className="text-xs sm:text-sm font-mono text-white">
+                                Gorakhpur, Uttar Pradesh, India
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Verified Links */}
+                        <div className="pt-2 flex flex-wrap gap-2">
+                          <a
+                            href={linkedinUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 text-xs font-mono text-white flex items-center gap-1.5 transition-colors"
+                          >
+                            <FaLinkedin className="w-3.5 h-3.5 text-[#38BDF8]" />
+                            <span>LinkedIn</span>
+                            <ArrowUpRight className="w-3 h-3 text-white/50" />
+                          </a>
+                          <a
+                            href={githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 text-xs font-mono text-white flex items-center gap-1.5 transition-colors"
+                          >
+                            <FaGithub className="w-3.5 h-3.5 text-white" />
+                            <span>GitHub</span>
+                            <ArrowUpRight className="w-3 h-3 text-white/50" />
+                          </a>
+                          <a
+                            href={leetcodeUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 text-xs font-mono text-white flex items-center gap-1.5 transition-colors"
+                          >
+                            <Code2 className="w-3.5 h-3.5" />
+                            <span>LeetCode (300+)</span>
+                            <ArrowUpRight className="w-3 h-3 text-white/50" />
+                          </a>
+                          <a
+                            href={resumeUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3 py-1.5 rounded-full bg-[#FFE600]/15 hover:bg-[#FFE600]/25 border border-[#FFE600]/30 text-xs font-mono text-[#FFE600] flex items-center gap-1.5 transition-colors"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                            <span>Resume (PDF)</span>
+                          </a>
+                        </div>
+                      </div>
+
+                      {/* Existing labelled email-draft form remains available. */}
+                      <div className="lg:col-span-7 bg-white/[0.02] border border-white/10 rounded-2xl p-6 sm:p-7">
+                        <h4 className="text-base font-semibold text-white mb-1 flex items-center justify-between">
+                          <span>Start a conversation</span>
+                          <span className="text-xs font-mono text-muted">
+                            Email draft
+                          </span>
+                        </h4>
+                        <p className="text-xs text-white/60 mb-5 leading-relaxed">
+                          Prepare an email draft to{" "}
+                          <span className="text-[#FFE600] font-mono">
+                            {email}
+                          </span>
+                          .
+                        </p>
+
+                        <form onSubmit={handleFormSubmit} className="space-y-4">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                              <label
+                                htmlFor={`${contactId}-name`}
+                                className="block text-xs font-mono uppercase text-white/60 mb-1.5"
+                              >
+                                Your Name
+                              </label>
+                              <input
+                                id={`${contactId}-name`}
+                                name="name"
+                                type="text"
+                                autoComplete="name"
+                                required
+                                value={formState.name}
+                                onChange={(e) =>
+                                  setFormState({
+                                    ...formState,
+                                    name: e.target.value,
+                                  })
+                                }
+                                placeholder="Jane Doe / Engineering Lead"
+                                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#FFE600] transition-colors font-body"
+                              />
+                            </div>
+                            <div>
+                              <label
+                                htmlFor={`${contactId}-email`}
+                                className="block text-xs font-mono uppercase text-white/60 mb-1.5"
+                              >
+                                Your Email
+                              </label>
+                              <input
+                                id={`${contactId}-email`}
+                                name="email"
+                                type="email"
+                                autoComplete="email"
+                                spellCheck={false}
+                                required
+                                value={formState.email}
+                                onChange={(e) =>
+                                  setFormState({
+                                    ...formState,
+                                    email: e.target.value,
+                                  })
+                                }
+                                placeholder="jane@company.com"
+                                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#FFE600] transition-colors font-body"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label
+                              htmlFor={`${contactId}-project-type`}
+                              className="block text-xs font-mono uppercase text-white/60 mb-1.5"
+                            >
+                              Inquiry Type
+                            </label>
+                            <select
+                              id={`${contactId}-project-type`}
+                              name="project-type"
+                              value={formState.projectType}
+                              onChange={(e) =>
+                                setFormState({
+                                  ...formState,
+                                  projectType: e.target.value,
+                                })
+                              }
+                              className="w-full px-3.5 py-2.5 rounded-xl bg-[#14161C] border border-white/10 text-sm text-white focus:outline-none focus:border-[#FFE600] transition-colors font-body"
+                            >
+                              <option value="Full-Time Software Engineer Role">
+                                Full-Time Software Engineer Role
+                              </option>
+                              <option value="Backend / RESTful API Engineering">
+                                Backend / RESTful API Engineering
+                              </option>
+                              <option value="Full-Stack Web Application">
+                                Full-Stack Web Application
+                              </option>
+                              <option value="AI / LLM System Architecture">
+                                AI / LLM System Architecture
+                              </option>
+                              <option value="General Conversation / Technical Exchange">
+                                General Conversation / Technical Exchange
+                              </option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <label
+                              htmlFor={`${contactId}-message`}
+                              className="block text-xs font-mono uppercase text-white/60 mb-1.5"
+                            >
+                              Message / Details
+                            </label>
+                            <textarea
+                              id={`${contactId}-message`}
+                              name="message"
+                              required
+                              rows={4}
+                              value={formState.message}
+                              onChange={(e) =>
+                                setFormState({
+                                  ...formState,
+                                  message: e.target.value,
+                                })
+                              }
+                              placeholder="Tell me about the role, your engineering stack, or problem you are solving..."
+                              className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#FFE600] transition-colors font-body resize-none"
+                            />
+                          </div>
+
+                          <button
+                            type="submit"
+                            className="w-full py-3.5 rounded-xl bg-[#FFE600] hover:bg-[#FFE600]/90 text-black font-semibold text-sm font-mono tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-[#FFE600]/20"
+                          >
+                            <span>Start a Project</span>
+                            <ArrowUpRight className="w-4 h-4" />
+                          </button>
+                          <p className="text-xs leading-relaxed text-white/70">
+                            Opens your email app. Review and send the draft
+                            there.
+                          </p>
+                          <p
+                            role="status"
+                            className="text-xs leading-relaxed text-[#FFE600]"
+                          >
+                            {formSubmitted
+                              ? "Your email draft is ready. Send it in your email app."
+                              : copyError ||
+                                (copiedEmail
+                                  ? "Email copied."
+                                  : copiedPhone
+                                    ? "Phone number copied."
+                                    : "")}
+                          </p>
+                        </form>
+                      </div>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>,
+            document.body,
           )}
-        </AnimatePresence>
       </section>
     </LayoutGroup>
   );

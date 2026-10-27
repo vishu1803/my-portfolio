@@ -24,11 +24,36 @@ const PullingHand = forwardRef<SVGGElement>(function PullingHand(_, ref) {
       <path d="m160 182 33-12 61 150-36 26Z" fill="#f7f5ee" strokeWidth="2" />
       <path d="m178 178 54 151M185 177l55 148" fill="none" strokeWidth="0.7" />
       <path
-        d="M194 181c26-10 48-26 72-43 20-15 36-29 58-33 30-6 55-3 82-12 18-6 32-13 40-4 9 10-4 21-21 26l-83 31c29-5 56-10 83-12 17-2 37-11 46-2 11 12-7 21-24 25l-95 28c31-2 57-7 84-5 16 1 40-5 44 7 4 11-12 18-31 20l-89 17c25 2 46 2 66 9 17 5 36 10 32 22-4 11-23 9-40 6l-68-5c-26 2-43 24-65 38l-35 23Z"
+        d="M194 181c26-10 48-26 72-43 20-15 36-29 58-33l18 41 10 39 6 39-12 23c-26 2-43 24-65 38l-35 23Z"
         fill="#f7f5ee"
         strokeWidth="2.3"
       />
       <path
+        data-finger="index"
+        d="M300 119c24-14 61-13 106-26 18-6 32-13 40-4 9 10-4 21-21 26l-83 31-29 12"
+        fill="#f7f5ee"
+        strokeWidth="2.3"
+      />
+      <path
+        data-finger="middle"
+        d="M319 153c35-8 73-17 106-19 17-2 37-11 46-2 11 12-7 21-24 25l-95 28-25 7"
+        fill="#f7f5ee"
+        strokeWidth="2.3"
+      />
+      <path
+        data-finger="ring"
+        d="M331 188c34-5 73-11 105-8 16 1 40-5 44 7 4 11-12 18-31 20l-89 17-18 2"
+        fill="#f7f5ee"
+        strokeWidth="2.3"
+      />
+      <path
+        data-finger="little"
+        d="M346 225c26 2 49 2 70 9 17 5 36 10 32 22-4 11-23 9-40 6l-68-5"
+        fill="#f7f5ee"
+        strokeWidth="2.3"
+      />
+      <path
+        data-finger="thumb"
         d="M246 295c16-11 27-25 40-38 16-16 31-27 50-34 17-6 31-5 35 6 5 12-10 23-23 30l-22 17c-6 20-23 39-44 48l-32 11"
         fill="#f7f5ee"
         strokeWidth="2.1"

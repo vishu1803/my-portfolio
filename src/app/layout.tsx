@@ -1,5 +1,30 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
+const bodyFont = localFont({
+  src: "../../public/fonts/inter-latin-400-normal.woff2",
+  variable: "--font-inter",
+  display: "swap",
+});
+const displayFont = localFont({
+  src: "../../public/fonts/anton-latin-400-normal.woff2",
+  variable: "--font-anton",
+  display: "swap",
+});
+const serifFont = localFont({
+  src: [
+    {
+      path: "../../public/fonts/instrument-serif-latin-400-normal.woff2",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/instrument-serif-latin-400-italic.woff2",
+      style: "italic",
+    },
+  ],
+  variable: "--font-instrument",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Vishwanath Nishad — Full Stack Developer Portfolio",
@@ -25,23 +50,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth dark">
-      <head>
-        <link
-          rel="preload"
-          href="/fonts/anton-latin-400-normal.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/instrument-serif-latin-400-normal.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-      </head>
+    <html
+      lang="en"
+      className={`${bodyFont.variable} ${displayFont.variable} ${serifFont.variable} scroll-smooth dark`}
+    >
       <body className="bg-bg text-text-primary antialiased font-body">
         {children}
       </body>
