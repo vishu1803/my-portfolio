@@ -10,7 +10,10 @@ import {
   useMotionValue,
   useMotionValueEvent,
 } from "framer-motion";
-import PhysicsBurst from "../interactive/PhysicsBurst";
+import dynamic from "next/dynamic";
+const PhysicsBurst = dynamic(() => import("../interactive/PhysicsBurst"), {
+  ssr: false,
+});
 import TerminalHeading from "../motion/TerminalHeading";
 import CountUp from "../motion/CountUp";
 import Magnetic from "../motion/Magnetic";
@@ -47,6 +50,7 @@ export default function CollaborateSection({
 
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
   const [bursting, setBursting] = useState(false);
+  const [burstOrigin, setBurstOrigin] = useState({ x: 0, y: 0 });
   const [portalReady, setPortalReady] = useState(false);
   useEffect(() => setPortalReady(true), []);
   const navigateTimer = useRef<number | null>(null);
@@ -158,6 +162,32 @@ export default function CollaborateSection({
     setFormSubmitted(true);
   };
 
+  const navigateTo = (id: string) => {
+    setIsOverlayOpen(false);
+    if (navigateTimer.current !== null) clearTimeout(navigateTimer.current);
+    navigateTimer.current = window.setTimeout(() => {
+      const target = document.getElementById(id);
+      if (!target) return;
+      const top =
+        id === "home"
+          ? 0
+          : target.dataset.pinStart
+            ? Number(target.dataset.pinStart)
+            : target.getBoundingClientRect().top + scrollY - 84;
+      const event = new CustomEvent("portfolio:scroll", {
+        detail: { top, immediate: false },
+        cancelable: true,
+      });
+      if (window.dispatchEvent(event))
+        window.scrollTo({
+          top,
+          behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+            ? "instant"
+            : "smooth",
+        });
+    }, 80);
+  };
+
   // Fixed SVG geometry; GSAP owns decorative transforms, Framer owns the button.
 
   return (
@@ -264,7 +294,7 @@ export default function CollaborateSection({
             <motion.button
               type="button"
               layoutId="contact-surface"
-              onClick={() => {
+              onClick={(event) => {
                 if (performance.now() - draggedAt.current < 250) return;
                 setButtonHovered(false);
                 setFormSubmitted(false);
@@ -272,7 +302,14 @@ export default function CollaborateSection({
                   window.matchMedia("(prefers-reduced-motion: reduce)").matches
                 )
                   setIsOverlayOpen(true);
-                else setBursting(true);
+                else {
+                  const rect = event.currentTarget.getBoundingClientRect();
+                  setBurstOrigin({
+                    x: rect.left + rect.width / 2,
+                    y: rect.top + rect.height / 2,
+                  });
+                  setBursting(true);
+                }
               }}
               onHoverStart={() => setButtonHovered(true)}
               onHoverEnd={() => setButtonHovered(false)}
@@ -342,6 +379,7 @@ export default function CollaborateSection({
         </div>
         {bursting && (
           <PhysicsBurst
+            origin={burstOrigin}
             onCancel={() => setBursting(false)}
             onComplete={() => {
               setBursting(false);
@@ -416,7 +454,20 @@ export default function CollaborateSection({
                         THE NEXT CHAPTER STARTS HERE.
                       </p>
                       <TerminalHeading text="Let’s talk about what we can build." />
-                      <div className="terminal-actions">
+                      <motion.div
+                        className="terminal-actions"
+                        initial={reduced ? false : "hidden"}
+                        animate="visible"
+                        variants={{
+                          hidden: {},
+                          visible: {
+                            transition: {
+                              staggerChildren: 0.08,
+                              delayChildren: 0.25,
+                            },
+                          },
+                        }}
+                      >
                         <Magnetic>
                           <a
                             href={`mailto:${email}`}
@@ -430,38 +481,22 @@ export default function CollaborateSection({
                             View résumé ↗
                           </button>
                         </Magnetic>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setIsOverlayOpen(false);
-                            navigateTimer.current = window.setTimeout(() => {
-                              const target =
-                                document.getElementById("case-studies");
-                              if (!target) return;
-                              const top = target.dataset.pinStart
-                                ? Number(target.dataset.pinStart)
-                                : target.getBoundingClientRect().top +
-                                  scrollY -
-                                  84;
-                              const event = new CustomEvent(
-                                "portfolio:scroll",
-                                { detail: { top }, cancelable: true },
-                              );
-                              if (window.dispatchEvent(event))
-                                window.scrollTo({
-                                  top,
-                                  behavior: window.matchMedia(
-                                    "(prefers-reduced-motion: reduce)",
-                                  ).matches
-                                    ? "instant"
-                                    : "smooth",
-                                });
-                            }, 80);
-                          }}
-                        >
-                          Explore my work ↓
-                        </button>
-                      </div>
+                        <Magnetic>
+                          <button
+                            type="button"
+                            onClick={() => navigateTo("case-studies")}
+                          >
+                            Explore my work ↓
+                          </button>
+                        </Magnetic>
+                      </motion.div>
+                      <button
+                        type="button"
+                        className="terminal-back micro-label"
+                        onClick={() => navigateTo("home")}
+                      >
+                        Back to the beginning ↑
+                      </button>
                       <div className="terminal-stats">
                         <div>
                           <CountUp value={6} label="source-linked case files" />

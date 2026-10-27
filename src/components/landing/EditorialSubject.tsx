@@ -1,17 +1,15 @@
 "use client";
 import useReducedMotion from "../../hooks/useMotionPreference";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { LineReveal, BlurIn, MarkerSweep } from "../motion/TextReveals";
 import Image from "next/image";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import useScrollScene from "../../hooks/useScrollScene";
 
 export default function EditorialSubject() {
   const root = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
-  useEffect(() => {
-    if (reduced || matchMedia("(prefers-reduced-motion: reduce)").matches)
-      return;
-    gsap.registerPlugin(ScrollTrigger);
+  useScrollScene(root, !reduced, (ScrollTrigger) => {
     const ctx = gsap.context(() => {
       gsap.from(".subject-letter", {
         opacity: 0,
@@ -63,23 +61,9 @@ export default function EditorialSubject() {
           once: true,
         },
       });
-      gsap.fromTo(
-        ".marker-sweep",
-        { backgroundSize: "0% 100%" },
-        {
-          backgroundSize: "100% 100%",
-          stagger: 0.2,
-          duration: 0.9,
-          scrollTrigger: {
-            trigger: ".subject-bio",
-            start: "top 78%",
-            once: true,
-          },
-        },
-      );
     }, root);
     return () => ctx.revert();
-  }, [reduced]);
+  });
   return (
     <section
       id="subject"
@@ -104,7 +88,7 @@ export default function EditorialSubject() {
         </span>
       </p>
       <h2 id="subject-heading" className="subject-heading">
-        THOUGHTFUL INTERFACES.
+        <LineReveal>THOUGHTFUL INTERFACES.</LineReveal>
         <em>
           <span className="sr-only">Reliable systems underneath.</span>
           <span aria-hidden="true">
@@ -131,16 +115,19 @@ export default function EditorialSubject() {
         <div>
           <div className="subject-bio">
             <p>
-              I’m Vishwanath, a{" "}
-              <span className="marker-sweep">full-stack developer</span>{" "}
-              connecting responsive interfaces with the systems behind them.
+              <BlurIn>
+                I’m Vishwanath, a{" "}
+                <MarkerSweep>full-stack developer</MarkerSweep> connecting
+                responsive interfaces with the systems behind them.
+              </BlurIn>
             </p>
             <p>
-              My work spans{" "}
-              <span className="marker-sweep">authenticated APIs</span>,
-              relational data, and interactive web applications. I like
-              understanding how the pieces fit together — then turning that
-              understanding into something useful.
+              <BlurIn>
+                My work spans <MarkerSweep>authenticated APIs</MarkerSweep>,
+                relational data, and interactive web applications. I like
+                understanding how the pieces fit together — then turning that
+                understanding into something useful.
+              </BlurIn>
             </p>
           </div>
           <dl className="subject-specs">

@@ -1,13 +1,18 @@
 "use client";
 import useReducedMotion from "../../hooks/useMotionPreference";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
+import { LineReveal } from "../motion/TextReveals";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import useScrollScene from "../../hooks/useScrollScene";
 import { CASE_STUDIES } from "../../data/caseStudies";
 import { JOURNAL_DATA, type JournalArticle } from "./Journal";
 import type { ProjectItem } from "./SelectedWorks";
-import ArchitectureCompendiumModal from "./ArchitectureCompendiumModal";
+import dynamic from "next/dynamic";
+const ArchitectureCompendiumModal = dynamic(
+  () => import("./ArchitectureCompendiumModal"),
+  { ssr: false },
+);
 import CaseFileVisual from "./CaseFileVisual";
 import Magnetic from "../motion/Magnetic";
 export { CASE_STUDIES } from "../../data/caseStudies";
@@ -20,11 +25,12 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
     track = useRef<HTMLDivElement>(null),
     viewport = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
+  const scrollPlugin =
+    useRef<typeof import("gsap/ScrollTrigger").ScrollTrigger>();
   const [indexOpen, setIndexOpen] = useState(false);
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-    if (reduced || matchMedia("(prefers-reduced-motion: reduce)").matches)
-      return;
+  const [indexLoaded, setIndexLoaded] = useState(false);
+  useScrollScene(root, !reduced, (ScrollTrigger) => {
+    scrollPlugin.current = ScrollTrigger;
     const media = gsap.matchMedia();
     media.add("(min-width: 768px)", () => {
       const el = root.current!,
@@ -87,8 +93,12 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
         delete el.dataset.pinEnd;
       };
     });
-    return () => media.revert();
-  }, [reduced]);
+    return () => {
+      media.revert();
+      scrollPlugin.current = undefined;
+    };
+  });
+
   return (
     <>
       <section
@@ -105,12 +115,17 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
         </div>
         <div className="work-heading">
           <h2 id="work-heading">
-            SIX SYSTEMS.<em>Ideas, made tangible.</em>
+            <LineReveal>
+              SIX SYSTEMS.<em>Ideas, made tangible.</em>
+            </LineReveal>
           </h2>
           <button
             type="button"
             className="editorial-link"
-            onClick={() => setIndexOpen(true)}
+            onClick={() => {
+              setIndexLoaded(true);
+              setIndexOpen(true);
+            }}
           >
             Project index / 06 ↗
           </button>
@@ -126,7 +141,8 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
                   data-case-id={study.id}
                   data-active={index === 0}
                   onFocusCapture={() => {
-                    const trigger = ScrollTrigger.getById("case-files-track");
+                    const trigger =
+                      scrollPlugin.current?.getById("case-files-track");
                     if (trigger) {
                       const top =
                         trigger.start +
@@ -210,10 +226,12 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
           Scroll to turn the case files <span aria-hidden="true">→</span>
         </p>
       </section>
-      <ArchitectureCompendiumModal
-        isOpen={indexOpen}
-        onClose={() => setIndexOpen(false)}
-      />
+      {indexLoaded && (
+        <ArchitectureCompendiumModal
+          isOpen={indexOpen}
+          onClose={() => setIndexOpen(false)}
+        />
+      )}
     </>
   );
 }

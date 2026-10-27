@@ -52,9 +52,21 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${bodyFont.variable} ${displayFont.variable} ${serifFont.variable} scroll-smooth dark`}
     >
+      <head>
+        <script
+          id="intro-session"
+          dangerouslySetInnerHTML={{
+            __html: `try{if(sessionStorage.getItem('portfolio-intro-seen')==='1')document.documentElement.dataset.introSkip='true'}catch{}`,
+          }}
+        />
+      </head>
       <body className="bg-bg text-text-primary antialiased font-body">
+        <noscript>
+          <style>{`.monogram-preloader{display:none!important}`}</style>
+        </noscript>
         {children}
       </body>
     </html>

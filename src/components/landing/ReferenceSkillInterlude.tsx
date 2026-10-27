@@ -1,8 +1,9 @@
 "use client";
 import useReducedMotion from "../../hooks/useMotionPreference";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { LineReveal, BlurIn } from "../motion/TextReveals";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import useScrollScene from "../../hooks/useScrollScene";
 
 const GROUPS = [
   {
@@ -25,10 +26,7 @@ const GROUPS = [
 export default function ReferenceSkillInterlude() {
   const root = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
-  useEffect(() => {
-    if (reduced || matchMedia("(prefers-reduced-motion: reduce)").matches)
-      return;
-    gsap.registerPlugin(ScrollTrigger);
+  useScrollScene(root, !reduced, (ScrollTrigger) => {
     const ctx = gsap.context(() => {
       root.current?.querySelectorAll(".toolkit-row").forEach((row, index) =>
         gsap.from(row, {
@@ -53,7 +51,7 @@ export default function ReferenceSkillInterlude() {
       });
     }, root);
     return () => ctx.revert();
-  }, [reduced]);
+  });
   return (
     <section
       id="toolkit"
@@ -71,14 +69,18 @@ export default function ReferenceSkillInterlude() {
         <div className="toolkit-title">
           <span className="micro-label">Always learning. Always building.</span>
           <h2 id="toolkit-heading">
-            THE RIGHT
-            <br />
-            <span className="yellow-underline">TOOLS.</span>
-            <em>A considered approach.</em>
+            <LineReveal>
+              THE RIGHT
+              <br />
+              <span className="yellow-underline">TOOLS.</span>
+              <em>A considered approach.</em>
+            </LineReveal>
           </h2>
           <p>
-            From what you see to what makes it work. A practical toolkit for
-            building across the stack.
+            <BlurIn>
+              From what you see to what makes it work. A practical toolkit for
+              building across the stack.
+            </BlurIn>
           </p>
         </div>
         <div className="toolkit-rows">

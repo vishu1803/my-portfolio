@@ -1,12 +1,14 @@
 "use client";
 import useReducedMotion from "../../hooks/useMotionPreference";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import useScrollScene from "../../hooks/useScrollScene";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { useIntroReady } from "../motion/Preloader";
+import Magnetic from "../motion/Magnetic";
 import TorchReveal from "../interactive/TorchReveal";
 
 export default function VideoReferenceHero({
@@ -17,18 +19,12 @@ export default function VideoReferenceHero({
   const root = useRef<HTMLElement>(null);
   const portrait = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
+  const introReady = useIntroReady();
 
-  useEffect(() => {
-    if (
-      !root.current ||
-      reduced ||
-      matchMedia("(prefers-reduced-motion: reduce)").matches
-    )
-      return;
-    gsap.registerPlugin(ScrollTrigger);
+  useScrollScene(root, !reduced && introReady, (ScrollTrigger) => {
     const context = gsap.context(() => {
       gsap
-        .timeline({ delay: 0.4, defaults: { ease: "power3.out" } })
+        .timeline({ delay: 0.08, defaults: { ease: "power3.out" } })
         .from(".hero-outline", { y: 36, opacity: 0, duration: 0.7 }, 0)
         .from(".hero-name-line", { yPercent: 110, duration: 0.85 }, 0.15)
         .from(".hero-note", { y: 18, opacity: 0, duration: 0.65 }, 0.35)
@@ -63,7 +59,7 @@ export default function VideoReferenceHero({
       }
     }, root);
     return () => context.revert();
-  }, [reduced]);
+  });
 
   return (
     <section
@@ -165,21 +161,25 @@ export default function VideoReferenceHero({
           <em>Reliable systems underneath.</em>
         </p>
         <div className="hero-actions">
-          <motion.a
-            href="#case-studies"
-            whileHover={{ y: -3 }}
-            whileTap={{ scale: 0.97 }}
-            className="editorial-link"
-          >
-            Explore the work <ArrowDownRight size={19} aria-hidden="true" />
-          </motion.a>
-          <button
-            type="button"
-            onClick={onOpenResume}
-            className="editorial-link subtle-link"
-          >
-            Résumé <ArrowUpRight size={16} aria-hidden="true" />
-          </button>
+          <Magnetic>
+            <motion.a
+              href="#case-studies"
+              whileHover={{ y: -3 }}
+              whileTap={{ scale: 0.97 }}
+              className="editorial-link"
+            >
+              Explore the work <ArrowDownRight size={19} aria-hidden="true" />
+            </motion.a>
+          </Magnetic>
+          <Magnetic>
+            <button
+              type="button"
+              onClick={onOpenResume}
+              className="editorial-link subtle-link"
+            >
+              Résumé <ArrowUpRight size={16} aria-hidden="true" />
+            </button>
+          </Magnetic>
         </div>
         <span className="hero-scroll micro-label">
           Scroll to unfold

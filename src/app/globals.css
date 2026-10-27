@@ -1879,8 +1879,8 @@ html.lenis {
   gap: 22px;
   pointer-events: none;
   transition:
-    opacity 0.3s,
-    visibility 0.3s;
+    transform 0.35s cubic-bezier(0.76, 0, 0.24, 1),
+    visibility 0.35s;
 }
 .monogram-preloader > span {
   font-family: var(--font-display);
@@ -1896,9 +1896,13 @@ html.lenis {
     monospace;
   letter-spacing: 0.15em;
 }
-.monogram-preloader.is-finished {
-  opacity: 0;
+.monogram-preloader.intro-leaving {
+  transform: translateY(-100%);
+}
+.monogram-preloader.intro-done,
+html[data-intro-skip="true"] .monogram-preloader {
   visibility: hidden;
+  transform: translateY(-100%);
 }
 .editorial-cursor {
   pointer-events: none;
@@ -1918,17 +1922,17 @@ html.lenis {
   border-radius: 50%;
 }
 .cursor-dot {
-  width: 4px;
-  height: 4px;
+  width: 8px;
+  height: 8px;
   background: #e4d92d;
 }
 .cursor-ring {
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   border: 1px solid #e4d92d88;
+  transform: translate(-50%, -50%) scale(var(--cursor-scale, 1));
   transition:
-    width 0.2s,
-    height 0.2s,
+    transform 0.2s,
     opacity 0.2s,
     background-color 0.2s;
 }
@@ -1943,13 +1947,11 @@ html.lenis {
   opacity: 0;
 }
 .editorial-cursor[data-kind="link"] .cursor-ring {
-  width: 42px;
-  height: 42px;
+  --cursor-scale: 1.8;
   background: #e4d92d11;
 }
 .editorial-cursor[data-kind="drag"] .cursor-ring {
-  width: 58px;
-  height: 58px;
+  --cursor-scale: 1.6;
   background: #101014cc;
 }
 .editorial-cursor[data-kind="drag"] .cursor-label {
@@ -2211,11 +2213,9 @@ html.lenis {
   margin-bottom: 22px;
 }
 .marker-sweep {
-  background-image: linear-gradient(#e5d92d, #e5d92d);
-  background-repeat: no-repeat;
-  background-position: left 80%;
-  background-size: 100% 100%;
-  box-decoration-break: clone;
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
 }
 .subject-specs {
   margin-top: 35px;
@@ -2374,7 +2374,11 @@ html.lenis {
 .case-radial-glow {
   position: absolute;
   inset: 5%;
-  background: radial-gradient(ellipse, #e5d92d25, transparent 70%);
+  background: radial-gradient(
+    ellipse 55% 65% at var(--glow-x, 50%) var(--glow-y, 50%),
+    #e5d92d30,
+    transparent 80%
+  );
   pointer-events: none;
 }
 .case-tilt-frame {
@@ -2707,7 +2711,7 @@ html.lenis {
   user-select: none;
   touch-action: none;
   background: transparent;
-  transform: translate3d(45vw, 45vh, 0);
+  transform: translate3d(var(--burst-x, 45vw), var(--burst-y, 45vh), 0);
 }
 .physics-word:active {
   cursor: grabbing;
@@ -2750,11 +2754,16 @@ html.lenis {
 @keyframes touch-burst {
   from {
     opacity: 0;
-    translate: 40px 40px;
+    transform: translate(
+        calc(var(--burst-x) - 10vw - 50%),
+        calc(var(--burst-y) - (20vh + var(--word-index) * 9vh) - 50%)
+      )
+      rotate(0deg) scale(0.5);
   }
   to {
     opacity: 1;
-    translate: 0 0;
+    transform: translate(0, 0) rotate(calc((var(--word-index) - 2.5) * 5deg))
+      scale(1);
   }
 }
 .terminal-contact-panel {
@@ -3334,4 +3343,54 @@ html[data-chapter-theme="dark"] .wordmark-star {
 
 .hero-portrait {
   z-index: 4;
+}
+
+/* Shared reveal wrappers own only their inner content, leaving scene transforms independent. */
+.text-reveal {
+  position: relative;
+}
+.reveal-line {
+  display: block;
+  overflow: clip;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.reveal-line > [data-reveal-content] {
+  display: block;
+}
+.reveal-blur {
+  display: block;
+}
+.reveal-marker-ink {
+  position: absolute;
+  inset: 15% -2px 5%;
+  z-index: -1;
+  background: #e5d92d;
+  transform-origin: left;
+}
+.magnetic-content {
+  display: inline-flex;
+  align-items: center;
+}
+.cursor-trail {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.terminal-back {
+  display: block;
+  width: fit-content;
+  margin-top: 20px;
+  min-height: 44px;
+  color: #eeeae0;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .text-reveal [data-reveal-content],
+  .reveal-marker-ink {
+    transform: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+  }
 }
