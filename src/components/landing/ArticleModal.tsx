@@ -1,6 +1,7 @@
 "use client";
+import useReducedMotion from "../../hooks/useMotionPreference";
 
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useId } from "react";
 import useAccessibleDialog from "../../hooks/useAccessibleDialog";
 import Image from "next/image";
@@ -35,7 +36,10 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
             initial={reduced ? false : { scale: 0.97, opacity: 0, y: 12 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={reduced ? { opacity: 0 } : { scale: 0.97, opacity: 0, y: 12 }}
-            transition={{ duration: reduced ? 0 : 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+            transition={{
+              duration: reduced ? 0 : 0.3,
+              ease: [0.25, 0.1, 0.25, 1],
+            }}
             onClick={(e) => e.stopPropagation()}
             className="relative w-full max-w-3xl rounded-3xl border border-white/10 bg-surface shadow-2xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto"
           >
@@ -65,7 +69,10 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
               </span>
             </div>
 
-            <h3 id={dialogId} className="text-2xl sm:text-4xl font-display italic text-text-primary mb-3">
+            <h3
+              id={dialogId}
+              className="text-2xl sm:text-4xl font-display italic text-text-primary mb-3"
+            >
               {article.title}
             </h3>
 
@@ -94,32 +101,35 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
             </div>
 
             {/* Architecture Highlights */}
-            {article.architecturePoints && article.architecturePoints.length > 0 && (
-              <div className="mb-6 p-4 rounded-2xl bg-black/50 border border-white/10">
-                <h4 className="text-xs font-mono uppercase tracking-widest text-text-primary/90 mb-3 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#89AACC]" />
-                  <span>Project highlights</span>
-                </h4>
-                <div className="space-y-2">
-                  {article.architecturePoints.map((pt, i) => (
-                    <div
-                      key={i}
-                      className="text-xs font-mono text-text-primary/80 flex items-start gap-2.5"
-                    >
-                      <span className="text-[#89AACC]">0{i + 1}.</span>
-                      <span>{pt}</span>
-                    </div>
-                  ))}
+            {article.architecturePoints &&
+              article.architecturePoints.length > 0 && (
+                <div className="mb-6 p-4 rounded-2xl bg-black/50 border border-white/10">
+                  <h4 className="text-xs font-mono uppercase tracking-widest text-text-primary/90 mb-3 flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#89AACC]" />
+                    <span>Project highlights</span>
+                  </h4>
+                  <div className="space-y-2">
+                    {article.architecturePoints.map((pt, i) => (
+                      <div
+                        key={i}
+                        className="text-xs font-mono text-text-primary/80 flex items-start gap-2.5"
+                      >
+                        <span className="text-[#89AACC]">0{i + 1}.</span>
+                        <span>{pt}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {/* Code Snippet if present */}
             {article.codeSnippet && (
               <div className="mb-8 rounded-2xl bg-black/80 border border-white/10 p-4 overflow-hidden">
                 <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10 text-xs font-mono text-muted">
                   <span>Illustrative code pattern</span>
-                  <span className="text-[#89AACC]">Explanation, not a repository extract</span>
+                  <span className="text-[#89AACC]">
+                    Explanation, not a repository extract
+                  </span>
                 </div>
                 <pre className="text-xs font-mono text-text-primary/90 overflow-x-auto p-1 leading-relaxed selection:bg-[#4E85BF]/40">
                   <code>{article.codeSnippet}</code>
@@ -127,7 +137,19 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
               </div>
             )}
 
-            {article.sourceUrl && <p className="mb-6 text-xs text-muted">Source: <a className="underline underline-offset-4 hover:text-white" href={article.sourceUrl} target="_blank" rel="noopener noreferrer">{article.sourceLabel} ↗</a></p>}
+            {article.sourceUrl && (
+              <p className="mb-6 text-xs text-muted">
+                Source:{" "}
+                <a
+                  className="underline underline-offset-4 hover:text-white"
+                  href={article.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {article.sourceLabel} ↗
+                </a>
+              </p>
+            )}
             {/* Footer with links */}
             <div className="pt-4 border-t border-stroke flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-3">

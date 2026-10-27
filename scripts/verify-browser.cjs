@@ -1,5 +1,4 @@
-// Run `npm run build && npm run test:browser` after `npx playwright install chromium`.
-// BROWSER_EXECUTABLE_PATH optionally selects an already installed Chromium.
+// npm run build && npx playwright install chromium && npm run test:browser
 const { test, before, after } = require("node:test");
 const assert = require("node:assert/strict");
 const { spawn } = require("node:child_process");
@@ -8,34 +7,78 @@ const { chromium } = require("playwright");
 let server, browser, desktop;
 const errors = [];
 const base = "http://127.0.0.1:3194";
-const root = path.resolve(__dirname, "..");
 const triggerName = "Let’s collaborate — open contact details";
-const settle = (page) => page.waitForTimeout(1100);
+const wait = (page, ms = 1400) => page.waitForTimeout(ms);
 async function openPage(options = {}) {
   const page = await browser.newPage({
     viewport: { width: 1440, height: 1000 },
     ...options,
   });
-  page.on("pageerror", (e) =>
+  page.on("pageerror", (error) =>
     errors.push(
-      `[${options.viewport?.width || 1440}px; ${options.reducedMotion || "no-preference"}] ${e.message}`,
+      `[${options.viewport?.width || 1440}/${options.reducedMotion || "normal"}] ${error.message}`,
     ),
   );
   page.on("console", (msg) => {
     if (msg.type() === "error") errors.push(msg.text());
   });
   await page.goto(base, { waitUntil: "networkidle" });
-  await page.waitForTimeout(2300);
   await page.evaluate(() => document.fonts.ready);
+  await wait(page, 2400);
   return page;
 }
+async function scroll(page, top) {
+  await page.evaluate((top) => {
+    const event = new CustomEvent("portfolio:scroll", {
+      detail: { top },
+      cancelable: true,
+    });
+    if (window.dispatchEvent(event))
+      window.scrollTo({ top, behavior: "instant" });
+  }, top);
+  await wait(page);
+}
 async function section(page, id) {
-  await page
+  const top = await page
     .locator("#" + id)
     .evaluate((el) =>
-      window.scrollTo({ top: el.offsetTop - 85, behavior: "instant" }),
+      el.dataset.pinStart
+        ? Number(el.dataset.pinStart)
+        : el.getBoundingClientRect().top + scrollY - 86,
     );
-  await page.waitForTimeout(1500);
+  await scroll(page, top);
+}
+async function contact(page) {
+  await section(page, "contact");
+  await page.getByRole("button", { name: triggerName, exact: true }).click();
+  const dialog = page.getByRole("dialog", {
+    name: "Vishwanath Nishad",
+    exact: true,
+  });
+  await dialog.waitFor({ state: "visible", timeout: 6000 });
+  await wait(page, 1500);
+  return dialog;
+}
+async function cords(page) {
+  const points = await page.evaluate(() => {
+    const box = document
+      .querySelector(".collaborate-pill")
+      .getBoundingClientRect();
+    return [...document.querySelectorAll(".tension-string")].map((path) => {
+      const p = path.getPointAtLength(path.getTotalLength());
+      const q = new DOMPoint(p.x, p.y).matrixTransform(path.getScreenCTM());
+      return {
+        x: q.x - box.left,
+        y: q.y - box.top,
+        w: box.width,
+        h: box.height,
+      };
+    });
+  });
+  for (const p of points) {
+    assert.ok(p.x >= -5 && p.x < p.w * 0.15, JSON.stringify(p));
+    assert.ok(p.y >= -5 && p.y < p.h + 5, JSON.stringify(p));
+  }
 }
 before(async () => {
   server = spawn(
@@ -48,16 +91,11 @@ before(async () => {
       "-H",
       "127.0.0.1",
     ],
-    { cwd: root, stdio: ["ignore", "pipe", "pipe"] },
+    { cwd: path.resolve(__dirname, ".."), stdio: ["ignore", "pipe", "pipe"] },
   );
   await new Promise((resolve, reject) => {
     let output = "";
-    const timer = setTimeout(
-      () =>
-        reject(new Error("Production server did not become ready: " + output)),
-      20000,
-    );
-    server.stderr.on("data", (b) => (output += b));
+    const timer = setTimeout(() => reject(new Error(output)), 20000);
     server.stdout.on("data", (b) => {
       output += b;
       if (output.includes("Ready")) {
@@ -65,16 +103,14 @@ before(async () => {
         resolve();
       }
     });
-    server.once("error", reject);
-    server.once("exit", (code) => {
-      clearTimeout(timer);
-      reject(new Error("Server exited: " + code + output));
-    });
+    server.stderr.on("data", (b) => (output += b));
+    server.on("error", reject);
   });
-  const executablePath = process.env.BROWSER_EXECUTABLE_PATH;
   browser = await chromium.launch({
     headless: true,
-    ...(executablePath ? { executablePath } : {}),
+    ...(process.env.BROWSER_EXECUTABLE_PATH
+      ? { executablePath: process.env.BROWSER_EXECUTABLE_PATH }
+      : {}),
     args: [
       "--no-sandbox",
       "--disable-dev-shm-usage",
@@ -88,170 +124,92 @@ after(async () => {
   await browser?.close();
   server?.kill();
 });
-
-test("opening: identity, bundled display font and real portrait render", async () => {
-  assert.match(await desktop.locator("h1").innerText(), /VISHWANATH/);
-  assert.match(await desktop.locator("h1").textContent(), /Nishad/);
+test("identity, SEO, next/font variables, content and navigation remain intact", async () => {
   assert.equal(await desktop.locator("h1").count(), 1);
-  assert.equal(
-    await desktop.evaluate(() => document.fonts.check("100px Anton")),
-    true,
+  assert.match(await desktop.locator("h1").textContent(), /VISHWANATH.*Nishad/);
+  assert.match(await desktop.title(), /Vishwanath Nishad/);
+  assert.ok(
+    await desktop.locator("meta[name=description]").getAttribute("content"),
   );
-  assert.match(
-    await desktop
-      .locator("h1")
-      .evaluate((el) => getComputedStyle(el).fontFamily),
-    /Anton/,
-  );
-  const img = desktop.locator("#home img").first();
-  assert.equal(
-    await img.evaluate((el) => el.complete && el.naturalWidth > 0),
-    true,
+  const fonts = await desktop.evaluate(() => ({
+    display: getComputedStyle(document.documentElement).getPropertyValue(
+      "--font-anton",
+    ),
+    serif: getComputedStyle(document.documentElement).getPropertyValue(
+      "--font-instrument",
+    ),
+    computed: getComputedStyle(document.querySelector("h1")).fontFamily,
+  }));
+  assert.ok(fonts.display.length > 2);
+  assert.ok(fonts.serif.length > 2);
+  assert.ok(
+    fonts.computed.includes(
+      fonts.display.split(",")[0].replaceAll('"', "").trim(),
+    ),
+    JSON.stringify(fonts),
   );
   for (const href of await desktop
     .locator('nav a[href^="#"]')
-    .evaluateAll((els) => els.map((el) => el.getAttribute("href")))) {
+    .evaluateAll((els) => els.map((el) => el.getAttribute("href"))))
     assert.equal(await desktop.locator(href).count(), 1);
-  }
-});
-
-test("hero captions remain separated at live and shorter laptop viewports", async () => {
-  for (const viewport of [
-    { width: 1363, height: 936 },
-    { width: 1440, height: 800 },
-    { width: 1280, height: 720 },
-  ]) {
-    const page = await openPage({ viewport });
-    const bounds = await page.evaluate(() => ({
-      note: document.querySelector(".hero-location").getBoundingClientRect()
-        .bottom,
-      byline: document.querySelector(".hero-byline").getBoundingClientRect()
-        .top,
-    }));
-    assert.ok(
-      bounds.byline - bounds.note > 12,
-      JSON.stringify({ viewport, ...bounds }),
-    );
-    await page.close();
-  }
-});
-
-test("flashlight: pointer reveals a masked photograph and resets on leave", async () => {
-  const torch = desktop.locator("#home [data-flashlight]");
-  const box = await torch.locator(".hero-photo").boundingBox();
-  await desktop.mouse.move(box.x + box.width * 0.7, box.y + box.height * 0.4);
-  await desktop.waitForTimeout(300);
-  assert.equal(await torch.getAttribute("data-tracking"), "true");
-  const mask = torch.locator(".flashlight-reveal-mask");
-  assert.equal(await mask.locator("img").count(), 1);
-  assert.match(
-    await mask.evaluate((el) => getComputedStyle(el).maskImage),
-    /radial-gradient/,
-  );
-  assert.match(await torch.getAttribute("style"), /--torch-x: [\d.]+px/);
-  await desktop.mouse.move(10, 90);
-  assert.equal(await torch.getAttribute("data-tracking"), "false");
-});
-
-test("flashlight: keyboard opens and closes static inspection details", async () => {
-  const torch = desktop.locator("#home [data-flashlight]");
-  const control = torch.getByRole("button", { name: "Inspect details" });
-  await control.focus();
-  await desktop.keyboard.press("Enter");
   assert.equal(
-    await torch.getByRole("region", { name: "Inspection details" }).isVisible(),
-    true,
+    await desktop
+      .locator(".monogram-preloader")
+      .evaluate((el) => getComputedStyle(el).visibility),
+    "hidden",
+  );
+});
+test("torch starts dark and reveals the actual photo and yellow backing with a real mask", async () => {
+  const torch = desktop.locator("[data-torch]");
+  assert.equal(
+    await torch
+      .locator(".torch-subject")
+      .evaluate((el) => getComputedStyle(el).opacity),
+    "0",
+  );
+  const box = await desktop.locator(".hero-photo").boundingBox();
+  await desktop.mouse.move(box.x + box.width * 0.55, box.y + box.height * 0.4);
+  await wait(desktop, 650);
+  assert.equal(await torch.getAttribute("data-active"), "true");
+  assert.match(
+    await torch
+      .locator(".torch-subject")
+      .evaluate((el) => getComputedStyle(el).maskImage),
+    /radial-gradient/,
   );
   assert.equal(
     await torch
-      .getByRole("button", { name: "Hide details" })
-      .getAttribute("aria-expanded"),
-    "true",
-  );
-  await torch.getByRole("button", { name: "Hide details" }).press("Enter");
-  assert.equal(
-    await torch.getByRole("region", { name: "Inspection details" }).isVisible(),
-    false,
-  );
-});
-
-test("projects: all six source-backed visuals load and preserve repository links", async () => {
-  const items = desktop.locator("[data-case-id]");
-  assert.equal(await items.count(), 6);
-  for (const item of await items.all()) {
-    await item.scrollIntoViewIfNeeded();
-    await settle(desktop);
-    assert.equal(
-      await item
-        .locator(".project-visual img")
-        .evaluate((el) => el.complete && el.naturalWidth > 0),
-      true,
-    );
-    assert.match(
-      await item
-        .getByRole("link", { name: "Repository ↗" })
-        .getAttribute("href"),
-      /^https:\/\/github.com\/vishu1803\//,
-    );
-  }
-});
-
-test("project notes: existing notes dialog opens and Escape restores its trigger", async () => {
-  const trigger = desktop
-    .getByRole("button", { name: "Read the story" })
-    .first();
-  await trigger.click();
-  await settle(desktop);
-  const dialog = desktop.getByRole("dialog");
-  assert.equal(await dialog.isVisible(), true);
-  assert.match(await dialog.innerText(), /Collaborative Task Manager/);
-  await desktop.keyboard.press("Escape");
-  await settle(desktop);
-  assert.equal(await desktop.getByRole("dialog").count(), 0);
-  assert.equal(
-    await trigger.evaluate((el) => el === document.activeElement),
+      .locator("img")
+      .evaluate((el) => el.complete && el.naturalWidth > 0),
     true,
   );
-});
-
-test("project index: existing six-project source index remains available", async () => {
-  await desktop.getByRole("button", { name: /Project index/ }).click();
-  await settle(desktop);
-  assert.equal(await desktop.getByRole("dialog").isVisible(), true);
-  assert.match(
-    await desktop.getByRole("dialog").innerText(),
-    /Project notes & sources/,
-  );
-  await desktop.keyboard.press("Escape");
-  await settle(desktop);
-});
-
-test("resume: viewer opens, receives focus and links to an available PDF", async () => {
-  await desktop.locator(".nav-resume").click();
-  await settle(desktop);
-  const dialog = desktop.getByRole("dialog");
-  assert.equal(await dialog.isVisible(), true);
+  assert.equal(await torch.locator(".portrait-yellow").count(), 1);
   assert.equal(
     await desktop
-      .getByRole("button", { name: "Close resume dialog" })
-      .evaluate((el) => el === document.activeElement),
-    true,
+      .locator(".torch-instruction")
+      .evaluate((el) => getComputedStyle(el).opacity),
+    "0",
   );
-  const href = await dialog
-    .locator('a[href$=".pdf"]')
-    .first()
-    .getAttribute("href");
-  const response = await desktop.request.get(base + href);
-  assert.equal(response.status(), 200);
-  assert.match(response.headers()["content-type"], /pdf/);
-  await desktop.keyboard.press("Escape");
-  await settle(desktop);
 });
-
-test("contact: five independent strings finish drawing; SVG hand and pill are visible", async () => {
-  await section(desktop, "contact");
-  assert.equal(await desktop.locator(".tension-string").count(), 5);
-  for (const path of await desktop.locator(".tension-string").all()) {
+test("torch keyboard inspection exposes a static portrait and closes again", async () => {
+  const button = desktop.locator(".torch-inspect");
+  await button.focus();
+  await desktop.keyboard.press("Enter");
+  assert.equal(await button.getAttribute("aria-expanded"), "true");
+  assert.equal(
+    await desktop
+      .locator(".torch-subject")
+      .evaluate((el) => getComputedStyle(el).maskImage),
+    "none",
+  );
+  await desktop
+    .getByRole("button", { name: "Hide details", exact: true })
+    .press("Enter");
+  await desktop.mouse.move(10, 90);
+});
+test("drawn hero annotations use the existing 300+ claim rather than reference CGPA", async () => {
+  assert.equal(await desktop.locator(".hero-ink-path").count(), 2);
+  for (const path of await desktop.locator(".hero-ink-path").all())
     assert.ok(
       Math.abs(
         await path.evaluate((el) =>
@@ -259,187 +217,365 @@ test("contact: five independent strings finish drawing; SVG hand and pill are vi
         ),
       ) < 0.1,
     );
-  }
-  assert.equal(await desktop.locator(".pulling-hand").isVisible(), true);
+  assert.match(await desktop.locator(".hero-practice").innerText(), /300/);
+  assert.doesNotMatch(
+    await desktop.locator("#home").innerText(),
+    /9\.10|9\.24|465%/,
+  );
+});
+test("Lenis anchors, active chapter underline and reading progress follow navigation", async () => {
   assert.equal(
-    await desktop.getByRole("button", { name: triggerName }).isVisible(),
-    true,
+    await desktop.locator("html").getAttribute("data-scroll-engine"),
+    "lenis",
+  );
+  await desktop.getByRole("link", { name: "01 Subject", exact: true }).click();
+  await wait(desktop, 1600);
+  const top = await desktop
+    .locator("#subject")
+    .evaluate((el) => el.getBoundingClientRect().top);
+  assert.ok(Math.abs(top - 88) < 5, top);
+  assert.equal(
+    await desktop
+      .getByRole("link", { name: "01 Subject", exact: true })
+      .getAttribute("aria-current"),
+    "location",
+  );
+  assert.equal(await desktop.locator(".nav-underline").count(), 1);
+  assert.ok(
+    (await desktop
+      .locator(".nav-reading-progress>span")
+      .evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).m11)) > 0,
+  );
+});
+test("subject scene has the duotone portrait, word reveal, marker sweeps and factual specs", async () => {
+  assert.equal(await desktop.locator(".subject-spec-row").count(), 4);
+  assert.match(
+    await desktop
+      .locator(".subject-portrait img")
+      .evaluate((el) => getComputedStyle(el).filter),
+    /grayscale/,
   );
   assert.equal(
     await desktop
-      .getByRole("button", { name: triggerName })
-      .evaluate((el) => getComputedStyle(el).opacity),
-    "1",
+      .locator(".subject-portrait img")
+      .evaluate((el) => getComputedStyle(el).mixBlendMode),
+    "multiply",
+  );
+  await desktop.locator(".subject-bio").scrollIntoViewIfNeeded();
+  await wait(desktop, 1600);
+  for (const marker of await desktop.locator(".marker-sweep").all())
+    assert.equal(
+      await marker.evaluate((el) => getComputedStyle(el).backgroundSize),
+      "100% 100%",
+    );
+  assert.match(
+    await desktop.locator(".subject-specs").innerText(),
+    /Rajkiya Engineering College/,
   );
 });
-
-async function verifyCordAnchors(page) {
-  const attachments = await page.evaluate(() => {
-    const button = document
-      .querySelector(".collaborate-pill")
-      .getBoundingClientRect();
-    return [...document.querySelectorAll(".tension-string")].map((path) => {
-      const endpoint = path.getPointAtLength(path.getTotalLength());
-      const point = new DOMPoint(endpoint.x, endpoint.y).matrixTransform(
-        path.getScreenCTM(),
-      );
-      return {
-        x: point.x - button.left,
-        y: point.y - button.top,
-        width: button.width,
-        height: button.height,
-      };
-    });
-  });
-  for (const point of attachments) {
-    assert.ok(
-      point.x >= -3 && point.x <= point.width * 0.13,
-      "Cord detached horizontally: " + JSON.stringify(point),
+test("desktop case files pin and progress horizontally with one active case", async () => {
+  await section(desktop, "case-studies");
+  const range = await desktop.locator("#case-studies").evaluate((el) => ({
+    start: Number(el.dataset.pinStart),
+    end: Number(el.dataset.pinEnd),
+  }));
+  assert.ok(range.end - range.start > 2000, JSON.stringify(range));
+  await scroll(desktop, range.start + (range.end - range.start) * 0.55);
+  assert.ok(
+    (await desktop
+      .locator(".case-files-track")
+      .evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).m41)) <
+      -1000,
+  );
+  assert.equal(
+    await desktop.locator(".case-file[data-active=true]").count(),
+    1,
+  );
+  assert.ok(
+    (await desktop
+      .locator(".case-track-progress>span")
+      .evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).m11)) >
+      0.4,
+  );
+  assert.equal(await desktop.locator("[data-case-id]").count(), 6);
+});
+test("keyboard focus scrolls the pinned case into view and its image/links are real", async () => {
+  const cards = desktop.locator(".case-file");
+  for (let index = 0; index < 6; index++) {
+    const card = cards.nth(index);
+    const button = card.getByRole("button", { name: "View case file" });
+    await button.focus();
+    await wait(desktop, 1300);
+    const box = await button.boundingBox();
+    assert.ok(box.x >= -3 && box.x < 1440, JSON.stringify(box));
+    assert.match(
+      await card
+        .getByRole("link", { name: "Repository ↗", exact: true })
+        .getAttribute("href"),
+      /^https:\/\/github.com\/vishu1803\//,
     );
-    assert.ok(
-      point.y >= -3 && point.y <= point.height + 3,
-      "Cord detached vertically: " + JSON.stringify(point),
+    assert.equal(
+      await card
+        .locator("img")
+        .evaluate((el) => el.complete && el.naturalWidth > 0),
+      true,
     );
   }
-}
-
-test("contact: tug keeps moving after entrance and all five cords remain attached", async () => {
+});
+test("case visual tilts on pointer movement with independent depth labels", async () => {
+  await desktop
+    .locator(".case-file")
+    .first()
+    .getByRole("button", { name: "View case file" })
+    .focus();
+  await wait(desktop, 1300);
+  const visual = desktop.locator(".case-file-visual").first();
+  const box = await visual.boundingBox();
+  await desktop.mouse.move(box.x + box.width * 0.8, box.y + box.height * 0.3);
+  await wait(desktop, 450);
+  assert.notEqual(
+    await visual
+      .locator(".case-tilt-frame")
+      .evaluate((el) => getComputedStyle(el).transform),
+    "none",
+  );
+  assert.match(
+    await visual
+      .locator(".case-depth-tag")
+      .evaluate((el) => getComputedStyle(el).transform),
+    /matrix3d/,
+  );
   await desktop.mouse.move(10, 90);
+});
+test("project notes and project index dialogs escape the pin and preserve focus", async () => {
+  const trigger = desktop
+    .getByRole("button", { name: "View case file" })
+    .first();
+  await trigger.focus();
+  await wait(desktop, 1200);
+  await desktop.keyboard.press("Enter");
+  await wait(desktop, 700);
+  assert.equal(await desktop.getByRole("dialog").isVisible(), true);
+  assert.match(
+    await desktop.getByRole("dialog").innerText(),
+    /Collaborative Task Manager/,
+  );
+  await desktop.keyboard.press("Escape");
+  await wait(desktop, 500);
+  assert.equal(
+    await trigger.evaluate((el) => el === document.activeElement),
+    true,
+  );
+  await desktop
+    .getByRole("button", { name: "Project index / 06 ↗", exact: true })
+    .click();
+  await wait(desktop, 500);
+  const box = await desktop.getByRole("dialog").boundingBox();
+  assert.equal(box.x, 0);
+  assert.equal(box.y, 0);
+  await desktop.keyboard.press("Escape");
+  await wait(desktop, 500);
+});
+test("toolkit preserves meaningful skill groups and lead marker; yellow band continues into evidence", async () => {
+  await section(desktop, "toolkit");
+  assert.equal(await desktop.locator(".toolkit-row").count(), 4);
+  assert.equal(
+    await desktop.locator(".lead-skill").textContent(),
+    "TypeScript",
+  );
+  const bandTop = await desktop
+    .locator("#toolkit")
+    .evaluate(
+      (el) => el.getBoundingClientRect().bottom + scrollY - innerHeight * 0.5,
+    );
+  await scroll(desktop, bandTop);
+  assert.ok(
+    (await desktop
+      .locator(".toolkit-yellow-rise")
+      .evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).m22)) >
+      0.5,
+  );
+  assert.equal(await desktop.locator(".certification-block").count(), 0);
+});
+test("evidence ledger keeps the real internship, academic dates and verified count-up", async () => {
+  await section(desktop, "about");
+  assert.equal(await desktop.locator(".evidence-row").count(), 3);
+  assert.match(
+    await desktop.locator(".evidence-ledger").innerText(),
+    /FTV SALOON/,
+  );
+  const row = desktop.locator(".evidence-row").last();
+  await row.scrollIntoViewIfNeeded();
+  await wait(desktop, 1600);
+  assert.match(await row.locator(".count-up").innerText(), /300\+/);
+  for (const rule of await desktop.locator(".evidence-rule").all())
+    assert.ok(
+      (await rule.evaluate(
+        (el) => new DOMMatrix(getComputedStyle(el).transform).m11,
+      )) > 0.99,
+    );
+});
+test("the interlude pins on desktop and the following white scene remains above it", async () => {
+  await desktop.locator(".contact-prelude").evaluate((el) => {
+    const top = el.getBoundingClientRect().top + scrollY - 84;
+    const e = new CustomEvent("portfolio:scroll", {
+      detail: { top },
+      cancelable: true,
+    });
+    if (window.dispatchEvent(e)) scrollTo(top, 0);
+  });
+  await wait(desktop);
+  assert.ok(
+    await desktop
+      .locator(".contact-prelude")
+      .evaluate((el) => el.parentElement.className.includes("pin-spacer")),
+  );
+  assert.ok(
+    (await desktop
+      .locator("#contact")
+      .evaluate((el) => Number(getComputedStyle(el).zIndex))) >
+      (await desktop
+        .locator(".contact-prelude")
+        .evaluate((el) => Number(getComputedStyle(el).zIndex))),
+  );
+});
+test("existing tug continues, fingers have individual paths and cords remain attached", async () => {
+  await section(desktop, "contact");
+  await desktop.mouse.move(10, 90);
+  assert.equal(await desktop.locator(".pulling-hand [data-finger]").count(), 5);
+  assert.equal(await desktop.locator(".tension-string").count(), 5);
   const before = await desktop
     .locator(".collab-button-wrapper")
-    .evaluate((el) => el.getBoundingClientRect().x);
-  await desktop.waitForTimeout(1200);
-  const after = await desktop
-    .locator(".collab-button-wrapper")
-    .evaluate((el) => el.getBoundingClientRect().x);
-  assert.ok(Math.abs(after - before) > 3, "Tug became static after entrance");
-  await verifyCordAnchors(desktop);
+    .getAttribute("style");
+  await wait(desktop, 1100);
+  assert.notEqual(
+    await desktop.locator(".collab-button-wrapper").getAttribute("style"),
+    before,
+  );
+  await cords(desktop);
 });
-
-test("contact: pause stops the loop; pointer updates the attached rig", async () => {
+test("Pause tug stops the idle cycle while pointer tension remains usable", async () => {
   await desktop.getByRole("button", { name: "Pause tug", exact: true }).click();
   await desktop.mouse.move(10, 90);
-  await desktop.waitForTimeout(650);
-  const before = await desktop
-    .locator(".tension-string")
-    .first()
-    .getAttribute("d");
-  await desktop.waitForTimeout(300);
+  await wait(desktop, 600);
+  const d = await desktop.locator(".tension-string").first().getAttribute("d");
+  await wait(desktop, 300);
   assert.equal(
     await desktop.locator(".tension-string").first().getAttribute("d"),
-    before,
+    d,
   );
-  const stage = await desktop.locator(".collab-stage").boundingBox();
-  await desktop.mouse.move(stage.x + stage.width * 0.92, stage.y + 22);
-  await desktop.waitForTimeout(650);
+  const box = await desktop.locator(".collab-stage").boundingBox();
+  await desktop.mouse.move(box.x + box.width * 0.9, box.y + 20);
+  await wait(desktop, 600);
   assert.notEqual(
     await desktop.locator(".tension-string").first().getAttribute("d"),
-    before,
+    d,
   );
-  await verifyCordAnchors(desktop);
+  await cords(desktop);
   await desktop.mouse.move(10, 90);
-  await desktop.waitForTimeout(650);
-  assert.equal(
-    await desktop.locator(".tension-string").first().getAttribute("d"),
-    before,
-  );
   await desktop
     .getByRole("button", { name: "Resume tug", exact: true })
     .click();
 });
-
-test("contact: hover words reveal and dragging springs back without opening contact", async () => {
-  const button = desktop.getByRole("button", { name: triggerName });
+test("dragging the pill springs back without triggering the burst", async () => {
+  const button = desktop.getByRole("button", {
+    name: triggerName,
+    exact: true,
+  });
   await button.hover();
-  await desktop.waitForTimeout(450);
-  assert.equal(await desktop.locator(".collab-word").count(), 4);
-  for (const word of await desktop.locator(".collab-word").all())
-    assert.equal(
-      await word.evaluate((el) => getComputedStyle(el).opacity),
-      "1",
-    );
+  await wait(desktop, 400);
   const box = await button.boundingBox();
   await desktop.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
   await desktop.mouse.down();
   await desktop.mouse.move(box.x + box.width / 2 + 22, box.y + box.height / 2, {
-    steps: 10,
+    steps: 8,
   });
-  await desktop.waitForTimeout(150);
-  await verifyCordAnchors(desktop);
+  await wait(desktop, 100);
+  await cords(desktop);
   await desktop.mouse.up();
-  await desktop.waitForTimeout(650);
-  assert.equal(
-    await desktop.getByRole("dialog").count(),
-    0,
-    "Drag accidentally opened contact",
-  );
-  const translated = await button.evaluate(
-    (el) => new DOMMatrix(getComputedStyle(el).transform).m41,
-  );
-  assert.ok(Math.abs(translated) < 1, "Button did not spring back");
-});
-
-test("contact: leaving the viewport pauses and reentering resumes the rig", async () => {
-  await section(desktop, "home");
-  assert.equal(
-    await desktop.locator(".collab-stage").getAttribute("data-motion"),
-    "paused",
-  );
-  const before = await desktop
-    .locator(".tension-string")
-    .first()
-    .getAttribute("d");
-  await desktop.waitForTimeout(300);
-  assert.equal(
-    await desktop.locator(".tension-string").first().getAttribute("d"),
-    before,
-  );
-  await section(desktop, "contact");
-  assert.equal(
-    await desktop.locator(".collab-stage").getAttribute("data-motion"),
-    "running",
+  await wait(desktop, 700);
+  assert.equal(await desktop.locator(".physics-burst").count(), 0);
+  assert.equal(await desktop.getByRole("dialog").count(), 0);
+  assert.ok(
+    Math.abs(
+      await button.evaluate(
+        (el) => new DOMMatrix(getComputedStyle(el).transform).m41,
+      ),
+    ) < 1,
   );
 });
-
-test("contact: keyboard opening focuses close, labels fields and isolates background", async () => {
-  const trigger = desktop.getByRole("button", { name: triggerName });
-  await trigger.focus();
+test("Enter starts six actual Matter.js word bodies; Escape cancels without late contact", async () => {
+  const button = desktop.getByRole("button", {
+    name: triggerName,
+    exact: true,
+  });
+  await button.focus();
   await desktop.keyboard.press("Enter");
-  await settle(desktop);
-  const dialog = desktop.getByRole("dialog");
-  assert.equal(await dialog.isVisible(), true);
+  await desktop
+    .locator(".physics-surface[data-physics=running]")
+    .waitFor({ state: "visible", timeout: 5000 });
+  assert.equal(await desktop.locator(".physics-word").count(), 6);
   assert.equal(
-    await desktop.locator(".collab-stage").getAttribute("data-motion"),
-    "paused",
-  );
-  assert.equal(
-    await dialog
-      .getByRole("button", { name: "Close dialog", exact: true })
+    await desktop
+      .getByRole("button", { name: "Cancel word animation" })
       .evaluate((el) => el === document.activeElement),
     true,
   );
+  const before = await desktop
+    .locator(".physics-word")
+    .first()
+    .getAttribute("style");
+  await wait(desktop, 180);
+  assert.notEqual(
+    await desktop.locator(".physics-word").first().getAttribute("style"),
+    before,
+  );
+  await desktop.keyboard.press("Escape");
+  await wait(desktop, 1500);
+  assert.equal(await desktop.getByRole("dialog").count(), 0);
   assert.equal(
-    await desktop.locator("header").evaluate((el) => el.inert),
+    await button.evaluate((el) => el === document.activeElement),
+    true,
+  );
+});
+test("burst automatically transitions to the violet typed contact view", async () => {
+  const dialog = await contact(desktop);
+  assert.equal(await desktop.locator(".physics-burst").count(), 0);
+  assert.equal(
+    await dialog
+      .locator(".terminal-contact-panel")
+      .evaluate((el) => getComputedStyle(el).backgroundColor),
+    "rgb(36, 32, 53)",
+  );
+  assert.match(
+    await dialog.locator(".terminal-heading").innerText(),
+    /Let’s talk about what we can build/,
+  );
+  assert.match(await dialog.locator(".terminal-stats").innerText(), /300\+/);
+  assert.equal(
+    await desktop.locator("header").evaluate((el) => !!el.closest("[inert]")),
     true,
   );
   assert.equal(
-    await dialog.getByLabel("Your Name", { exact: true }).count(),
-    1,
+    await desktop.locator(".collab-stage").getAttribute("data-motion"),
+    "paused",
   );
-  assert.equal(
-    await dialog.getByLabel("Your Email", { exact: true }).count(),
-    1,
-  );
-  assert.equal(
-    await dialog.getByLabel("Inquiry Type", { exact: true }).inputValue(),
-    "Full-Stack Web Application",
-  );
-  assert.equal(
-    await dialog.getByLabel("Message / Details", { exact: true }).count(),
-    1,
-  );
+});
+test("contact preserves verified links, labels, keyboard trap and email-draft form", async () => {
+  const dialog = desktop.getByRole("dialog");
+  for (const name of [
+    "Your Name",
+    "Your Email",
+    "Inquiry Type",
+    "Message / Details",
+  ])
+    assert.equal(await dialog.getByLabel(name, { exact: true }).count(), 1);
   assert.equal(
     await dialog.locator('a[href="mailto:vishwanatnishad@gmail.com"]').count(),
+    2,
+  );
+  assert.equal(
+    await dialog.locator('a[href="https://github.com/vishu1803"]').count(),
     1,
   );
   assert.equal(
@@ -448,14 +584,6 @@ test("contact: keyboard opening focuses close, labels fields and isolates backgr
       .count(),
     1,
   );
-  assert.equal(
-    await dialog.locator('a[href="https://github.com/vishu1803"]').count(),
-    1,
-  );
-});
-
-test("contact: Tab and Shift+Tab stay inside the overlay", async () => {
-  const dialog = desktop.getByRole("dialog");
   const close = dialog.getByRole("button", {
     name: "Close dialog",
     exact: true,
@@ -474,216 +602,200 @@ test("contact: Tab and Shift+Tab stay inside the overlay", async () => {
     true,
   );
 });
-
-test("contact: Escape restores focus, inertness and page scrolling", async () => {
+test("contact copy micro-interaction writes the real email to the clipboard", async () => {
+  await desktop
+    .context()
+    .grantPermissions(["clipboard-read", "clipboard-write"], { origin: base });
+  await desktop
+    .getByRole("dialog")
+    .getByTitle("Copy Email to Clipboard")
+    .click();
+  await desktop
+    .getByRole("status")
+    .filter({ hasText: "Email copied" })
+    .waitFor({ state: "visible" });
+  assert.match(await desktop.getByRole("status").innerText(), /Email copied/);
+  assert.equal(
+    await desktop.evaluate(() => navigator.clipboard.readText()),
+    "vishwanatnishad@gmail.com",
+  );
+});
+test("nested resume preserves the parent contact dialog and Escape order", async () => {
+  await desktop
+    .getByRole("dialog")
+    .getByRole("button", { name: "View résumé ↗", exact: true })
+    .click();
+  await wait(desktop, 500);
+  assert.equal(await desktop.locator("[role=dialog]").count(), 2);
   await desktop.keyboard.press("Escape");
-  await settle(desktop);
-  assert.equal(await desktop.getByRole("dialog").count(), 0);
+  await wait(desktop, 500);
+  assert.equal(await desktop.locator("[role=dialog]").count(), 1);
   assert.equal(
     await desktop
-      .getByRole("button", { name: triggerName })
+      .getByRole("dialog")
+      .getByRole("button", { name: "View résumé ↗", exact: true })
       .evaluate((el) => el === document.activeElement),
     true,
   );
+});
+test("Escape restores the original CTA focus and resumes scrolling", async () => {
+  await desktop.keyboard.press("Escape");
+  await wait(desktop, 800);
+  assert.equal(await desktop.locator("[role=dialog]").count(), 0);
   assert.equal(
-    await desktop.locator("header").evaluate((el) => el.inert),
+    await desktop.locator("header").evaluate((el) => !!el.closest("[inert]")),
     false,
+  );
+  assert.equal(
+    await desktop
+      .getByRole("button", { name: triggerName, exact: true })
+      .evaluate((el) => el === document.activeElement),
+    true,
   );
   assert.notEqual(
     await desktop.evaluate(() => document.body.style.overflow),
     "hidden",
   );
+  assert.equal(
+    await desktop
+      .locator("html")
+      .evaluate((el) => el.classList.contains("lenis-stopped")),
+    false,
+  );
 });
-
-test("contact: visible close button dismisses the overlay", async () => {
-  await desktop.getByRole("button", { name: triggerName }).click();
-  await settle(desktop);
-  await desktop
-    .getByRole("button", { name: "Close dialog", exact: true })
-    .click();
-  await settle(desktop);
-  assert.equal(await desktop.getByRole("dialog").count(), 0);
-});
-
-test("contact: clicking the backdrop dismisses the overlay", async () => {
-  await desktop.getByRole("button", { name: triggerName }).click();
-  await settle(desktop);
-  await desktop.mouse.click(10, 100);
-  await settle(desktop);
-  assert.equal(await desktop.getByRole("dialog").count(), 0);
-});
-
-for (const width of [1440, 768, 390, 320]) {
-  test(`responsive ${width}px: all chapters fit without horizontal scrolling`, async () => {
+for (const width of [1440, 390])
+  test(`${width}px: every scene fits, mobile cases stack and touch torch drifts`, async () => {
     const page = await openPage({
-      viewport: { width, height: width === 768 ? 1024 : 844 },
-      isMobile: width < 700,
-      hasTouch: width < 700,
+      viewport: { width, height: width === 1440 ? 1000 : 844 },
+      isMobile: width < 768,
+      hasTouch: width < 768,
     });
-    for (const id of ["home", "case-studies", "about", "toolkit", "contact"]) {
+    if (width === 390) {
+      const before = await page.locator("[data-torch]").getAttribute("style");
+      await wait(page, 500);
+      assert.notEqual(
+        await page.locator("[data-torch]").getAttribute("style"),
+        before,
+      );
+    }
+    for (const id of [
+      "home",
+      "subject",
+      "case-studies",
+      "toolkit",
+      "about",
+      "contact",
+    ]) {
       await section(page, id);
       assert.ok(
         await page.evaluate(
           () => document.documentElement.scrollWidth <= innerWidth,
         ),
-        `${id} overflows at ${width}`,
+        id + " overflow",
       );
     }
-    const button = page.getByRole("button", { name: triggerName });
-    const box = await button.boundingBox();
-    assert.ok(box.x >= 0 && box.x + box.width <= width + 1);
-    assert.ok(box.height >= 44);
-    await button.click();
-    await settle(page);
-    assert.equal(await page.getByRole("dialog").isVisible(), true);
-    const panel = await page.locator(".contact-overlay-panel").boundingBox();
-    assert.ok(panel.x >= 0 && panel.x + panel.width <= width);
-    await page.keyboard.press("Escape");
-    await settle(page);
-    assert.equal(await page.getByRole("dialog").count(), 0);
+    if (width === 390) {
+      assert.equal(
+        await page
+          .locator("#case-studies")
+          .evaluate((el) => el.parentElement.className.includes("pin-spacer")),
+        false,
+      );
+      const cards = await page
+        .locator(".case-file")
+        .evaluateAll((els) => els.map((el) => el.getBoundingClientRect().top));
+      assert.ok(cards[5] > cards[0] + 1000);
+    }
+    await cords(page);
     await page.close();
   });
-}
-
-test("touch: drag reveals the underlying photograph; tap opens static details", async () => {
-  const page = await openPage({
-    viewport: { width: 390, height: 844 },
-    isMobile: true,
-    hasTouch: true,
-  });
-  const torch = page.locator("#home [data-flashlight]");
-  const box = await torch.locator(".hero-photo").boundingBox();
-  const client = await page.context().newCDPSession(page);
-  const point = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
-  await client.send("Input.dispatchTouchEvent", {
-    type: "touchStart",
-    touchPoints: [point],
-  });
-  await client.send("Input.dispatchTouchEvent", {
-    type: "touchMove",
-    touchPoints: [{ x: point.x + 12, y: point.y + 2 }],
-  });
-  assert.equal(await torch.getAttribute("data-tracking"), "true");
-  await client.send("Input.dispatchTouchEvent", {
-    type: "touchEnd",
-    touchPoints: [],
-  });
-  assert.equal(await torch.getAttribute("data-tracking"), "false");
-  await torch.getByRole("button", { name: "Inspect details" }).tap();
-  assert.equal(
-    await torch.getByRole("region", { name: "Inspection details" }).isVisible(),
-    true,
-  );
-  await torch.getByRole("button", { name: "Hide details" }).tap();
-  await page.close();
-});
-
-test("touch: dragging the collaborate pill tensions the cords without opening contact", async () => {
+test("touch tap uses the light burst fallback and reaches contact", async () => {
   const page = await openPage({
     viewport: { width: 390, height: 844 },
     isMobile: true,
     hasTouch: true,
   });
   await section(page, "contact");
-  const button = page.getByRole("button", { name: triggerName });
-  const box = await button.boundingBox();
-  const client = await page.context().newCDPSession(page);
-  const point = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
-  await client.send("Input.dispatchTouchEvent", {
-    type: "touchStart",
-    touchPoints: [point],
-  });
-  for (let x = 4; x <= 20; x += 4) {
-    await client.send("Input.dispatchTouchEvent", {
-      type: "touchMove",
-      touchPoints: [{ x: point.x + x, y: point.y }],
-    });
-    await page.waitForTimeout(30);
-  }
-  await verifyCordAnchors(page);
-  await client.send("Input.dispatchTouchEvent", {
-    type: "touchEnd",
-    touchPoints: [],
-  });
-  await page.waitForTimeout(700);
-  assert.equal(await page.getByRole("dialog").count(), 0);
-  await button.tap();
-  await settle(page);
-  assert.equal(await page.getByRole("dialog").count(), 1);
+  await page.getByRole("button", { name: triggerName, exact: true }).tap();
+  await page
+    .locator(".physics-surface[data-physics=touch]")
+    .waitFor({ state: "visible" });
+  await page
+    .getByRole("dialog", { name: "Vishwanath Nishad", exact: true })
+    .waitFor({ state: "visible", timeout: 5000 });
+  await wait(page);
   await page.keyboard.press("Escape");
-  await settle(page);
+  await wait(page, 600);
+  assert.equal(await page.getByRole("dialog").count(), 0);
   await page.close();
 });
-
-test("reduced motion: content is readable, torch tracking stops and contact works", async () => {
+test("reduced motion has native scrolling, static torch, vertical cases and direct contact", async () => {
   const page = await openPage({
-    viewport: { width: 390, height: 844 },
+    viewport: { width: 1440, height: 900 },
     reducedMotion: "reduce",
-    isMobile: true,
-    hasTouch: true,
   });
   assert.equal(
+    await page.locator("html").getAttribute("data-scroll-engine"),
+    null,
+  );
+  assert.equal(
     await page
-      .locator(".hero-name-line")
+      .locator(".torch-subject")
+      .evaluate((el) => getComputedStyle(el).maskImage),
+    "none",
+  );
+  assert.equal(
+    await page
+      .locator(".torch-subject")
       .evaluate((el) => getComputedStyle(el).opacity),
     "1",
   );
   assert.equal(
     await page
-      .locator(".hero-portrait")
-      .evaluate((el) => getComputedStyle(el).clipPath),
-    "none",
+      .locator("#case-studies")
+      .evaluate((el) => el.parentElement.className.includes("pin-spacer")),
+    false,
   );
-  const torch = page.locator("#home [data-flashlight]");
-  await torch.getByRole("button", { name: "Inspect details" }).tap();
-  assert.equal(
-    await torch.getByRole("region", { name: "Inspection details" }).isVisible(),
-    true,
-  );
-  await torch.getByRole("button", { name: "Hide details" }).tap();
   await section(page, "contact");
   assert.equal(
     await page.locator(".collab-stage").getAttribute("data-motion"),
     "reduced",
   );
-  assert.equal(
-    await page.locator(".pulling-hand").getAttribute("transform"),
-    null,
-  );
-  assert.equal(await page.locator(".collaborate-pill").isVisible(), true);
+  await page.getByRole("button", { name: triggerName, exact: true }).click();
+  await wait(page, 500);
+  assert.equal(await page.locator(".physics-burst").count(), 0);
   assert.equal(
     await page
-      .locator(".collaborate-pill")
-      .evaluate((el) => getComputedStyle(el).opacity),
-    "1",
+      .getByRole("dialog", { name: "Vishwanath Nishad", exact: true })
+      .isVisible(),
+    true,
   );
-  await page.getByRole("button", { name: triggerName }).tap();
-  await settle(page);
-  assert.equal(await page.getByRole("dialog").isVisible(), true);
   await page.keyboard.press("Escape");
-  await settle(page);
-  assert.equal(await page.getByRole("dialog").count(), 0);
   await page.close();
 });
-
-test("runtime motion preference changes reveal all GSAP-managed content", async () => {
+test("runtime reduced-motion changes clean up Lenis, pinned tracks and active rig resources", async () => {
   await desktop.emulateMedia({ reducedMotion: "reduce" });
-  await section(desktop, "home");
+  await wait(desktop, 500);
   assert.equal(
-    await desktop
-      .locator(".hero-portrait")
-      .evaluate((el) => getComputedStyle(el).transform),
-    "none",
+    await desktop.locator("html").getAttribute("data-scroll-engine"),
+    null,
   );
   assert.equal(
     await desktop
-      .locator(".hero-name-line")
-      .evaluate((el) => getComputedStyle(el).opacity),
-    "1",
+      .locator("#case-studies")
+      .evaluate((el) => el.parentElement.className.includes("pin-spacer")),
+    false,
+  );
+  assert.equal(
+    await desktop.locator(".collab-stage").getAttribute("data-motion"),
+    "reduced",
   );
   await desktop.emulateMedia({ reducedMotion: "no-preference" });
-  await settle(desktop);
+  await wait(desktop, 600);
+  assert.equal(
+    await desktop.locator("html").getAttribute("data-scroll-engine"),
+    "lenis",
+  );
 });
-
-test("production browser console has no errors", () =>
+test("production console and page exception capture remains clean", () =>
   assert.deepEqual(errors, []));

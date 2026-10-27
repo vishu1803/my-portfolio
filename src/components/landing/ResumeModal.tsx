@@ -1,6 +1,7 @@
 "use client";
+import useReducedMotion from "../../hooks/useMotionPreference";
 
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useId } from "react";
 import useAccessibleDialog from "../../hooks/useAccessibleDialog";
 
@@ -31,8 +32,15 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
           <motion.div
             initial={reducedMotion ? false : { scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={reducedMotion ? { opacity: 0 } : { scale: 0.95, opacity: 0, y: 20 }}
-            transition={{ duration: reducedMotion ? 0 : 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+            exit={
+              reducedMotion
+                ? { opacity: 0 }
+                : { scale: 0.95, opacity: 0, y: 20 }
+            }
+            transition={{
+              duration: reducedMotion ? 0 : 0.3,
+              ease: [0.25, 0.1, 0.25, 1],
+            }}
             onClick={(e) => e.stopPropagation()}
             className="relative w-full max-w-xl my-auto rounded-3xl border border-white/10 bg-surface shadow-2xl p-6 sm:p-8"
           >
@@ -51,12 +59,16 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               Curriculum Vitae
             </span>
 
-            <h3 id={titleId} className="text-3xl font-display italic text-text-primary mb-3">
+            <h3
+              id={titleId}
+              className="text-3xl font-display italic text-text-primary mb-3"
+            >
               Vishwanath Nishad
             </h3>
 
             <p className="text-sm text-muted mb-6 leading-relaxed">
-              Full Stack & Backend Software Engineer specializing in scalable APIs, distributed workflows, and modern web applications.
+              Full Stack & Backend Software Engineer specializing in scalable
+              APIs, distributed workflows, and modern web applications.
             </p>
 
             <div className="space-y-3 mb-8">

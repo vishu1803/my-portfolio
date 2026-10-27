@@ -1,11 +1,11 @@
 "use client";
-
+import useReducedMotion from "../../hooks/useMotionPreference";
 import { useEffect, useRef } from "react";
-import { useReducedMotion, motion } from "framer-motion";
+
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowUpRight } from "lucide-react";
-
+import CountUp from "../motion/CountUp";
+import Certifications from "./Certifications";
 export default function EditorialAbout({
   onOpenResume,
 }: {
@@ -17,95 +17,81 @@ export default function EditorialAbout({
     if (reduced || matchMedia("(prefers-reduced-motion: reduce)").matches)
       return;
     gsap.registerPlugin(ScrollTrigger);
-    const context = gsap.context(() => {
-      root.current
-        ?.querySelectorAll(".about-reveal")
-        .forEach((el) =>
-          gsap.from(el, {
-            y: 30,
-            opacity: 0,
-            duration: 0.8,
-            scrollTrigger: { trigger: el, start: "top 88%", once: true },
-          }),
-        );
+    const ctx = gsap.context(() => {
+      root.current?.querySelectorAll(".evidence-row").forEach((row) => {
+        gsap.from(row.querySelector(".evidence-rule"), {
+          scaleX: 0,
+          transformOrigin: "left",
+          duration: 0.9,
+          scrollTrigger: { trigger: row, start: "top 85%", once: true },
+        });
+        gsap.from(row.querySelectorAll(".evidence-copy,.evidence-value"), {
+          y: 24,
+          opacity: 0,
+          duration: 0.7,
+          stagger: 0.12,
+          scrollTrigger: { trigger: row, start: "top 84%", once: true },
+        });
+      });
     }, root);
-    return () => context.revert();
+    return () => ctx.revert();
   }, [reduced]);
   return (
     <section
       id="about"
       ref={root}
-      className="editorial-about"
+      className="evidence-scene"
+      data-scene="#e5d92d"
+      data-ink="dark"
       aria-labelledby="about-heading"
     >
       <div className="section-rule micro-label">
-        <span>02 / Behind the work</span>
-        <span>Gorakhpur, India</span>
+        <span>04 / The record</span>
+        <span>Experience · education · practice</span>
       </div>
-      <div className="about-introduction about-reveal">
-        <p className="micro-label">
-          <i className="status-dot" />A little context
-        </p>
-        <div>
-          <h2 id="about-heading">
-            MORE THAN
-            <br />
-            THE <em>interface.</em>
-          </h2>
-          <p>
-            I’m Vishwanath, a full-stack developer connecting responsive
-            interfaces with the systems behind them. My work spans authenticated
-            APIs, relational data, and interactive web applications.
-          </p>
-          <p>
-            I like understanding how the pieces fit together — then turning that
-            understanding into something useful.
-          </p>
-        </div>
-      </div>
-      <div className="about-records">
-        <article className="about-record about-reveal">
-          <span className="micro-label record-kind">01 / Experience</span>
-          <div>
-            <span className="micro-label record-date">
-              June — September 2024 · Remote
-            </span>
-            <h3>Full Stack Developer Intern</h3>
-            <p className="record-organisation">FTV Saloon</p>
+      <h2 id="about-heading">
+        THE RECORD,<em>so far.</em>
+      </h2>
+      <div className="evidence-ledger">
+        <article className="evidence-row">
+          <span className="evidence-rule" aria-hidden="true" />
+          <div className="micro-label">01 / Experience</div>
+          <div className="evidence-copy">
+            <h3>FTV SALOON</h3>
+            <em>Full Stack Developer Intern · Remote</em>
             <p>
               Built REST APIs for salon operations, role-based authentication,
               and admin dashboards. Worked on database queries and frontend
               asset loading within a remote Agile team.
             </p>
           </div>
-          <span className="record-symbol" aria-hidden="true">
-            ↗
-          </span>
+          <div className="evidence-value">
+            <strong>2024</strong>
+            <span className="micro-label">June — September</span>
+          </div>
         </article>
-        <article className="about-record about-reveal">
-          <span className="micro-label record-kind">02 / Education</span>
-          <div>
-            <span className="micro-label record-date">2021 — July 2025</span>
-            <h3>Electronics Engineering</h3>
-            <p className="record-organisation">
-              B.Tech · Rajkiya Engineering College
-            </p>
+        <article className="evidence-row">
+          <span className="evidence-rule" aria-hidden="true" />
+          <div className="micro-label">02 / Education</div>
+          <div className="evidence-copy">
+            <h3>RAJKIYA ENGINEERING COLLEGE</h3>
+            <em>B.Tech · Electronics Engineering</em>
             <p>
               A foundation in systems, digital logic, and computer science: data
               structures, operating systems, databases, and computer networks.
             </p>
           </div>
-          <span className="record-symbol" aria-hidden="true">
-            ↗
-          </span>
+          <div className="evidence-value">
+            <strong>2021–25</strong>
+            <span className="micro-label">Education record · July 2025</span>
+          </div>
         </article>
-        <article className="about-record about-reveal">
-          <span className="micro-label record-kind">03 / Practice</span>
-          <div>
-            <span className="micro-label record-date">
-              Data structures &amp; algorithms
-            </span>
-            <h3>Thinking through the problem.</h3>
+        <article className="evidence-row">
+          <span className="evidence-rule" aria-hidden="true" />
+          <div className="micro-label">03 / Practice</div>
+          <div className="evidence-copy">
+            <h3>THINKING THROUGH THE PROBLEM.</h3>
+            <em>Data structures &amp; algorithms</em>
             <p>
               300+ LeetCode problems across dynamic programming, graphs, trees,
               arrays, and binary search, as recorded in my resume.
@@ -114,26 +100,24 @@ export default function EditorialAbout({
               href="https://leetcode.com/u/vishwanatnishad"
               target="_blank"
               rel="noopener noreferrer"
-              className="editorial-link"
             >
-              Explore my LeetCode <ArrowUpRight size={16} aria-hidden="true" />
+              Explore my LeetCode ↗
             </a>
           </div>
-          <span className="practice-number" aria-hidden="true">
-            300<span>+</span>
-          </span>
+          <div className="evidence-value">
+            <CountUp
+              value={300}
+              suffix="+"
+              label="LeetCode problems recorded in my resume"
+            />
+            <span className="micro-label">Problems · résumé claim</span>
+          </div>
         </article>
       </div>
-      <motion.button
-        type="button"
-        onClick={onOpenResume}
-        whileHover={{ x: 4 }}
-        whileTap={{ scale: 0.98 }}
-        className="about-resume editorial-link"
-      >
-        The full story, on one résumé{" "}
-        <ArrowUpRight size={18} aria-hidden="true" />
-      </motion.button>
+      <Certifications />
+      <button type="button" onClick={onOpenResume} className="evidence-resume">
+        The full story, on one résumé ↗
+      </button>
     </section>
   );
 }

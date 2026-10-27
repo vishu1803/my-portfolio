@@ -1,6 +1,6 @@
 # Vishwanath Nishad — Editorial Portfolio
 
-A cinematic portfolio built in the existing Next.js / React application: an original portrait opening, source-linked project stories, an interactive inspection light and a hand-and-strings collaboration section.
+A cinematic portfolio built in the existing Next.js / React application: a torch-lit portrait opening, editorial subject scene, source-linked project sequence and an interactive hand-and-strings invitation.
 
 ## Run locally
 
@@ -21,16 +21,17 @@ The lint command runs ESLint through Node on Windows and Unix and fails on error
 
 ## Experience
 
-- GSAP / ScrollTrigger own the opening typography, portrait mask/parallax, project entrances and illustrated string drawing. Framer Motion owns button feedback and dialog/shared-layout transitions.
-- The flashlight reveals an actual second content layer. A keyboard/tap inspection button exposes the same notes in a static accessible panel. Tracking is event-driven and stops when settled, offscreen or hidden; reduced-motion visitors retain the essential imagery.
-- Navigation uses section anchors, with a compact 320px layout and a skip link. Dialogs use labelled semantics, initial focus, Tab containment, background isolation, Escape and focus restoration.
-- The ivory collaboration section uses an original inline SVG hand and five individually drawn strings. Its button opens a contact dialog and a **Start a Project** email-draft action. Sending happens in the visitor's email app; the site does not claim that a message was delivered.
+- GSAP / ScrollTrigger own opening typography, portrait parallax, desktop pinned case files, ledger rules and illustrated string drawing. Framer Motion owns button feedback, magnetic springs, navigation and dialog transitions. Lenis synchronizes scrolling with ScrollTrigger.
+- The reusable torch reveals the actual portrait and yellow backing through a feathered CSS mask. Desktop tracking stops when settled, offscreen or hidden; touch gets slow automatic drift. A keyboard/tap inspection button exposes the complete portrait. Reduced motion shows static end states.
+- Five chapter anchors, an active underline, reading progress and a skip link support navigation. Dialogs use labelled semantics, initial focus, Tab containment, background isolation, Escape and focus restoration. Project dialogs and contact render outside transformed or pinned sections.
+- The ivory invitation reuses the original inline SVG hand, five individually drawn strings, draggable pill and pause control. Clicking **HIRE ME** releases six lazy-loaded Matter.js words, then opens violet terminal contact. Touch uses a light CSS alternative; reduced motion opens contact directly.
+- Contact retains the real links, clipboard feedback, resume viewer and **Start a Project** email-draft form. Sending happens in the visitor's email app; the site does not claim that a message was delivered.
 
 ## Content
 
 The supplied resume supports personal/experience information. `src/data/caseStudies.ts` is the shared source for case studies, project notes and the reusable project deck. Public repository links support the additional project descriptions; package names do not establish personal proficiency. Unsupported latency, frame-rate, savings and readiness benchmarks are omitted.
 
-See [content sources](docs/portfolio-content.md), the [redesign plan](docs/cinematic-implementation-plan.md), [initial verification](docs/cinematic-verification.md), and [motion correction](docs/motion-reference-correction.md). The original portrait and supplied resume remain local assets. No new contact credentials or service configuration is required.
+See [content sources](docs/portfolio-content.md), the [redesign plan](docs/cinematic-implementation-plan.md), [initial verification](docs/cinematic-verification.md), [motion correction](docs/motion-reference-correction.md), and the latest [scene audit](docs/scene-motion-audit.md) / [validation](docs/scene-motion-verification.md). The original portrait and supplied resume remain local assets. No new contact credentials or service configuration is required. Certifications are intentionally empty until verified records are supplied in `src/data/certifications.ts`.
 
 ## Structure
 
@@ -38,8 +39,10 @@ See [content sources](docs/portfolio-content.md), the [redesign plan](docs/cinem
 src/App.tsx                         Active page composition and reduced-motion configuration
 src/data/caseStudies.ts              Source-linked project content
 src/hooks/useAccessibleDialog.ts     Shared dialog lifecycle and keyboard behavior
-src/components/interactive/          Reusable flashlight
-src/components/landing/              Hero, stories, about, toolkit, contact and dialogs
+src/hooks/useMotionPreference.ts     Reactive reduced-motion preference
+src/components/motion/               Scroll system, magnetic spring, count-up and typed heading
+src/components/interactive/          Reusable torch and lazy-loaded physics burst
+src/components/landing/              Hero, subject, cases, toolkit, evidence, contact and dialogs
 src/app/globals.css                  Typography, masks, responsive/accessibility foundations
 ```
 
@@ -51,8 +54,8 @@ npm run build
 npm run test:browser
 ```
 
-The browser suite starts its own local production server and covers the portrait/torch, project images and notes, resume viewer, contact focus/Escape/Tab behavior, five SVG strings, four viewport widths, emulated touch and reduced motion. It sends no email. To use an existing browser binary, set `BROWSER_EXECUTABLE_PATH`.
+The 28-check browser suite starts its own local production server and covers every scene at 1440px and 390px, the real torch mask, pinned project navigation, image tilt, resume viewer, contact focus/Escape/Tab behavior, five connected SVG strings, pill drag suppression, actual physics bodies, clipboard, emulated touch and live reduced-motion changes. It sends no email. To use an existing browser binary, set `BROWSER_EXECUTABLE_PATH`.
 
-Fonts are served from `public/fonts/` with their OFL licenses; no Google Fonts request is made. GSAP and Framer Motion remain the existing production dependencies. Playwright is a development-only verification dependency.
+Fonts use `next/font/local` from `public/fonts/` with their OFL licenses; no Google Fonts request is made. GSAP, Framer Motion and Matter.js were existing dependencies; Lenis supplies the coordinated scrolling. Playwright is a development-only verification dependency.
 
 GitHub: [vishu1803](https://github.com/vishu1803) · [LinkedIn](https://linkedin.com/in/vishwanath-nishad)

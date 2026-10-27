@@ -1,6 +1,7 @@
 "use client";
+import useReducedMotion from "../../hooks/useMotionPreference";
 
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useId } from "react";
 import useAccessibleDialog from "../../hooks/useAccessibleDialog";
 import { ProjectItem } from "./SelectedWorks";
@@ -35,7 +36,10 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
             initial={reduced ? false : { scale: 0.97, opacity: 0, y: 12 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={reduced ? { opacity: 0 } : { scale: 0.97, opacity: 0, y: 12 }}
-            transition={{ duration: reduced ? 0 : 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+            transition={{
+              duration: reduced ? 0 : 0.3,
+              ease: [0.25, 0.1, 0.25, 1],
+            }}
             onClick={(e) => e.stopPropagation()}
             className="relative w-full max-w-3xl rounded-3xl border border-white/10 bg-[#0B0C0E] shadow-2xl p-6 sm:p-8 max-h-[92vh] overflow-y-auto"
           >
@@ -61,7 +65,10 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
               </span>
             </div>
 
-            <h3 id={dialogId} className="text-3xl sm:text-4xl font-display italic text-text-primary mb-6">
+            <h3
+              id={dialogId}
+              className="text-3xl sm:text-4xl font-display italic text-text-primary mb-6"
+            >
               {project.title}
             </h3>
 
