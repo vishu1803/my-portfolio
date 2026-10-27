@@ -210,7 +210,7 @@ export default function CollaborateSection({
               Good work starts with a conversation.
             </p>
             <h2 id="contact-heading" className="collab-headline">
-              PULL ME INTO<em>your next chapter.</em>
+              Pull me into<em>your next chapter.</em>
             </h2>
           </div>
           <p className="collab-side-note">
@@ -265,7 +265,7 @@ export default function CollaborateSection({
           </span>
           <div ref={buttonWrapperRef} className="collab-button-wrapper">
             <div className="collab-callouts" aria-hidden="true">
-              {["BUILD", "HELLO", "TOGETHER", "LET’S TALK"].map(
+              {["Build", "Hello", "Together", "Let’s talk"].map(
                 (word, index) => (
                   <motion.span
                     key={word}
@@ -338,13 +338,13 @@ export default function CollaborateSection({
               }}
               aria-describedby={`${contactId}-hint`}
               className="collaborate-pill"
-              aria-label="Let’s collaborate — open contact details"
+              aria-label="Hire me — open contact details"
               aria-haspopup="dialog"
               aria-expanded={isOverlayOpen}
             >
               <span className="pill-sheen" aria-hidden="true" />
               <span className="pill-dot" aria-hidden="true" />
-              <span>HIRE ME</span>
+              <span>Hire me</span>
               <ArrowUpRight size={23} aria-hidden="true" />
             </motion.button>
           </div>
@@ -357,7 +357,7 @@ export default function CollaborateSection({
             {motionPaused ? "Resume tug" : "Pause tug"}
           </button>
           <span className="collab-hand-note micro-label" aria-hidden="true">
-            Made for working together ↗
+            Made for working together <span aria-hidden="true">↗</span>
           </span>
         </div>
         <div className="collab-contact-strip">
@@ -367,13 +367,13 @@ export default function CollaborateSection({
           </a>
           <div className="micro-label">
             <a href={githubUrl} target="_blank" rel="noopener noreferrer">
-              GitHub ↗
-            </a>
+              GitHub <span aria-hidden="true">↗</span>
+            <span className="sr-only"> (opens in a new tab)</span></a>
             <a href={linkedinUrl} target="_blank" rel="noopener noreferrer">
-              LinkedIn ↗
-            </a>
+              LinkedIn <span aria-hidden="true">↗</span>
+            <span className="sr-only"> (opens in a new tab)</span></a>
             <button type="button" onClick={onOpenResume}>
-              Résumé ↗
+              Résumé <span aria-hidden="true">↗</span>
             </button>
           </div>
         </div>
@@ -473,12 +473,12 @@ export default function CollaborateSection({
                             href={`mailto:${email}`}
                             className="terminal-primary"
                           >
-                            Let’s talk ↗
+                            Email me <span aria-hidden="true">↗</span>
                           </a>
                         </Magnetic>
                         <Magnetic>
                           <button type="button" onClick={onOpenResume}>
-                            View résumé ↗
+                            View résumé <span aria-hidden="true">↗</span>
                           </button>
                         </Magnetic>
                         <Magnetic>
@@ -486,7 +486,7 @@ export default function CollaborateSection({
                             type="button"
                             onClick={() => navigateTo("case-studies")}
                           >
-                            Explore my work ↓
+                            Explore my work <span aria-hidden="true">↓</span>
                           </button>
                         </Magnetic>
                       </motion.div>
@@ -495,7 +495,7 @@ export default function CollaborateSection({
                         className="terminal-back micro-label"
                         onClick={() => navigateTo("home")}
                       >
-                        Back to the beginning ↑
+                        Back to the beginning <span aria-hidden="true">↑</span>
                       </button>
                       <div className="terminal-stats">
                         <div>
@@ -629,7 +629,7 @@ export default function CollaborateSection({
                             <FaLinkedin className="w-3.5 h-3.5 text-[#38BDF8]" />
                             <span>LinkedIn</span>
                             <ArrowUpRight className="w-3 h-3 text-white/50" />
-                          </a>
+                          <span className="sr-only"> (opens in a new tab)</span></a>
                           <a
                             href={githubUrl}
                             target="_blank"
@@ -639,7 +639,7 @@ export default function CollaborateSection({
                             <FaGithub className="w-3.5 h-3.5 text-white" />
                             <span>GitHub</span>
                             <ArrowUpRight className="w-3 h-3 text-white/50" />
-                          </a>
+                          <span className="sr-only"> (opens in a new tab)</span></a>
                           <a
                             href={leetcodeUrl}
                             target="_blank"
@@ -647,9 +647,9 @@ export default function CollaborateSection({
                             className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 text-xs font-mono text-white flex items-center gap-1.5 transition-colors"
                           >
                             <Code2 className="w-3.5 h-3.5" />
-                            <span>LeetCode (300+)</span>
+                            <span>LeetCode (300<span aria-hidden="true">+</span>)</span>
                             <ArrowUpRight className="w-3 h-3 text-white/50" />
-                          </a>
+                          <span className="sr-only"> (opens in a new tab)</span></a>
                           <a
                             href={resumeUrl}
                             target="_blank"
@@ -658,7 +658,7 @@ export default function CollaborateSection({
                           >
                             <Download className="w-3.5 h-3.5" />
                             <span>Resume (PDF)</span>
-                          </a>
+                          <span className="sr-only"> (opens in a new tab)</span></a>
                         </div>
                       </div>
 

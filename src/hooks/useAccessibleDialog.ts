@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 
 const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 type DialogEntry = { id: symbol; node: HTMLDivElement; returnFocus: HTMLElement | null };
@@ -55,7 +55,7 @@ export default function useAccessibleDialog(isOpen: boolean, onClose: () => void
   const closeRef = useRef(onClose);
   closeRef.current = onClose;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const node = dialogRef.current;
     if (!isOpen || !node) return;
     const id = Symbol("dialog");
@@ -67,7 +67,7 @@ export default function useAccessibleDialog(isOpen: boolean, onClose: () => void
     dialogs.push({ id, node, returnFocus });
     updateIsolation();
     const frame = requestAnimationFrame(() => {
-      if (dialogs[dialogs.length - 1]?.id === id) focusFirst(node);
+      if (dialogs[dialogs.length - 1]?.id === id && !node.contains(document.activeElement)) focusFirst(node);
     });
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -112,10 +112,13 @@ export default function useAccessibleDialog(isOpen: boolean, onClose: () => void
         originalOverflow = null;
       }
       if (wasTop) {
-        const top = dialogs[dialogs.length - 1];
-        if (returnFocus?.isConnected && !returnFocus.closest("[inert]")) {
-          returnFocus.focus({ preventScroll: true });
-        } else if (top) focusFirst(top.node);
+        const remainingId = dialogs[dialogs.length - 1]?.id;
+        queueMicrotask(() => {
+          if (dialogs[dialogs.length - 1]?.id !== remainingId) return;
+          const top = dialogs[dialogs.length - 1];
+          if (returnFocus?.isConnected && !returnFocus.closest("[inert]")) returnFocus.focus({preventScroll:true});
+          else if (top) focusFirst(top.node);
+        });
       }
     };
   }, [isOpen]);

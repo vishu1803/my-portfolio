@@ -5,7 +5,9 @@ import {
   useContext,
   useEffect,
   useState,
+  useRef,
 } from "react";
+import {animate} from "framer-motion";
 import useReducedMotion from "../../hooks/useMotionPreference";
 
 const IntroContext = createContext(true);
@@ -14,6 +16,7 @@ export const useIntroReady = () => useContext(IntroContext);
 
 /** First desktop visit gets a curtain; mobile retains a nonblocking monogram. */
 export default function Preloader({ children }: { children: ReactNode }) {
+  const counter=useRef<HTMLSpanElement>(null);
   const [phase, setPhase] = useState("checking");
   const [ready, setReady] = useState(false);
   const reduced = useReducedMotion();
@@ -36,6 +39,7 @@ export default function Preloader({ children }: { children: ReactNode }) {
     const mobile = matchMedia("(pointer:coarse)").matches;
     setPhase("playing");
     if (mobile) setReady(true);
+    const count=animate(0,100,{duration:.6,onUpdate:value=>{if(counter.current)counter.current.textContent=String(Math.round(value));}});
     const curtain = window.setTimeout(() => setPhase("leaving"), 600);
     const complete = window.setTimeout(() => {
       setPhase("done");
@@ -47,6 +51,7 @@ export default function Preloader({ children }: { children: ReactNode }) {
       }
     }, 950);
     return () => {
+      count.stop();
       clearTimeout(curtain);
       clearTimeout(complete);
     };
@@ -61,6 +66,7 @@ export default function Preloader({ children }: { children: ReactNode }) {
         <span>
           v<span>*</span>n
         </span>
+        <span ref={counter} className="intro-counter">0</span>
         <small>OPENING THE FIELD NOTES / 2026</small>
       </div>
       {children}

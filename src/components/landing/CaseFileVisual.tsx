@@ -6,10 +6,12 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 export default function CaseFileVisual({
   image,
   title,
+  alt,
   index,
 }: {
   image: string;
   title: string;
+  alt: string;
   index: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -65,7 +67,7 @@ export default function CaseFileVisual({
         <div className="case-file-image">
           <Image
             src={image}
-            alt={`${title} — project interface`}
+            alt={alt}
             fill
             sizes="(max-width: 767px) 90vw, 65vw"
           />

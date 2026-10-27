@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type * as MatterTypes from "matter-js";
 import useAccessibleDialog from "../../hooks/useAccessibleDialog";
-const WORDS = ["SHIP", "TOGETHER", "HELLO", "LET’S", "BUILD", "TALK"];
+const WORDS = ["Ship", "Together", "Hello", "Let’s", "Build", "Talk"];
 export default function PhysicsBurst({
   onComplete,
   onCancel,
@@ -14,21 +14,24 @@ export default function PhysicsBurst({
   onCancel: () => void;
 }) {
   const [mounted, setMounted] = useState(false);
+  const closing = useRef(false);
   const surface = useRef<HTMLDivElement>(null);
   const nodes = useRef<(HTMLButtonElement | null)[]>([]);
   const done = useRef(onComplete);
   done.current = onComplete;
   const cancel = useRef(onCancel);
   cancel.current = onCancel;
-  const dialog = useAccessibleDialog(mounted, () => cancel.current());
+  const dialog = useAccessibleDialog(mounted, () => {closing.current=true;cancel.current();});
   useEffect(() => setMounted(true), []);
   useEffect(() => {
     if (!mounted || !surface.current) return;
     const root = surface.current;
+    closing.current=false;
     let disposed = false,
       frame = 0,
       timer = 0,
       dragging = false,
+      keyboardFocus = false,
       pending = false;
     let engine: MatterTypes.Engine | undefined;
     let constraint: MatterTypes.Constraint | undefined;
@@ -38,10 +41,12 @@ export default function PhysicsBurst({
     let lastPoint = { x: 0, y: 0, time: 0 };
     let velocity = { x: 0, y: 0 };
     const complete = () => {
-      if (dragging) {
+      if (closing.current || disposed || !root.isConnected) return;
+      if (dragging || keyboardFocus) {
         pending = true;
         return;
       }
+      closing.current=true;
       done.current();
     };
     const onVisibility = () => {
@@ -207,6 +212,25 @@ export default function PhysicsBurst({
           }
         });
     }
+    const nudge = (event: KeyboardEvent) => {
+      if (!Matter || !engine || !["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(event.key)) return;
+      const word=(event.target as Element).closest<HTMLElement>("[data-word-index]");
+      if(!word) return;
+      event.preventDefault();
+      const body=bodies[Number(word.dataset.wordIndex)];
+      Matter.Body.setVelocity(body,{x:event.key==="ArrowLeft"?-8:event.key==="ArrowRight"?8:0,y:event.key==="ArrowUp"?-8:event.key==="ArrowDown"?8:0});
+      clearTimeout(timer);timer=window.setTimeout(complete,1800);
+    };
+    const focusIn = (event: FocusEvent) => {
+      if((event.target as Element).closest("[data-word-index]")){keyboardFocus=true;clearTimeout(timer);}
+    };
+    const focusOut = (event: FocusEvent) => {
+      if((event.relatedTarget as Element | null)?.closest?.("[data-word-index]")) return;
+      if(keyboardFocus){keyboardFocus=false;timer=window.setTimeout(complete,1200);}
+    };
+    root.addEventListener("focusin",focusIn);
+    root.addEventListener("focusout",focusOut);
+    root.addEventListener("keydown", nudge);
     root.addEventListener("pointerdown", down);
     root.addEventListener("pointermove", move);
     root.addEventListener("pointerup", up);
@@ -217,6 +241,9 @@ export default function PhysicsBurst({
       disposed = true;
       clearTimeout(timer);
       cancelAnimationFrame(frame);
+      root.removeEventListener("focusin",focusIn);
+      root.removeEventListener("focusout",focusOut);
+      root.removeEventListener("keydown", nudge);
       root.removeEventListener("pointerdown", down);
       root.removeEventListener("pointermove", move);
       root.removeEventListener("pointerup", up);
@@ -252,6 +279,7 @@ export default function PhysicsBurst({
           <br />
           Drag or throw a word. The conversation follows.
         </p>
+        <p className="sr-only">Six words: ship, together, hello, let’s, build and talk. Use arrow keys to nudge a focused word, or skip to contact.</p>
         {WORDS.map((word, index) => (
           <button
             type="button"
@@ -265,19 +293,19 @@ export default function PhysicsBurst({
             aria-label={`Throw word ${word}`}
             key={word}
           >
-            {word}
+            <span aria-hidden="true">{word}</span>
           </button>
         ))}
       </div>
       <div className="physics-controls">
-        <button type="button" onClick={() => done.current()}>
+        <button type="button" onClick={() => {closing.current=true;done.current();}}>
           Skip to contact ↗
         </button>
         <button
           type="button"
           data-dialog-close
           aria-label="Cancel word animation"
-          onClick={() => cancel.current()}
+          onClick={() => {closing.current=true;cancel.current();}}
         >
           Close ×
         </button>

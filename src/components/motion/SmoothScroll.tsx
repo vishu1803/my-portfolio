@@ -16,6 +16,7 @@ export default function SmoothScroll() {
           '[role="dialog"],[data-lenis-prevent],input,textarea,select',
         ),
     });
+    gsap.ticker.lagSmoothing(0);
     document.documentElement.dataset.scrollEngine = "lenis";
     const tick = (time: number) => {
       if (!document.hidden) lenis.raf(time * 1000);
@@ -81,6 +82,7 @@ export default function SmoothScroll() {
       document.removeEventListener("click", anchor);
       window.removeEventListener("portfolio:scroll", direct);
       gsap.ticker.remove(tick);
+      gsap.ticker.lagSmoothing(500,33);
       lenis.off("scroll", update);
       lenis.destroy();
       delete document.documentElement.dataset.scrollEngine;

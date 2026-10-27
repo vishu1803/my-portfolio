@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --font-body: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: var(--font-instrument), Georgia, serif;
   --font-condensed: var(--font-anton), Impact, sans-serif;
   --gutter: clamp(22px, 4.5vw, 80px);
   --font-display: var(--font-instrument), Georgia, serif;
@@ -217,7 +217,7 @@ textarea {
 }
 .micro-label {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -259,7 +259,7 @@ textarea {
   border-bottom: 1px solid #e8dd35;
   color: #e8dd35;
   font-family: ui-monospace, monospace;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.5;
   text-transform: uppercase;
   letter-spacing: 0.07em;
@@ -329,7 +329,7 @@ textarea {
 .wordmark-caption {
   padding-left: 14px;
   font-family: ui-monospace, monospace;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.5;
   letter-spacing: 0.01em;
   font-style: normal;
@@ -347,7 +347,7 @@ textarea {
   gap: 6px;
   min-height: 44px;
   font-family: ui-monospace, monospace;
-  font-size: 11px;
+  font-size: 12px;
 }
 .nav-chapters a {
   color: #b2b0ac;
@@ -355,7 +355,7 @@ textarea {
 .nav-chapters sup {
   align-self: flex-start;
   margin-top: 10px;
-  font-size: 8px;
+  font-size: 12px;
   color: #98948c;
 }
 .nav-chapters a:hover,
@@ -432,7 +432,7 @@ textarea {
 }
 .hero-note-label {
   color: #9b9993;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.08em;
 }
 .hero-note > p:not(.hero-location) {
@@ -457,7 +457,7 @@ textarea {
 .hero-location {
   margin-top: 22px;
   color: #8b8986;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.8;
 }
 .hero-portrait {
@@ -482,7 +482,7 @@ textarea {
   right: 9px;
   writing-mode: vertical-rl;
   font-family: ui-monospace, monospace;
-  font-size: 10px;
+  font-size: 12px;
   color: #19191b;
 }
 .portrait-inspector {
@@ -532,7 +532,7 @@ textarea {
   font-size: 24px;
 }
 .portrait-reveal-note > span:last-child {
-  font-size: 11px;
+  font-size: 12px;
 }
 .portrait-inspector .flashlight-toolbar {
   position: absolute;
@@ -548,7 +548,7 @@ textarea {
   display: none;
 }
 .portrait-inspector .flashlight-toolbar button {
-  font-size: 9px;
+  font-size: 12px;
   padding: 3px 8px;
   min-height: 32px;
   border-radius: 0;
@@ -580,7 +580,7 @@ textarea {
 .hero-byline {
   color: #e9e4d7;
   margin-bottom: 12px;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.14em;
 }
 .red-slash {
@@ -632,7 +632,7 @@ textarea {
 .hero-scroll {
   text-align: right;
   color: #93918b;
-  font-size: 8px;
+  font-size: 12px;
 }
 .hero-scroll > span {
   display: block;
@@ -691,7 +691,7 @@ textarea {
   gap: 20px;
   color: #8f8d86;
   margin-bottom: 28px;
-  font-size: 9px;
+  font-size: 12px;
 }
 .case-meta b {
   font-weight: 400;
@@ -721,7 +721,7 @@ textarea {
   position: absolute;
   bottom: 8px;
   left: 12px;
-  font-size: 8px;
+  font-size: 12px;
   color: #c0bcb5;
 }
 .case-layout-0 .case-body {
@@ -760,7 +760,7 @@ textarea {
 .case-eyebrow {
   display: block;
   color: #b5b0a5;
-  font-size: 9px;
+  font-size: 12px;
   margin-bottom: 15px;
 }
 .case-copy h3 {
@@ -787,12 +787,12 @@ textarea {
 .case-contribution .micro-label {
   display: block;
   color: #e4ded0;
-  font-size: 9px;
+  font-size: 12px;
   margin-bottom: 6px;
 }
 .case-tech {
   color: #8f8c84;
-  font-size: 9px;
+  font-size: 12px;
   margin-top: 22px;
   line-height: 1.9;
 }
@@ -803,7 +803,7 @@ textarea {
   margin-top: 18px;
 }
 .case-links .editorial-link {
-  font-size: 10px;
+  font-size: 12px;
 }
 .project-inspection {
   display: flex;
@@ -867,7 +867,7 @@ textarea {
 }
 .record-date {
   color: #cfc62e;
-  font-size: 9px;
+  font-size: 12px;
 }
 .about-record h3 {
   font-family: var(--font-display);
@@ -926,7 +926,7 @@ textarea {
   position: relative;
 }
 .toolkit-title > .micro-label {
-  font-size: 9px;
+  font-size: 12px;
   color: #62605a;
 }
 .toolkit-title h2 {
@@ -979,7 +979,7 @@ textarea {
   gap: 20px;
   color: #696257;
   margin-bottom: 15px;
-  font-size: 9px;
+  font-size: 12px;
 }
 .toolkit-category > span:first-child {
   color: #a7352a;
@@ -996,7 +996,7 @@ textarea {
 }
 .toolkit-footnote {
   color: #696257;
-  font-size: 8px;
+  font-size: 12px;
   border-top: 1px solid #b8b5ac;
   padding-top: 18px;
 }
@@ -1012,7 +1012,7 @@ textarea {
   padding-top: 36px;
 }
 .collab-eyebrow {
-  font-size: 9px;
+  font-size: 12px;
   color: #6b675f;
   margin-bottom: 22px;
 }
@@ -1131,14 +1131,14 @@ textarea {
   right: 3%;
   top: 58%;
   text-align: right;
-  font-size: 9px;
+  font-size: 12px;
   color: #686257;
 }
 .collab-hand-note {
   position: absolute;
   left: 32%;
   bottom: 4%;
-  font-size: 8px;
+  font-size: 12px;
   color: #686257;
   transform: rotate(-8deg);
 }
@@ -1165,7 +1165,7 @@ textarea {
 .collab-contact-strip > div {
   display: flex;
   gap: 24px;
-  font-size: 10px;
+  font-size: 12px;
 }
 .collab-contact-strip > div a,
 .collab-contact-strip button {
@@ -1197,7 +1197,7 @@ textarea {
 }
 .colophon-top p {
   color: #96928b;
-  font-size: 9px;
+  font-size: 12px;
 }
 .colophon-top > a {
   display: flex;
@@ -1205,7 +1205,7 @@ textarea {
   gap: 15px;
   min-height: 44px;
   color: #e4d82a;
-  font-size: 10px;
+  font-size: 12px;
 }
 .colophon-bottom {
   display: flex;
@@ -1213,7 +1213,7 @@ textarea {
   justify-content: space-between;
   gap: 18px;
   color: #908c83;
-  font-size: 8px;
+  font-size: 12px;
   border-top: 1px solid #ffffff25;
   padding-top: 22px;
 }
@@ -1268,14 +1268,14 @@ textarea {
     gap: 16px;
   }
   .nav-chapters a {
-    font-size: 10px;
+    font-size: 12px;
   }
   .nav-chapters sup,
   .nav-resume {
     display: none;
   }
   .nav-contact {
-    font-size: 10px;
+    font-size: 12px;
     gap: 5px;
   }
   .editorial-hero {
@@ -1284,7 +1284,7 @@ textarea {
     padding-bottom: 27px;
   }
   .hero-meta {
-    font-size: 8px;
+    font-size: 12px;
   }
   .hero-edition {
     display: none;
@@ -1314,7 +1314,7 @@ textarea {
     width: 33%;
   }
   .hero-note-label {
-    font-size: 7px;
+    font-size: 12px;
     line-height: 1.9;
     max-width: 75px;
     display: block;
@@ -1331,7 +1331,7 @@ textarea {
   }
   .hero-location {
     margin-top: 82px;
-    font-size: 7px;
+    font-size: 12px;
     max-width: 90px;
   }
   .portrait-inspector .flashlight-toolbar > span {
@@ -1344,7 +1344,7 @@ textarea {
     bottom: 0;
   }
   .hero-byline {
-    font-size: 7px;
+    font-size: 12px;
     letter-spacing: 0.08em;
     margin-bottom: 10px;
   }
@@ -1368,7 +1368,7 @@ textarea {
     display: none;
   }
   .hero-actions .editorial-link {
-    font-size: 9px;
+    font-size: 12px;
   }
   .hero-photo-reveal .portrait-reveal-note {
     padding: 35px 14px 14px;
@@ -1378,10 +1378,10 @@ textarea {
     font-size: 19px;
   }
   .portrait-reveal-note > span:last-child {
-    font-size: 9px;
+    font-size: 12px;
   }
   .section-rule {
-    font-size: 8px;
+    font-size: 12px;
   }
   .section-rule > span:last-child {
     max-width: 45%;
@@ -1417,7 +1417,7 @@ textarea {
     order: initial;
   }
   .case-meta {
-    font-size: 8px;
+    font-size: 12px;
     margin-bottom: 20px;
   }
   .case-meta > span:last-child {
@@ -1439,7 +1439,7 @@ textarea {
     font-size: clamp(35px, 9vw, 55px);
   }
   .case-eyebrow {
-    font-size: 8px;
+    font-size: 12px;
     margin-bottom: 10px;
   }
   .case-layout-0 .case-copy {
@@ -1453,20 +1453,20 @@ textarea {
     margin-bottom: 20px;
   }
   .flashlight-toolbar > span {
-    font-size: 8px;
+    font-size: 12px;
   }
   .flashlight-toolbar button {
-    font-size: 10px;
+    font-size: 12px;
   }
   .project-inspection {
     gap: 14px;
     padding: 20px;
   }
   .project-inspection > span:not(.micro-label) {
-    font-size: 11px;
+    font-size: 12px;
   }
   .project-inspection .micro-label {
-    font-size: 8px;
+    font-size: 12px;
   }
   .about-introduction {
     grid-template-columns: 1fr;
@@ -1487,7 +1487,7 @@ textarea {
     padding: 28px 0;
   }
   .record-kind {
-    font-size: 9px;
+    font-size: 12px;
   }
   .about-record h3 {
     font-size: 32px;
@@ -1538,7 +1538,7 @@ textarea {
     padding-top: 40px;
   }
   .collab-eyebrow {
-    font-size: 8px;
+    font-size: 12px;
     margin-bottom: 20px;
   }
   .collab-headline {
@@ -1577,7 +1577,7 @@ textarea {
   .collab-stage-caption {
     top: 69%;
     right: 0;
-    font-size: 7px;
+    font-size: 12px;
   }
   .collab-hand-note {
     display: none;
@@ -1596,7 +1596,7 @@ textarea {
   .collab-contact-strip > div {
     width: 100%;
     gap: 25px;
-    font-size: 9px;
+    font-size: 12px;
   }
   .contact-overlay-panel {
     max-height: calc(100dvh - 24px);
@@ -1612,10 +1612,10 @@ textarea {
     font-size: 28px;
   }
   .colophon-top p {
-    font-size: 8px;
+    font-size: 12px;
   }
   .colophon-top > a {
-    font-size: 8px;
+    font-size: 12px;
     gap: 8px;
   }
 }
@@ -1625,7 +1625,7 @@ textarea {
   }
   .nav-chapters a,
   .nav-contact {
-    font-size: 9px;
+    font-size: 12px;
   }
   .hero-composition {
     min-height: 470px;
@@ -1649,7 +1649,7 @@ textarea {
     font-size: 19px;
   }
   .collaborate-pill {
-    font-size: 10px;
+    font-size: 12px;
     gap: 4px;
   }
   .pill-dot {
@@ -1765,7 +1765,7 @@ textarea {
   }
   .collab-stage-caption {
     top: 77%;
-    font-size: 7px;
+    font-size: 12px;
   }
   .contact-prelude {
     padding: 35px var(--gutter) 28px;
@@ -1777,7 +1777,7 @@ textarea {
     font-size: clamp(43px, 11.8vw, 75px);
   }
   .contact-prelude > .micro-label {
-    font-size: 8px;
+    font-size: 12px;
     padding-bottom: 0;
   }
   .contact-prelude br {
@@ -1809,7 +1809,7 @@ textarea {
   right: 3%;
   min-height: 36px;
   padding: 6px 9px;
-  font-size: 8px;
+  font-size: 12px;
   color: #605b52;
   border-bottom: 1px solid #aaa398;
 }
@@ -1825,7 +1825,7 @@ textarea {
   .collab-motion-toggle {
     right: 0;
     bottom: 0;
-    font-size: 7px;
+    font-size: 12px;
     min-height: 32px;
   }
   .collab-stage-caption {
@@ -1892,7 +1892,7 @@ html.lenis {
 }
 .monogram-preloader small {
   font:
-    9px ui-monospace,
+    12px ui-monospace,
     monospace;
   letter-spacing: 0.15em;
 }
@@ -1942,7 +1942,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   top: 0;
   transform: translate(-50%, -50%);
   font:
-    8px ui-monospace,
+    12px ui-monospace,
     monospace;
   opacity: 0;
 }
@@ -2006,7 +2006,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   color: #111;
   padding: 5px 8px;
   transform: rotate(-3deg);
-  font-size: 8px;
+  font-size: 12px;
 }
 .hero-practice {
   position: absolute;
@@ -2027,7 +2027,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   top: 14px;
   white-space: nowrap;
   font:
-    7px ui-monospace,
+    12px ui-monospace,
     monospace;
   text-transform: uppercase;
   color: #aca79e;
@@ -2117,7 +2117,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   left: -10%;
   right: -10%;
   text-align: center;
-  font-size: 8px;
+  font-size: 12px;
   color: #e5d92d;
   transition: opacity 0.5s;
   pointer-events: none;
@@ -2144,7 +2144,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   background: #101014bd;
   border: 1px solid #ffffff40;
   color: #eeeae0;
-  font-size: 8px;
+  font-size: 12px;
 }
 .subject-scene {
   padding: 70px var(--gutter) 100px;
@@ -2204,7 +2204,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   bottom: 14px;
   padding: 4px 7px;
   background: #e5d92d;
-  font-size: 8px;
+  font-size: 12px;
 }
 .subject-bio p {
   font-family: var(--font-display);
@@ -2230,7 +2230,7 @@ html[data-intro-skip="true"] .monogram-preloader {
 }
 .subject-spec-row dt {
   color: #605b52;
-  font-size: 9px;
+  font-size: 12px;
 }
 .subject-spec-row dd {
   font-size: 13px;
@@ -2318,7 +2318,7 @@ html[data-intro-skip="true"] .monogram-preloader {
 }
 .case-file .case-copy > span {
   color: #bab5a8;
-  font-size: 8px;
+  font-size: 12px;
 }
 .case-file .case-copy h3 {
   font-size: clamp(29px, 3.2vw, 48px);
@@ -2333,12 +2333,12 @@ html[data-intro-skip="true"] .monogram-preloader {
 }
 .case-file .case-contribution > span {
   display: block;
-  font-size: 8px;
+  font-size: 12px;
   color: #eeeae0;
   margin-bottom: 3px;
 }
 .case-file .case-copy > .case-tech {
-  font-size: 8px;
+  font-size: 12px;
   line-height: 1.9;
 }
 .case-file .case-links {
@@ -2355,7 +2355,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   background: #e5d92d;
   color: #101014;
   font:
-    10px ui-monospace,
+    12px ui-monospace,
     monospace;
   text-transform: uppercase;
 }
@@ -2396,7 +2396,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   padding: 0 10px;
   background: #202026;
   color: #a7a296;
-  font-size: 6px;
+  font-size: 12px;
 }
 .case-window-bar > span {
   width: 4px;
@@ -2428,7 +2428,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   padding: 6px 9px;
   background: #e5d92d;
   color: #101014;
-  font-size: 7px;
+  font-size: 12px;
 }
 .case-depth-rule {
   position: absolute;
@@ -2453,7 +2453,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   transform-origin: left;
 }
 .case-track-hint {
-  font-size: 8px;
+  font-size: 12px;
   color: #b6b0a4;
   display: flex;
   justify-content: space-between;
@@ -2549,7 +2549,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   background: #10101488;
 }
 .evidence-row > .micro-label {
-  font-size: 8px;
+  font-size: 12px;
   color: #565125;
   padding-top: 5px;
 }
@@ -2578,7 +2578,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   align-items: center;
   min-height: 44px;
   font:
-    10px ui-monospace,
+    12px ui-monospace,
     monospace;
   text-transform: uppercase;
   border-bottom: 1px solid #10101488;
@@ -2599,7 +2599,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   white-space: nowrap;
 }
 .evidence-value > .micro-label {
-  font-size: 8px;
+  font-size: 12px;
   text-align: right;
 }
 .certification-block {
@@ -2619,7 +2619,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   padding: 8px 12px;
   border: 1px solid #10101466;
   font:
-    10px ui-monospace,
+    12px ui-monospace,
     monospace;
 }
 .certification-block button[aria-pressed="true"] {
@@ -2723,7 +2723,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   position: absolute;
   left: var(--gutter);
   bottom: 35px;
-  font-size: 9px;
+  font-size: 12px;
   color: #60594c;
 }
 .physics-controls {
@@ -2740,7 +2740,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   border: 1px solid #18181a88;
   background: #eae8e2;
   font:
-    10px ui-monospace,
+    12px ui-monospace,
     monospace;
 }
 .physics-surface[data-physics="touch"] .physics-word,
@@ -2779,7 +2779,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   padding-right: 240px;
 }
 .terminal-introduction > .micro-label {
-  font-size: 8px;
+  font-size: 12px;
   color: #c2bacd;
 }
 .terminal-heading {
@@ -2819,13 +2819,13 @@ html[data-intro-skip="true"] .monogram-preloader {
   padding: 11px 16px;
   border: 1px solid #ffffff40;
   font:
-    10px ui-monospace,
+    12px ui-monospace,
     monospace;
   border-radius: 999px;
 }
 .terminal-actions .terminal-primary {
-  background: #d94d44;
-  border-color: #d94d44;
+  background: #b33229;
+  border-color: #b33229;
   color: #fff;
 }
 .terminal-stats {
@@ -2846,7 +2846,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   line-height: 1;
 }
 .terminal-stats .micro-label {
-  font-size: 7px;
+  font-size: 12px;
   color: #c1b7ca;
 }
 .terminal-contact-panel .lg\:col-span-5 {
@@ -2894,7 +2894,7 @@ html[data-intro-skip="true"] .monogram-preloader {
     display: none;
   }
   .case-file .case-copy > p {
-    font-size: 11px;
+    font-size: 12px;
   }
   .case-file .case-copy h3 {
     font-size: 30px;
@@ -2928,7 +2928,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   }
   .nav-chapters a,
   .nav-contact {
-    font-size: 9px;
+    font-size: 12px;
   }
   .nav-chapters sup {
     display: none;
@@ -2966,13 +2966,13 @@ html[data-intro-skip="true"] .monogram-preloader {
     );
   }
   .torch-instruction {
-    font-size: 6px;
+    font-size: 12px;
     left: 0;
     right: 0;
     top: 65%;
   }
   .torch-inspect {
-    font-size: 7px;
+    font-size: 12px;
     padding: 7px;
     right: 7px;
     top: 7px;
@@ -3057,7 +3057,7 @@ html[data-intro-skip="true"] .monogram-preloader {
     font-size: 13px;
   }
   .case-file .case-meta {
-    font-size: 8px;
+    font-size: 12px;
   }
   .case-file .case-links {
     gap: 18px;
@@ -3069,7 +3069,7 @@ html[data-intro-skip="true"] .monogram-preloader {
     aspect-ratio: 4/3;
   }
   .case-file .case-copy > .case-tech {
-    font-size: 8px;
+    font-size: 12px;
   }
   .case-file[data-active="false"] .case-file-number {
     color: #e5d92d;
@@ -3162,10 +3162,10 @@ html[data-intro-skip="true"] .monogram-preloader {
   }
   .physics-controls button {
     padding: 10px;
-    font-size: 8px;
+    font-size: 12px;
   }
   .physics-caption {
-    font-size: 8px;
+    font-size: 12px;
   }
   .terminal-introduction {
     padding-right: 0;
@@ -3181,7 +3181,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   .terminal-actions a,
   .terminal-actions button {
     padding: 10px 12px;
-    font-size: 8px;
+    font-size: 12px;
   }
   .terminal-stats {
     position: static;
@@ -3201,7 +3201,7 @@ html[data-intro-skip="true"] .monogram-preloader {
   }
   .nav-chapters a,
   .nav-contact {
-    font-size: 8px;
+    font-size: 12px;
   }
   .hero-location {
     margin-top: 40px;
@@ -3318,7 +3318,7 @@ html[data-chapter-theme="dark"] .wordmark-star {
     font-size: 22px;
   }
   .monogram-preloader small {
-    font-size: 5px;
+    font-size: 12px;
   }
   .hero-torch .torch-subject {
     transition: none;
@@ -3394,3 +3394,48 @@ html[data-chapter-theme="dark"] .wordmark-star {
     filter: none !important;
   }
 }
+
+/* Readability pass: readable body, explicit chapter contrast, static display casing. */
+.hero-outline,.hero-name-line,.hero-language,.subject-heading > .reveal-line,.work-heading h2 .reveal-line,.evidence-scene h2 .reveal-line,.evidence-copy h3,.toolkit-title h2 .reveal-line,.collab-headline,.prelude-title,.physics-word,.collaborate-pill {text-transform:uppercase;}
+.evidence-scene h2 em,.work-heading h2 em,.toolkit-title h2 em,.collab-headline em {text-transform:none;}
+.evidence-entity{display:block;font-size:.7em;margin-top:8px;}
+.case-copy > p:not(.micro-label),.evidence-copy p,.toolkit-title > p,.subject-bio p,.subject-spec-row dd,.terminal-contact-panel p:not(.micro-label){font-size:clamp(1rem,1.3vw,1.125rem);line-height:1.6;max-width:65ch;}
+.micro-label,.case-tech,.case-meta,.hero-meta,.nav-chapters a,.nav-contact,.nav-resume,.toolkit-category,.terminal-back {font-size:12px!important;letter-spacing:.08em;line-height:1.6;}
+[data-ink="light"] :is(.micro-label,.case-tech,.case-meta,.case-poetic){color:#c8c3b8;}
+[data-ink="dark"] :is(.micro-label,.toolkit-category,.toolkit-description){color:#4d493f;}
+[data-scene="#e5d92d"] :is(.micro-label,.evidence-copy p){color:#25231d;}
+.case-summary{color:#eeeae0;}.case-poetic{font-style:italic;}
+.case-copy > p{margin-block:14px;}
+.toolkit-words{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:8px 16px;}
+.toolkit-description{font-size:16px;line-height:1.6;margin-bottom:16px;max-width:65ch;}
+.toolkit-row{padding-block:30px;}
+.torch-instruction,.torch-inspect{background:#101014ef!important;color:#eeeae0!important;padding:8px;}
+.hero-location{max-width:32ch;}
+.editorial-nav a,.editorial-nav button,.editorial-link,.terminal-back,.collab-contact-strip a,.collab-contact-strip button,.evidence-copy a,.colophon-bottom button,.colophon-top a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;}
+.animation-toggle{position:fixed;bottom:16px;left:16px;z-index:90;padding:10px 16px;min-height:44px;background:#101014;color:#eeeae0;border:1px solid #c8c3b8;border-radius:30px;font:12px/1.6 ui-monospace,monospace;}
+html[data-motion-paused="true"] *,html[data-motion-paused="true"] *::before,html[data-motion-paused="true"] *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important;}
+.editorial-colophon{padding-bottom:90px;}
+@media(max-width:767px){.editorial-nav{flex-wrap:wrap;gap:8px;}.nav-chapters{order:3;width:100%;justify-content:space-between;}.nav-contact{margin-left:auto;}.editorial-header{position:sticky;}.hero-note-label{max-width:18ch;}.hero-meta{gap:12px;}.toolkit-words{gap:6px 12px;}.hero-drawn-note{height:115px;}.case-file-image{min-height:160px;}.contact-overlay-panel{padding:22px!important;}.torch-instruction{max-width:100%;font-size:12px!important;}.hero-actions{flex-wrap:wrap;}}
+
+.monogram-preloader > .intro-counter{font:12px/1.6 ui-monospace,monospace;}
+.collab-orbit-word{text-transform:uppercase;}
+
+.toolkit-words:has(.skill-word:hover) .skill-word:not(:hover){opacity:.7;}
+html[data-motion-paused="true"] .torch-subject{opacity:1!important;mask-image:none!important;-webkit-mask-image:none!important;}
+html[data-motion-paused="true"] .torch-instruction{display:none;}
+a,button{min-height:44px;min-width:44px;}
+a{display:inline-flex;align-items:center;}
+[data-ink] .hero-language,[data-ink] .case-depth-tag{color:#101014!important;}
+.animation-toggle{left:auto;right:16px;}
+@media(max-width:767px){
+ .hero-composition{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 16px;min-height:0;}
+ .hero-outline{position:relative;inset:auto;grid-column:1/-1;line-height:1;font-size:25vw;}
+ .hero-note{position:relative;inset:auto;grid-column:1;grid-row:2;width:auto;max-width:none;}
+ .hero-note > p:not(.hero-location){font-size:24px;}
+ .hero-location{margin-top:20px;max-width:100%;}
+ .hero-portrait{position:relative;inset:auto;grid-column:2;grid-row:2;width:100%;align-self:start;margin-bottom:56px;}
+ .hero-identity{position:relative;inset:auto;grid-column:1/-1;}
+ .torch-inspect{top:auto;bottom:-56px;left:0;right:0;width:100%;min-height:44px;}
+ .torch-instruction{display:none;}
+}
+a,button{min-height:44px!important;min-width:44px!important;}

@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-const bodyFont = localFont({
-  src: "../../public/fonts/inter-latin-400-normal.woff2",
-  variable: "--font-inter",
-  display: "swap",
-});
 const displayFont = localFont({
   src: "../../public/fonts/anton-latin-400-normal.woff2",
   variable: "--font-anton",
@@ -53,7 +48,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${bodyFont.variable} ${displayFont.variable} ${serifFont.variable} scroll-smooth dark`}
+      className={`${displayFont.variable} ${serifFont.variable} scroll-smooth dark`}
     >
       <head>
         <script

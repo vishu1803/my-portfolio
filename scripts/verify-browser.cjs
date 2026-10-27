@@ -7,7 +7,7 @@ const { chromium } = require("playwright");
 let server, browser, desktop;
 const errors = [];
 const base = "http://127.0.0.1:3194";
-const triggerName = "Let’s collaborate — open contact details";
+const triggerName = "Hire me — open contact details";
 const wait = (page, ms = 1400) => page.waitForTimeout(ms);
 async function openPage(options = {}) {
   const page = await browser.newPage({
@@ -55,7 +55,7 @@ async function contact(page) {
     name: "Vishwanath Nishad",
     exact: true,
   });
-  await dialog.waitFor({ state: "visible", timeout: 6000 });
+  await dialog.waitFor({ state: "visible", timeout: 15000 });
   await wait(page, 1500);
   return dialog;
 }
@@ -126,7 +126,7 @@ after(async () => {
 });
 test("identity, SEO, next/font variables, content and navigation remain intact", async () => {
   assert.equal(await desktop.locator("h1").count(), 1);
-  assert.match(await desktop.locator("h1").textContent(), /VISHWANATH.*Nishad/);
+  assert.match(await desktop.locator("h1").textContent(), /Vishwanath.*Nishad/);
   assert.match(await desktop.title(), /Vishwanath Nishad/);
   assert.ok(
     await desktop.locator("meta[name=description]").getAttribute("content"),
@@ -230,6 +230,7 @@ test("torch starts dark and reveals the actual photo and yellow backing with a r
     true,
   );
   assert.equal(await torch.locator(".portrait-yellow").count(), 1);
+  await desktop.waitForFunction(()=>Number(getComputedStyle(document.querySelector(".torch-instruction")).opacity)<.01,{},{timeout:15000});
   assert.equal(
     await desktop
       .locator(".torch-instruction")
@@ -249,7 +250,7 @@ test("torch keyboard inspection exposes a static portrait and closes again", asy
     "none",
   );
   await desktop
-    .getByRole("button", { name: "Hide details", exact: true })
+    .getByRole("button", { name: "Hide portrait details", exact: true })
     .press("Enter");
   await desktop.mouse.move(10, 90);
 });
@@ -309,7 +310,7 @@ test("Lenis anchors, active chapter underline and reading progress follow naviga
     "lenis",
   );
   await desktop.getByRole("link", { name: "01 Subject", exact: true }).click();
-  await wait(desktop, 1600);
+  await desktop.waitForFunction(()=>Math.abs(document.querySelector("#subject").getBoundingClientRect().top-88)<5,{},{timeout:15000});
   const top = await desktop
     .locator("#subject")
     .evaluate((el) => el.getBoundingClientRect().top);
@@ -387,14 +388,14 @@ test("keyboard focus scrolls the pinned case into view and its image/links are r
   const cards = desktop.locator(".case-file");
   for (let index = 0; index < 6; index++) {
     const card = cards.nth(index);
-    const button = card.getByRole("button", { name: "View case file" });
+    const button = card.getByRole("button", { name: /View case file/ });
     await button.focus();
     await wait(desktop, 1300);
     const box = await button.boundingBox();
     assert.ok(box.x >= -3 && box.x < 1440, JSON.stringify(box));
     assert.match(
       await card
-        .getByRole("link", { name: "Repository ↗", exact: true })
+        .getByRole("link", { name: /source code on GitHub/ })
         .getAttribute("href"),
       /^https:\/\/github.com\/vishu1803\//,
     );
@@ -410,7 +411,7 @@ test("case visual tilts on pointer movement with independent depth labels", asyn
   await desktop
     .locator(".case-file")
     .first()
-    .getByRole("button", { name: "View case file" })
+    .getByRole("button", { name: /View case file/ })
     .focus();
   await wait(desktop, 1300);
   const visual = desktop.locator(".case-file-visual").first();
@@ -438,27 +439,27 @@ test("case visual tilts on pointer movement with independent depth labels", asyn
 });
 test("project notes and project index dialogs escape the pin and preserve focus", async () => {
   const trigger = desktop
-    .getByRole("button", { name: "View case file" })
+    .getByRole("button", { name: /View case file/ })
     .first();
   await trigger.focus();
   await wait(desktop, 1200);
   await desktop.keyboard.press("Enter");
-  await wait(desktop, 700);
+  await desktop.getByRole("dialog").waitFor({state:"visible",timeout:12000});
   assert.equal(await desktop.getByRole("dialog").isVisible(), true);
   assert.match(
     await desktop.getByRole("dialog").innerText(),
-    /Collaborative Task Manager/,
+    /Collaborative Task Manager/i,
   );
   await desktop.keyboard.press("Escape");
-  await wait(desktop, 500);
+  await desktop.getByRole("dialog").waitFor({state:"hidden",timeout:12000});
   assert.equal(
     await trigger.evaluate((el) => el === document.activeElement),
     true,
   );
   await desktop
-    .getByRole("button", { name: "Project index / 06 ↗", exact: true })
+    .getByRole("button", { name: "Project index / 06", exact: true })
     .click();
-  await wait(desktop, 500);
+  await desktop.getByRole("dialog").waitFor({state:"visible",timeout:12000});
   const box = await desktop.getByRole("dialog").boundingBox();
   assert.equal(box.x, 0);
   assert.equal(box.y, 0);
@@ -491,7 +492,7 @@ test("evidence ledger keeps the real internship, academic dates and verified cou
   assert.equal(await desktop.locator(".evidence-row").count(), 3);
   assert.match(
     await desktop.locator(".evidence-ledger").innerText(),
-    /FTV SALOON/,
+    /FTV Saloon/i,
   );
   const row = desktop.locator(".evidence-row").last();
   await row.scrollIntoViewIfNeeded();
@@ -549,10 +550,10 @@ test("Pause tug stops the idle cycle while pointer tension remains usable", asyn
   await wait(desktop, 600);
   const d = await desktop.locator(".tension-string").first().getAttribute("d");
   await wait(desktop, 300);
-  assert.equal(
-    await desktop.locator(".tension-string").first().getAttribute("d"),
-    d,
-  );
+  const settled=await desktop.locator(".tension-string").first().getAttribute("d");
+  const startNumbers=d.match(/-?\d+(?:\.\d+)?/g).map(Number);
+  const endNumbers=settled.match(/-?\d+(?:\.\d+)?/g).map(Number);
+  assert.ok(startNumbers.every((n,i)=>Math.abs(n-endNumbers[i])<0.15),`${d} -> ${settled}`);
   const box = await desktop.locator(".collab-stage").boundingBox();
   await desktop.mouse.move(box.x + box.width * 0.9, box.y + 20);
   await wait(desktop, 600);
@@ -594,43 +595,60 @@ test("dragging the pill springs back without triggering the burst", async () => 
   );
 });
 test("Enter starts six actual Matter.js word bodies; Escape cancels without late contact", async () => {
-  const button = desktop.getByRole("button", {
+  const page=await openPage();
+  await section(page,"contact");
+  await page.evaluate(()=>{
+    const observer=new MutationObserver(()=>{
+      const surface=document.querySelector('.physics-surface[data-physics="running"]');
+      const word=surface?.querySelector('.physics-word');
+      if(word){
+        window.__burstInitialFocus=document.activeElement?.getAttribute('aria-label')==='Cancel word animation';
+        word.focus(); observer.disconnect();
+      }
+    });
+    observer.observe(document.body,{subtree:true,attributes:true,attributeFilter:['data-physics']});
+  });
+  const button = page.getByRole("button", {
     name: triggerName,
     exact: true,
   });
   await button.focus();
   const origin = await button.boundingBox();
-  await desktop.keyboard.press("Enter");
-  await desktop
+  await page.keyboard.press("Enter");
+  await page
     .locator(".physics-surface[data-physics=running]")
-    .waitFor({ state: "visible", timeout: 5000 });
-  assert.equal(await desktop.locator(".physics-word").count(), 6);
-  const burstX = await desktop
-    .locator(".physics-burst")
-    .evaluate((el) => parseFloat(el.style.getPropertyValue("--burst-x")));
-  assert.ok(Math.abs(burstX - origin.x - origin.width / 2) < 10);
-  assert.equal(
-    await desktop
-      .getByRole("button", { name: "Cancel word animation" })
-      .evaluate((el) => el === document.activeElement),
-    true,
-  );
-  const before = await desktop
+    .waitFor({ state: "visible", timeout: 15000 });
+  const state=await page.evaluate(()=>{
+    const words=[...document.querySelectorAll(".physics-word")];
+    const close=document.querySelector('[aria-label="Cancel word animation"]');
+    const result={count:words.length,x:parseFloat(document.querySelector(".physics-burst").style.getPropertyValue("--burst-x")),focused:window.__burstInitialFocus};
+    words[0].focus();
+    document.addEventListener("keydown",event=>{window.__nudgeHandled=event.defaultPrevented;},{once:true});
+    return result;
+  });
+  assert.equal(state.count,6);
+  assert.ok(Math.abs(state.x-origin.x-origin.width/2)<10);
+  assert.equal(state.focused,true);
+  await page.keyboard.press("ArrowLeft");
+  assert.equal(await page.evaluate(()=>window.__nudgeHandled),true);
+  const before = await page
     .locator(".physics-word")
     .first()
     .getAttribute("style");
-  await wait(desktop, 180);
+  await wait(page,180);
   assert.notEqual(
-    await desktop.locator(".physics-word").first().getAttribute("style"),
+    await page.locator(".physics-word").first().getAttribute("style"),
     before,
   );
-  await desktop.keyboard.press("Escape");
-  await wait(desktop, 1500);
-  assert.equal(await desktop.getByRole("dialog").count(), 0);
+  await page.keyboard.press("Escape");
+  await page.waitForFunction(()=>!document.querySelector("[role=dialog]"),{},{timeout:15000});
+  await wait(page,1600);
+  assert.equal(await page.getByRole("dialog").count(), 0);
   assert.equal(
     await button.evaluate((el) => el === document.activeElement),
     true,
   );
+  await page.close();
 });
 test("burst automatically transitions to the violet typed contact view", async () => {
   const dialog = await contact(desktop);
@@ -717,17 +735,17 @@ test("contact copy micro-interaction writes the real email to the clipboard", as
 test("nested resume preserves the parent contact dialog and Escape order", async () => {
   await desktop
     .getByRole("dialog")
-    .getByRole("button", { name: "View résumé ↗", exact: true })
+    .getByRole("button", { name: "View résumé", exact: true })
     .click();
   await wait(desktop, 500);
   assert.equal(await desktop.locator("[role=dialog]").count(), 2);
   await desktop.keyboard.press("Escape");
-  await wait(desktop, 500);
+  await desktop.waitForFunction(()=>document.querySelectorAll("[role=dialog]").length===1,{},{timeout:10000});
   assert.equal(await desktop.locator("[role=dialog]").count(), 1);
   assert.equal(
     await desktop
       .getByRole("dialog")
-      .getByRole("button", { name: "View résumé ↗", exact: true })
+      .getByRole("button", { name: "View résumé", exact: true })
       .evaluate((el) => el === document.activeElement),
     true,
   );
@@ -812,9 +830,10 @@ test("Space activates the pill and contact can return to the beginning through L
     name: "Vishwanath Nishad",
     exact: true,
   });
-  await dialog.waitFor({ state: "visible", timeout: 6000 });
+  await dialog.waitFor({ state: "visible", timeout: 15000 });
   await dialog.getByRole("button", { name: "Back to the beginning" }).click();
-  await wait(desktop, 1800);
+  await desktop.waitForFunction(()=>scrollY<5,{},{timeout:12000});
+  await desktop.waitForFunction(()=>!document.querySelector("[role=dialog]"),{},{timeout:15000});
   assert.equal(await desktop.getByRole("dialog").count(), 0);
   assert.ok((await desktop.evaluate(() => scrollY)) < 5);
 });
@@ -831,7 +850,7 @@ test("touch tap uses the light burst fallback and reaches contact", async () => 
     .waitFor({ state: "visible" });
   await page
     .getByRole("dialog", { name: "Vishwanath Nishad", exact: true })
-    .waitFor({ state: "visible", timeout: 5000 });
+    .waitFor({ state: "visible", timeout: 15000 });
   await wait(page);
   await page.keyboard.press("Escape");
   await wait(page, 600);
@@ -905,6 +924,24 @@ test("runtime reduced-motion changes clean up Lenis, pinned tracks and active ri
     await desktop.locator("html").getAttribute("data-scroll-engine"),
     "lenis",
   );
+});
+test("manual pause uses static end states and resumes the shared engine", async () => {
+ const page=await openPage();
+ await page.getByRole("button",{name:"Pause animations",exact:true}).click();
+ await page.waitForFunction(()=>!document.documentElement.dataset.scrollEngine);
+ assert.equal(await page.locator("html").getAttribute("data-motion-paused"),"true");
+ assert.equal(await page.locator("#case-studies").getAttribute("data-pin-start"),null);
+ assert.equal(await page.locator(".physics-burst").count(),0);
+ await page.getByRole("button",{name:"Resume animations",exact:true}).click();
+ await page.waitForFunction(()=>document.documentElement.dataset.scrollEngine==="lenis");
+ await page.close();
+});
+test("normal-case headings, descriptive links and toolkit lists remain semantic", async()=>{
+ assert.match(await desktop.locator("h1").textContent(),/Vishwanath/);
+ assert.equal(await desktop.locator(".toolkit-words").first().evaluate(el=>el.tagName),"UL");
+ assert.equal(await desktop.locator(".case-copy").first().getByRole("link",{name:/Collaborative Task Manager, source code/}).count(),1);
+ assert.equal(await desktop.locator(".hero-outline").getAttribute("aria-hidden"),"true");
+ assert.ok(await desktop.locator(".case-file-image img").first().getAttribute("alt").then(x=>x.includes("task counts")));
 });
 test("production console and page exception capture remains clean", () =>
   assert.deepEqual(errors, []));

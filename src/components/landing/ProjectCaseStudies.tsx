@@ -116,7 +116,7 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
         <div className="work-heading">
           <h2 id="work-heading">
             <LineReveal>
-              SIX SYSTEMS.<em>Ideas, made tangible.</em>
+              Six systems.<em>Ideas, made tangible.</em>
             </LineReveal>
           </h2>
           <button
@@ -127,7 +127,7 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
               setIndexOpen(true);
             }}
           >
-            Project index / 06 ↗
+            Project index / 06 <span aria-hidden="true">↗</span>
           </button>
         </div>
         <div ref={viewport} className="case-track-viewport">
@@ -168,24 +168,25 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
                     <CaseFileVisual
                       image={study.image}
                       title={study.title}
+                      alt={study.imageAlt}
                       index={index}
                     />
                     <div className="case-copy">
-                      <span className="micro-label">{study.focus}</span>
+                      <p className="case-summary">{study.summary}</p>
                       <h3>{study.title}</h3>
-                      <p>{study.problem}</p>
+                      <p className="case-tech micro-label">{study.tech.join(" / ")}</p>
+                      <p className="case-poetic">{study.focus}</p>
                       <p className="case-contribution">
                         <span className="micro-label">My contribution</span>
                         {study.highlights[0]}
                       </p>
-                      <p className="case-tech micro-label">
-                        {study.tech.join(" / ")}
-                      </p>
+
                       <div className="case-links">
                         <Magnetic>
                           <button
                             type="button"
                             className="case-file-cta"
+                            aria-label={`View case file: ${study.title}`}
                             onClick={() =>
                               article && onSelectArticle?.(article)
                             }
@@ -195,21 +196,23 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
                         </Magnetic>
                         <a
                           href={study.github}
+                          aria-label={`Repository: ${study.title}, source code on GitHub (opens in a new tab)`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="editorial-link subtle-link"
                         >
-                          Repository ↗
-                        </a>
+                          Repository <span aria-hidden="true">↗</span>
+                        <span className="sr-only"> (opens in a new tab)</span></a>
                         {study.liveDemo && (
                           <a
                             href={study.liveDemo}
+                            aria-label={`${study.title}, live application (opens in a new tab)`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="editorial-link subtle-link"
                           >
-                            Live ↗
-                          </a>
+                            Live <span aria-hidden="true">↗</span>
+                          <span className="sr-only"> (opens in a new tab)</span></a>
                         )}
                       </div>
                     </div>

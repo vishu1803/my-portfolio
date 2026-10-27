@@ -41,13 +41,13 @@ export default function ContactPrelude() {
       className="contact-prelude"
       data-scene="#101014"
       data-ink="light"
-      aria-label="One last thing"
+      aria-labelledby="prelude-heading"
     >
       <div className="prelude-rule" aria-hidden="true" />
       <div className="prelude-title-clip">
-        <p className="prelude-title">
-          ONE LAST THING<span>.</span>
-        </p>
+        <h2 id="prelude-heading" className="prelude-title">
+          One last thing<span>.</span>
+        </h2>
       </div>
       <div className="prelude-lines">
         <p className="prelude-line">The next chapter starts</p>

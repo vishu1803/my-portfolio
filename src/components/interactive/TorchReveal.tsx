@@ -26,7 +26,7 @@ export default function TorchReveal({
     if (!node || !target || open) return;
     const media = matchMedia("(prefers-reduced-motion: reduce)"),
       coarse = matchMedia("(pointer:coarse)");
-    if (media.matches) return;
+    if (reduced || media.matches) return;
     let frame = 0,
       visible = false,
       inside = false,
@@ -36,6 +36,9 @@ export default function TorchReveal({
       tx = 0,
       ty = 0;
     const start = performance.now();
+    let size={width:node.clientWidth,height:node.clientHeight};
+    const sizeObserver=new ResizeObserver(([entry])=>{size={width:entry.contentRect.width,height:entry.contentRect.height};});
+    sizeObserver.observe(node);
     const device = navigator as Navigator & {
       connection?: { saveData?: boolean };
     };
@@ -43,13 +46,12 @@ export default function TorchReveal({
     const paint = (time: number) => {
       frame = 0;
       if (!visible || document.hidden) return;
-      if (drift) {
-        const rect = node.getBoundingClientRect();
-        const t = (time - start) / 2400;
-        tx = rect.width * (0.5 + 0.32 * Math.sin(t));
-        ty = rect.height * (0.5 + 0.32 * Math.sin(t * 1.37));
-      }
-      if (time - last > 25) {
+      if (time - last > (coarse.matches ? 66 : 25)) {
+        if (drift) {
+          const t=(time-start)/2400;
+          tx=size.width*(.5+.32*Math.sin(t));
+          ty=size.height*(.5+.32*Math.sin(t*1.37));
+        }
         x += (tx - x) * 0.12;
         y += (ty - y) * 0.12;
         node.style.setProperty("--torch-x", `${x}px`);
@@ -111,6 +113,7 @@ export default function TorchReveal({
     document.addEventListener("visibilitychange", visibility);
     return () => {
       observer.disconnect();
+      sizeObserver.disconnect();
       target.removeEventListener("pointermove", move);
       target.removeEventListener("pointerleave", leave);
       document.removeEventListener("visibilitychange", visibility);
@@ -130,7 +133,7 @@ export default function TorchReveal({
         className={`torch-instruction micro-label ${found ? "is-found" : ""}`}
       >
         <i className="status-dot" />
-        MOVE THE TORCH. FIND THE SUBJECT.
+        Hover or drag to light up the portrait.
       </div>
       <button
         className="torch-inspect micro-label"
@@ -138,7 +141,7 @@ export default function TorchReveal({
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
       >
-        {open ? "Hide details" : "Inspect details"}
+        {open ? "Hide portrait details" : "Inspect portrait details"}
       </button>
     </div>
   );

@@ -79,7 +79,7 @@ export default function VideoReferenceHero({
       </div>
       <div className="hero-composition">
         <div className="hero-outline" aria-hidden="true">
-          NISHAD
+          Nishad
         </div>
         <div className="hero-note">
           <span className="micro-label hero-note-label">
@@ -98,7 +98,7 @@ export default function VideoReferenceHero({
               TypeScript / Full stack
             </span>
             <span className="hero-practice">
-              300<span>+</span>
+              300<span><span aria-hidden="true">+</span></span>
               <small>LeetCode problems · résumé</small>
             </span>
             <svg viewBox="0 0 300 95" aria-hidden="true">
@@ -113,9 +113,7 @@ export default function VideoReferenceHero({
             </svg>
           </div>
           <p className="hero-location micro-label">
-            Gorakhpur, India
-            <br />
-            Full stack / Software engineer
+            Full-stack developer · Gorakhpur, India
           </p>
         </div>
         <div ref={portrait} className="hero-portrait">
@@ -146,7 +144,7 @@ export default function VideoReferenceHero({
           </p>
           <h1 id="hero-title" className="hero-name">
             <span className="hero-name-line">
-              VISHWANATH<span className="sr-only"> Nishad</span>
+              Vishwanath<span className="sr-only"> Nishad</span>
               <span className="hero-name-period" aria-hidden="true">
                 .
               </span>
