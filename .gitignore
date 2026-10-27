@@ -39,3 +39,6 @@ error_output.txt
 # Leftover Vite files (if migrated from Vite)
 index.html
 vite.config.js
+
+# Local visual review artifacts
+docs/previews/
