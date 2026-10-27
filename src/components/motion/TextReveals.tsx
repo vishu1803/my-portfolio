@@ -1,6 +1,7 @@
 "use client";
 import { ReactNode, useEffect, useRef } from "react";
 import gsap from "gsap";
+import { isLowPowerDevice } from "../../lib/motionQuality";
 import useReducedMotion from "../../hooks/useMotionPreference";
 
 type Kind = "line" | "blur" | "marker";
@@ -19,7 +20,7 @@ function Reveal({
     const node = root.current;
     if (
       !node ||
-      reduced ||
+      reduced || isLowPowerDevice() ||
       matchMedia("(prefers-reduced-motion: reduce)").matches
     )
       return;

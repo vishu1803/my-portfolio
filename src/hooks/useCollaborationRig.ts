@@ -2,6 +2,7 @@
 
 import { RefObject, useEffect, useRef } from "react";
 import gsap from "gsap";
+import { isLowPowerDevice } from "../lib/motionQuality";
 import { loadScrollTrigger } from "./useScrollScene";
 
 type RigControls = {
@@ -59,13 +60,7 @@ export default function useCollaborationRig({
         paused = false,
         entered = false;
       let geometry = { scale: 1, x: 580, y: 94, height: 90 };
-      const device = navigator as Navigator & {
-        connection?: { saveData?: boolean };
-        deviceMemory?: number;
-      };
-      const limited =
-        !!device.connection?.saveData ||
-        (device.deviceMemory !== undefined && device.deviceMemory <= 2);
+      const limited = isLowPowerDevice();
       let idle: gsap.core.Tween;
       let hovered = false;
 
@@ -99,12 +94,14 @@ export default function useCollaborationRig({
           const endY =
             geometry.y + dy + geometry.height * (0.18 + index * 0.15);
           const span = endX - x;
-          const slack =
-            (1 - pull) * (10 + index * 2) +
-            Math.sin(state.cycle + index * 0.65) * 3;
+          const rest = Math.hypot(geometry.x + 7 - ax, geometry.y + geometry.height * (.18 + index * .15) - ay);
+          const tension = Math.hypot(endX - x, endY - y) / Math.max(rest, 1);
+          const slack = Math.max(0, (1 - pull) * (10 + index * 2) - (tension - 1) * 100)
+            + Math.sin(state.cycle + index * .65) * 2;
+          const swayX = state.aimX * 8, swayY = state.aimY * 8;
           path.setAttribute(
             "d",
-            `M${x.toFixed(2)} ${y.toFixed(2)} C${(x + span * 0.36).toFixed(2)} ${(y + slack).toFixed(2)} ${(endX - span * 0.28).toFixed(2)} ${(endY + slack * 0.5).toFixed(2)} ${endX.toFixed(2)} ${endY.toFixed(2)}`,
+            `M${x.toFixed(2)} ${y.toFixed(2)} C${(x + span * 0.36 + swayX).toFixed(2)} ${(y + slack + swayY).toFixed(2)} ${(endX - span * 0.28 + swayX).toFixed(2)} ${(endY + slack * 0.5 + swayY).toFixed(2)} ${endX.toFixed(2)} ${endY.toFixed(2)}`,
           );
         });
       };
@@ -176,7 +173,7 @@ export default function useCollaborationRig({
         };
         idle = gsap.to(state, {
           cycle: Math.PI * 2,
-          duration: 4.8,
+          duration: 2.8,
           repeat: -1,
           ease: "none",
           paused: true,
@@ -197,6 +194,7 @@ export default function useCollaborationRig({
           .from(".collab-eyebrow", { y: 12, opacity: 0, duration: 0.45 }, 0)
           .from(".collab-headline", { y: 24, opacity: 0, duration: 0.6 }, 0)
           .from(surface, { opacity: 0, duration: 0.35 }, 0.1)
+          .from(".collab-pill-entrance", { scale: .9, opacity: 0, duration: .6 }, .3)
           .to(
             state,
             {
@@ -209,10 +207,10 @@ export default function useCollaborationRig({
           )
           .to(
             paths,
-            { strokeDashoffset: 0, duration: 0.65, stagger: 0.05 },
-            0.2,
+            { strokeDashoffset: 0, duration: .9, stagger: .12, ease: "power2.out" },
+            .9,
           )
-          .set(paths, { strokeDasharray: "none", strokeDashoffset: 0 }, 1.2);
+          .set(paths, { strokeDasharray: "none", strokeDashoffset: 0 }, 2.3);
       }, section);
       const observer = new IntersectionObserver(
         ([entry]) => {

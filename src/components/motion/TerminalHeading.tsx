@@ -18,15 +18,21 @@ export default function TerminalHeading({ text }: { text: string }) {
     node.textContent = "";
     const tween = gsap.to(state, {
       letters: text.length,
-      duration: 1.05,
+      duration: text.length * .028,
       delay: 0.2,
       ease: "none",
       onUpdate: () => {
         node.textContent = text.slice(0, Math.floor(state.letters));
       },
     });
+    const caret = node.parentElement?.querySelector<HTMLElement>(".terminal-caret");
+    const fade = caret ? gsap.delayedCall(text.length * .028 + 1.7, () => {
+      caret.style.animation = "none";
+      gsap.to(caret, { opacity: 0, duration: .3 });
+    }) : undefined;
     return () => {
-      tween.kill();
+      tween.kill(); fade?.kill();
+      if (caret) { gsap.killTweensOf(caret); caret.style.animation = ""; caret.style.opacity = ""; }
       node.textContent = text;
     };
   }, [text, reduced]);

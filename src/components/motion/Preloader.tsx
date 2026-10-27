@@ -9,6 +9,7 @@ import {
 } from "react";
 import {animate} from "framer-motion";
 import useReducedMotion from "../../hooks/useMotionPreference";
+import { isLowPowerDevice } from "../../lib/motionQuality";
 
 const IntroContext = createContext(true);
 const storageKey = "portfolio-intro-seen";
@@ -28,7 +29,7 @@ export default function Preloader({ children }: { children: ReactNode }) {
       // Storage may be disabled; the intro must still finish.
     }
     if (
-      reduced ||
+      reduced || isLowPowerDevice() ||
       matchMedia("(prefers-reduced-motion: reduce)").matches ||
       repeated
     ) {
