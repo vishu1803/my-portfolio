@@ -4,9 +4,10 @@ import { useState } from "react";
 import { MotionConfig } from "framer-motion";
 
 import Navbar from "./components/landing/Navbar";
-import EditorialHero from "./components/landing/EditorialHero";
+import VideoReferenceHero from "./components/landing/VideoReferenceHero";
 import ProjectCaseStudies from "./components/landing/ProjectCaseStudies";
 import EditorialAbout from "./components/landing/EditorialAbout";
+import ReferenceSkillInterlude from "./components/landing/ReferenceSkillInterlude";
 import CollaborateSection from "./components/landing/CollaborateSection";
 import EditorialFooter from "./components/landing/EditorialFooter";
 
@@ -34,23 +35,7 @@ export default function App() {
 
           <main id="main-content" tabIndex={-1}>
             {/* Section 1: Cinematic VOX-Inspired Editorial Hero with Real Portrait & Flashlight Inspector */}
-            <EditorialHero
-              onContactClick={() => {
-                const el = document.getElementById("contact");
-                if (el) {
-                  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-                  el.scrollIntoView({ behavior: reduced ? "instant" : "smooth" });
-                }
-              }}
-              onWorkClick={() => {
-                const el = document.getElementById("case-studies");
-                if (el) {
-                  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-                  el.scrollIntoView({ behavior: reduced ? "instant" : "smooth" });
-                }
-              }}
-              onOpenResume={() => setResumeOpen(true)}
-            />
+            <VideoReferenceHero onOpenResume={() => setResumeOpen(true)} />
 
             {/* Section 2: Investigative Documentary Project Case Studies */}
             <ProjectCaseStudies
@@ -62,6 +47,7 @@ export default function App() {
             <EditorialAbout onOpenResume={() => setResumeOpen(true)} />
 
             {/* Section 4: Signature "Let's Collaborate" Standalone Ivory Section with Hand & Strings */}
+            <ReferenceSkillInterlude />
             <CollaborateSection onOpenResume={() => setResumeOpen(true)} />
           </main>
 

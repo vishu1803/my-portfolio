@@ -184,3 +184,32 @@ button, a, input, select, textarea {
     display: none !important;
   }
 }
+
+
+/* Video reference: condensed editorial display and a portrait-led opening. */
+.reference-display {
+  font-family: Impact, "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  font-stretch: condensed;
+  font-weight: 900;
+}
+.reference-outline {
+  font-family: Impact, "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.075em;
+  -webkit-text-stroke: clamp(1px, 0.22vw, 3px) rgba(245, 242, 233, 0.72);
+  color: transparent;
+}
+.vr-hero { isolation: isolate; }
+.vr-hero .flashlight-reveal-mask { will-change: mask-image; }
+.vr-hero .flashlight-static-details { min-height: 280px; }
+@media (max-width: 1023px) {
+  .vr-hero { min-height: 0; }
+  .vr-name { overflow-wrap: anywhere; }
+}
+@media (max-width: 639px) {
+  .vr-outline { top: 12%; letter-spacing: -0.08em; }
+  .vr-tape { top: 14%; max-width: 72%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vr-portrait, .vr-outline, .vr-name, .vr-tape { transform: none !important; }
+}
