@@ -1,5 +1,7 @@
 "use client";
 
+import useMotionPreference from "./hooks/useMotionPreference";
+import AnimationToggle from "./components/motion/AnimationToggle";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { MotionConfig } from "framer-motion";
@@ -31,6 +33,7 @@ import type { ProjectItem } from "./components/landing/SelectedWorks";
 import type { JournalArticle } from "./components/landing/Journal";
 
 export default function App() {
+  const staticMotion = useMotionPreference();
   // Modal states
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(
     null,
@@ -50,7 +53,7 @@ export default function App() {
   };
 
   return (
-    <MotionConfig reducedMotion="user">
+    <MotionConfig reducedMotion={staticMotion ? "always" : "user"}>
       <Preloader>
         <div className="relative min-h-screen bg-[#101014] text-[#FAF8F5] selection:bg-[#FFE600]/30 selection:text-white">
           <a className="skip-link" href="#main-content">
@@ -58,6 +61,7 @@ export default function App() {
           </a>
           <div className="w-full">
             <MotionSystem />
+            <AnimationToggle />
             {/* Editorial chapter navigation */}
             <Navbar onOpenResume={openResume} />
 

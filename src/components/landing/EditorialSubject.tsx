@@ -88,7 +88,7 @@ export default function EditorialSubject() {
         </span>
       </p>
       <h2 id="subject-heading" className="subject-heading">
-        <LineReveal>THOUGHTFUL INTERFACES.</LineReveal>
+        <LineReveal>Thoughtful interfaces.</LineReveal>
         <em>
           <span className="sr-only">Reliable systems underneath.</span>
           <span aria-hidden="true">
@@ -124,8 +124,12 @@ export default function EditorialSubject() {
             <p>
               <BlurIn>
                 My work spans <MarkerSweep>authenticated APIs</MarkerSweep>,
-                relational data, and interactive web applications. I like
-                understanding how the pieces fit together — then turning that
+                relational data, and interactive web applications.
+              </BlurIn>
+            </p>
+            <p>
+              <BlurIn>
+                I like understanding how the pieces fit together — then turning that
                 understanding into something useful.
               </BlurIn>
             </p>

@@ -7,21 +7,21 @@ import useScrollScene from "../../hooks/useScrollScene";
 
 const GROUPS = [
   {
-    title: "Languages & interfaces",
+    title: "Languages & interfaces", description:"Languages and tools for browser interfaces.",
     lines: [
       "TypeScript · JavaScript · Python",
       "React · Next.js · Tailwind CSS",
     ],
   },
   {
-    title: "Behind the interface",
+    title: "Behind the interface", description:"Backend: servers and APIs.",
     lines: ["Node.js · Express · FastAPI", "Fastify · Flask · REST APIs"],
   },
   {
-    title: "Data & persistence",
+    title: "Data & persistence", description:"Databases and tools for storing and querying data.",
     lines: ["PostgreSQL · Redis", "Prisma ORM · Drizzle ORM"],
   },
-  { title: "Build & ship", lines: ["Git · GitHub Actions", "Docker Compose"] },
+  { title: "Build & ship", description:"Tools for version control, automation and containers.", lines: ["Git · GitHub Actions", "Docker Compose"] },
 ];
 export default function ReferenceSkillInterlude() {
   const root = useRef<HTMLElement>(null);
@@ -70,9 +70,9 @@ export default function ReferenceSkillInterlude() {
           <span className="micro-label">Always learning. Always building.</span>
           <h2 id="toolkit-heading">
             <LineReveal>
-              THE RIGHT
+              The right
               <br />
-              <span className="yellow-underline">TOOLS.</span>
+              <span className="yellow-underline">Tools.</span>
               <em>A considered approach.</em>
             </LineReveal>
           </h2>
@@ -94,17 +94,18 @@ export default function ReferenceSkillInterlude() {
                 <span>0{index + 1}</span>
                 <span>{group.title}</span>
               </div>
+              <p className="toolkit-description">{group.description}</p>
               {group.lines.map((line, lineIndex) => (
-                <p key={line} className="toolkit-words">
+                <ul key={line} className="toolkit-words">
                   {line.split(" · ").map((word, wordIndex) => (
-                    <span
+                    <li
                       className={`skill-word ${index === 0 && lineIndex === 0 && wordIndex === 0 ? "lead-skill" : ""}`}
                       key={word}
                     >
                       {word}
-                    </span>
+                    </li>
                   ))}
-                </p>
+                </ul>
               ))}
             </div>
           ))}

@@ -3,7 +3,7 @@
  */
 export interface CaseStudy {
   id: string; title: string; chapter: string; category: string; focus: string;
-  image: string; github: string; liveDemo: string; tech: string[];
+  summary: string; imageAlt: string; image: string; github: string; liveDemo: string; tech: string[];
   problem: string; solution: string; highlights: string[];
   sourceLabel: string; sourceKind: string; sourceUrl: string; note: string;
 }
@@ -11,6 +11,8 @@ export const CONTENT_REVIEW_DATE = "2026-10-26";
 export const CASE_STUDIES: CaseStudy[] = [
   {
     "id": "collaborative-task-acid",
+    "summary": "Helps teams assign tasks, track progress and control access to shared work.",
+    "imageAlt": "Task dashboard with task counts, completion rate and a Create Task control.",
     "title": "Collaborative Task Manager",
     "chapter": "01 / WORKING TOGETHER",
     "category": "Full-stack development",
@@ -40,6 +42,8 @@ export const CASE_STUDIES: CaseStudy[] = [
   },
   {
     "id": "ast-pr-analyzer",
+    "summary": "Helps developers review GitHub pull requests with automated code-quality feedback.",
+    "imageAlt": "Code review dashboard showing pull-request analysis and review feedback.",
     "title": "AI-Powered Code Review Assistant",
     "chapter": "02 / MAKING CODE LEGIBLE",
     "category": "Developer tools",
@@ -69,6 +73,8 @@ export const CASE_STUDIES: CaseStudy[] = [
   },
   {
     "id": "object-detection",
+    "summary": "Lets visitors upload images and inspect object-detection results in the browser.",
+    "imageAlt": "Object detection screen with image input and model results.",
     "title": "Object Detection Web App",
     "chapter": "03 / SEEING THROUGH SOFTWARE",
     "category": "Browser experiments",
@@ -97,6 +103,8 @@ export const CASE_STUDIES: CaseStudy[] = [
   },
   {
     "id": "ai-career-hub",
+    "summary": "Helps candidates connect repository evidence, resume claims and job-fit analysis.",
+    "imageAlt": "Career Hub interface for candidate profiles and repository evidence.",
     "title": "Career Hub",
     "chapter": "04 / EVIDENCE BEFORE ADVICE",
     "category": "Career intelligence",
@@ -125,6 +133,8 @@ export const CASE_STUDIES: CaseStudy[] = [
   },
   {
     "id": "product-explorer-canvas",
+    "summary": "Helps readers browse, search and filter a book catalogue.",
+    "imageAlt": "Book catalogue interface with browsing, search and filtering controls.",
     "title": "Product Data Explorer",
     "chapter": "05 / FROM DATA TO DISCOVERY",
     "category": "Full-stack exploration",
@@ -154,6 +164,8 @@ export const CASE_STUDIES: CaseStudy[] = [
   },
   {
     "id": "webgl-instanced-3d",
+    "summary": "Introduces my work through an interactive portfolio with 3D assets.",
+    "imageAlt": "Earlier portfolio page with a spatial composition and project navigation.",
     "title": "3D Portfolio",
     "chapter": "06 / A SPATIAL EXPLORATION",
     "category": "Creative development",

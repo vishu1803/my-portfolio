@@ -26,7 +26,7 @@ export default function EditorialFooter({
           onClick={onOpenResume}
           className="hover:text-white"
         >
-          Résumé (PDF) ↗
+          Résumé (PDF) <span aria-hidden="true">↗</span>
         </button>
       </div>
     </footer>

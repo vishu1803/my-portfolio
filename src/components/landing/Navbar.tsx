@@ -106,7 +106,7 @@ export default function Navbar({
             </motion.a>
           ))}
           <button type="button" onClick={onOpenResume} className="nav-resume">
-            Résumé ↗
+            Résumé <span aria-hidden="true">↗</span>
           </button>
         </div>
         <a
@@ -114,7 +114,7 @@ export default function Navbar({
           className="nav-contact"
           aria-current={active === "contact" ? "location" : undefined}
         >
-          Hire me ↗
+          Hire me <span aria-hidden="true">↗</span>
           {active === "contact" && (
             <motion.span
               layoutId="chapter-nav-underline"

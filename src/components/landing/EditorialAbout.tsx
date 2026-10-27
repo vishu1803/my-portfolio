@@ -49,7 +49,7 @@ export default function EditorialAbout({
       </div>
       <h2 id="about-heading">
         <LineReveal>
-          THE RECORD,<em>so far.</em>
+          The record,<em>so far.</em>
         </LineReveal>
       </h2>
       <div className="evidence-ledger">
@@ -57,7 +57,7 @@ export default function EditorialAbout({
           <span className="evidence-rule" aria-hidden="true" />
           <div className="micro-label">01 / Experience</div>
           <div className="evidence-copy">
-            <h3>FTV SALOON</h3>
+            <h3>Experience <span className="sr-only">at </span><span className="evidence-entity">FTV Saloon</span></h3>
             <em>Full Stack Developer Intern · Remote</em>
             <p>
               Built REST APIs for salon operations, role-based authentication,
@@ -74,7 +74,7 @@ export default function EditorialAbout({
           <span className="evidence-rule" aria-hidden="true" />
           <div className="micro-label">02 / Education</div>
           <div className="evidence-copy">
-            <h3>RAJKIYA ENGINEERING COLLEGE</h3>
+            <h3>Education <span className="sr-only">at </span><span className="evidence-entity">Rajkiya Engineering College</span></h3>
             <em>B.Tech · Electronics Engineering</em>
             <p>
               A foundation in systems, digital logic, and computer science: data
@@ -90,7 +90,7 @@ export default function EditorialAbout({
           <span className="evidence-rule" aria-hidden="true" />
           <div className="micro-label">03 / Practice</div>
           <div className="evidence-copy">
-            <h3>THINKING THROUGH THE PROBLEM.</h3>
+            <h3>Practice <span className="evidence-entity">Thinking through the problem.</span></h3>
             <em>Data structures &amp; algorithms</em>
             <p>
               300+ LeetCode problems across dynamic programming, graphs, trees,
@@ -102,7 +102,7 @@ export default function EditorialAbout({
               rel="noopener noreferrer"
             >
               Explore my LeetCode ↗
-            </a>
+            <span className="sr-only"> (opens in a new tab)</span></a>
           </div>
           <div className="evidence-value">
             <CountUp
