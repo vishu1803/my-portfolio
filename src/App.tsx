@@ -19,18 +19,22 @@ import { JournalArticle } from "./components/landing/Journal";
 
 export default function App() {
   // Modal states
-  const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
-  const [selectedArticle, setSelectedArticle] = useState<JournalArticle | null>(null);
+  const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(
+    null,
+  );
+  const [selectedArticle, setSelectedArticle] = useState<JournalArticle | null>(
+    null,
+  );
   const [resumeOpen, setResumeOpen] = useState(false);
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="relative min-h-screen bg-[#08090B] text-[#FAF8F5] selection:bg-[#FFE600]/30 selection:text-white">
+      <div className="relative min-h-screen bg-[#101014] text-[#FAF8F5] selection:bg-[#FFE600]/30 selection:text-white">
         <a className="skip-link" href="#main-content">
           Skip to content
         </a>
         <div className="w-full">
-          {/* Floating Pill Navbar */}
+          {/* Editorial chapter navigation */}
           <Navbar onOpenResume={() => setResumeOpen(true)} />
 
           <main id="main-content" tabIndex={-1}>
@@ -46,7 +50,7 @@ export default function App() {
             {/* Section 3: Personnel Dossier & Verified Resume Experience & Skills */}
             <EditorialAbout onOpenResume={() => setResumeOpen(true)} />
 
-            {/* Section 4: Signature "Let's Collaborate" Standalone Ivory Section with Hand & Strings */}
+            {/* Toolkit interlude, followed by the hand-and-string invitation */}
             <ReferenceSkillInterlude />
             <CollaborateSection onOpenResume={() => setResumeOpen(true)} />
           </main>

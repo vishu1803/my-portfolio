@@ -1,6 +1,13 @@
 "use client";
 
-import { CSSProperties, ReactNode, useEffect, useId, useRef, useState } from "react";
+import {
+  CSSProperties,
+  ReactNode,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from "react";
 
 interface FlashlightRevealProps {
   children: ReactNode;
@@ -36,9 +43,11 @@ export default function FlashlightReveal({
       deviceMemory?: number;
       connection?: { saveData?: boolean };
     };
-    const limited = Boolean(device.connection?.saveData) ||
+    const limited =
+      Boolean(device.connection?.saveData) ||
       (device.deviceMemory !== undefined && device.deviceMemory <= 4) ||
-      (device.hardwareConcurrency !== undefined && device.hardwareConcurrency <= 4);
+      (device.hardwareConcurrency !== undefined &&
+        device.hardwareConcurrency <= 4);
     let visible = true;
     let active = false;
     let frame: number | null = null;
@@ -61,14 +70,21 @@ export default function FlashlightReveal({
       el.style.setProperty("--torch-x", `${current.x}px`);
       el.style.setProperty("--torch-y", `${current.y}px`);
       // Stop once settled. A new pointer event schedules the next frame.
-      if (Math.abs(target.x - current.x) + Math.abs(target.y - current.y) > 0.35) {
+      if (
+        Math.abs(target.x - current.x) + Math.abs(target.y - current.y) >
+        0.35
+      ) {
         frame = requestAnimationFrame(paint);
       }
     };
 
     const move = (event: PointerEvent) => {
       if (!visible || document.hidden || reduced.matches) return;
-      if (event.target instanceof Element && event.target.closest("button,a,input,select,textarea")) return;
+      if (
+        event.target instanceof Element &&
+        event.target.closest("button,a,input,select,textarea")
+      )
+        return;
       // Touch retains native page scrolling; the explicit button is the tap alternative.
       if (event.pointerType !== "mouse" && event.buttons === 0) return;
       const rect = el.getBoundingClientRect();
@@ -94,7 +110,9 @@ export default function FlashlightReveal({
     const endTouch = (event: PointerEvent) => {
       if (event.pointerType !== "mouse") stop();
     };
-    const onVisibility = () => { if (document.hidden) stop(); };
+    const onVisibility = () => {
+      if (document.hidden) stop();
+    };
     const observer = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
       if (!visible) stop();
@@ -128,27 +146,47 @@ export default function FlashlightReveal({
   } as CSSProperties;
 
   return (
-    <div ref={containerRef} className={`relative overflow-hidden group ${className}`} style={style}>
-      <div className="relative">
-        {/* Essential image/text is always present, without an opaque reduced-motion overlay. */}
-        <div className="relative z-10 w-full h-full">{children}</div>
-        {!disabled && !expanded && tracking && (
-          <>
-            <div aria-hidden="true" className={`absolute inset-0 z-20 pointer-events-none flashlight-reveal-mask ${revealedClassName}`}>
-              {revealedContent}
-            </div>
-            <div aria-hidden="true" className="absolute inset-0 z-30 pointer-events-none flashlight-torch-glow mix-blend-screen" />
-          </>
-        )}
+    <div
+      ref={containerRef}
+      className={`relative overflow-hidden group ${className}`}
+      style={style}
+      data-flashlight
+      data-tracking={tracking}
+      data-expanded={expanded}
+    >
+      <div className="relative flashlight-surface">
+        <div className="relative flashlight-image-surface">
+          {/* Essential image/text is always present, without an opaque reduced-motion overlay. */}
+          <div className="relative z-10 w-full h-full">{children}</div>
+          {!disabled && !expanded && tracking && (
+            <>
+              <div
+                aria-hidden="true"
+                className={`absolute inset-0 z-20 pointer-events-none flashlight-reveal-mask ${revealedClassName}`}
+              >
+                {revealedContent}
+              </div>
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 z-30 pointer-events-none flashlight-torch-glow mix-blend-screen"
+              />
+            </>
+          )}
+        </div>
         {!disabled && (
-          <div className="relative z-30 flex flex-wrap items-center justify-between gap-2 border-t border-white/15 bg-[#101216] px-3 py-2.5">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-white/70">{label}</span>
+          <div className="flashlight-toolbar relative z-30 flex flex-wrap items-center justify-between gap-2 border-t border-white/15 bg-[#101216] px-3 py-2.5">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-white/70">
+              {label}
+            </span>
             <button
               type="button"
               aria-expanded={expanded}
               aria-pressed={expanded}
               aria-controls={panelId}
-              onClick={() => { setTracking(false); setExpanded(value => !value); }}
+              onClick={() => {
+                setTracking(false);
+                setExpanded((value) => !value);
+              }}
               className="shrink-0 rounded-full border border-white/30 px-3 py-2 text-xs font-mono text-white hover:bg-white hover:text-black transition-colors touch-manipulation"
             >
               {expanded ? "Hide details" : "Inspect details"}
@@ -157,8 +195,16 @@ export default function FlashlightReveal({
         )}
       </div>
       {!disabled && (
-        <div id={panelId} hidden={!expanded} role="region" aria-label="Inspection details" className={`relative bg-[#08090B] text-white ${revealedClassName}`}>
-          {expanded && <div className="flashlight-static-details">{revealedContent}</div>}
+        <div
+          id={panelId}
+          hidden={!expanded}
+          role="region"
+          aria-label="Inspection details"
+          className={`flashlight-static-panel relative bg-[#08090B] text-white ${revealedClassName}`}
+        >
+          {expanded && (
+            <div className="flashlight-static-details">{revealedContent}</div>
+          )}
         </div>
       )}
     </div>
