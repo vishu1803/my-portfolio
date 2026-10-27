@@ -7,6 +7,7 @@ import Navbar from "./components/landing/Navbar";
 import VideoReferenceHero from "./components/landing/VideoReferenceHero";
 import ProjectCaseStudies from "./components/landing/ProjectCaseStudies";
 import EditorialAbout from "./components/landing/EditorialAbout";
+import ReferenceSkillInterlude from "./components/landing/ReferenceSkillInterlude";
 import CollaborateSection from "./components/landing/CollaborateSection";
 import EditorialFooter from "./components/landing/EditorialFooter";
 
@@ -46,6 +47,7 @@ export default function App() {
             <EditorialAbout onOpenResume={() => setResumeOpen(true)} />
 
             {/* Section 4: Signature "Let's Collaborate" Standalone Ivory Section with Hand & Strings */}
+            <ReferenceSkillInterlude />
             <CollaborateSection onOpenResume={() => setResumeOpen(true)} />
           </main>
 
