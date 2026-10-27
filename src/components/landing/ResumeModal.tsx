@@ -52,19 +52,19 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               onClick={onClose}
               className="absolute top-6 right-6 w-9 h-9 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-text-primary/70 hover:text-text-primary transition-all text-sm font-mono"
             >
-              ✕
+              <span aria-hidden="true">✕</span>
             </button>
 
             <span className="text-[11px] font-mono uppercase tracking-widest text-[#89AACC] block mb-2">
               Curriculum Vitae
             </span>
 
-            <h3
+            <h2
               id={titleId}
               className="text-3xl font-display italic text-text-primary mb-3"
             >
               Vishwanath Nishad
-            </h3>
+            </h2>
 
             <p className="text-sm text-muted mb-6 leading-relaxed">
               Full Stack & Backend Software Engineer specializing in scalable

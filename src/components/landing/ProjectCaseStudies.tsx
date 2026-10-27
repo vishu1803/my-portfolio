@@ -97,7 +97,7 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
       media.revert();
       scrollPlugin.current = undefined;
     };
-  });
+  }, true);
 
   return (
     <>

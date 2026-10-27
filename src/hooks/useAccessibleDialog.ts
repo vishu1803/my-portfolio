@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { RefObject, useLayoutEffect, useRef } from "react";
 
 const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 type DialogEntry = { id: symbol; node: HTMLDivElement; returnFocus: HTMLElement | null };
@@ -50,7 +50,11 @@ function updateIsolation() {
 }
 
 /** Attach the ref to the mounted role="dialog" root. Supports nested dialogs. */
-export default function useAccessibleDialog(isOpen: boolean, onClose: () => void) {
+export default function useAccessibleDialog(
+  isOpen: boolean,
+  onClose: () => void,
+  returnFocusRef?: RefObject<HTMLElement>,
+) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef(onClose);
   closeRef.current = onClose;
@@ -59,7 +63,9 @@ export default function useAccessibleDialog(isOpen: boolean, onClose: () => void
     const node = dialogRef.current;
     if (!isOpen || !node) return;
     const id = Symbol("dialog");
-    const returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    // Chained dialogs may mount before their preceding animation layer unmounts.
+    const returnFocus = returnFocusRef?.current ??
+      (document.activeElement instanceof HTMLElement ? document.activeElement : null);
     if (dialogs.length === 0) {
       originalOverflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
@@ -121,7 +127,7 @@ export default function useAccessibleDialog(isOpen: boolean, onClose: () => void
         });
       }
     };
-  }, [isOpen]);
+  }, [isOpen, returnFocusRef]);
 
   return dialogRef;
 }

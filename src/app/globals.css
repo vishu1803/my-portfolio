@@ -3439,3 +3439,17 @@ a{display:inline-flex;align-items:center;}
  .torch-instruction{display:none;}
 }
 a,button{min-height:44px!important;min-width:44px!important;}
+
+html[data-motion-paused="true"] .case-files-scene{height:auto;min-height:0;}
+html[data-motion-paused="true"] .case-files-track{display:block;width:auto;transform:none!important;}
+html[data-motion-paused="true"] .case-file.case-study-item{width:100%;margin-bottom:35px;}
+html[data-motion-paused="true"] .case-track-progress,html[data-motion-paused="true"] .case-track-hint{display:none;}
+html[data-motion-paused="true"] .case-file-number{color:#e5d92d;opacity:.18;}
+html[data-motion-paused="true"] .case-tilt-frame{transform:none!important;}
+html[data-motion-paused="true"] .contact-prelude{height:auto;min-height:300px;}
+
+[class~="text-[8px]"],[class~="text-[9px]"],[class~="text-[10px]"],[class~="text-[11px]"]{font-size:12px!important;}
+.terminal-contact-panel [class~="text-white/50"]{color:#c2bacd;}
+
+[role="dialog"] p:not(.micro-label):not(.font-mono){font-size:clamp(1rem,1.3vw,1.125rem);line-height:1.6;max-width:65ch;}
+[role="dialog"] :is(input,select,textarea){font-size:16px;line-height:1.6;}

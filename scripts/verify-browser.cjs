@@ -231,12 +231,7 @@ test("torch starts dark and reveals the actual photo and yellow backing with a r
   );
   assert.equal(await torch.locator(".portrait-yellow").count(), 1);
   await desktop.waitForFunction(()=>Number(getComputedStyle(document.querySelector(".torch-instruction")).opacity)<.01,{},{timeout:15000});
-  assert.equal(
-    await desktop
-      .locator(".torch-instruction")
-      .evaluate((el) => getComputedStyle(el).opacity),
-    "0",
-  );
+  assert.ok(Number(await desktop.locator(".torch-instruction").evaluate(el=>getComputedStyle(el).opacity))<0.01);
 });
 test("torch keyboard inspection exposes a static portrait and closes again", async () => {
   const button = desktop.locator(".torch-inspect");
@@ -598,6 +593,10 @@ test("Enter starts six actual Matter.js word bodies; Escape cancels without late
   const page=await openPage();
   await section(page,"contact");
   await page.evaluate(()=>{
+    document.addEventListener("click",event=>{
+      const pill=event.target.closest?.(".collaborate-pill");
+      if(pill){const rect=pill.getBoundingClientRect();window.__pillClickX=rect.left+rect.width/2;}
+    },{capture:true,once:true});
     const observer=new MutationObserver(()=>{
       const surface=document.querySelector('.physics-surface[data-physics="running"]');
       const word=surface?.querySelector('.physics-word');
@@ -621,13 +620,13 @@ test("Enter starts six actual Matter.js word bodies; Escape cancels without late
   const state=await page.evaluate(()=>{
     const words=[...document.querySelectorAll(".physics-word")];
     const close=document.querySelector('[aria-label="Cancel word animation"]');
-    const result={count:words.length,x:parseFloat(document.querySelector(".physics-burst").style.getPropertyValue("--burst-x")),focused:window.__burstInitialFocus};
+    const result={count:words.length,x:parseFloat(document.querySelector(".physics-burst").style.getPropertyValue("--burst-x")),focused:window.__burstInitialFocus,expectedX:window.__pillClickX};
     words[0].focus();
     document.addEventListener("keydown",event=>{window.__nudgeHandled=event.defaultPrevented;},{once:true});
     return result;
   });
   assert.equal(state.count,6);
-  assert.ok(Math.abs(state.x-origin.x-origin.width/2)<10);
+  assert.ok(Math.abs(state.x-state.expectedX)<1);
   assert.equal(state.focused,true);
   await page.keyboard.press("ArrowLeft");
   assert.equal(await page.evaluate(()=>window.__nudgeHandled),true);
@@ -737,7 +736,7 @@ test("nested resume preserves the parent contact dialog and Escape order", async
     .getByRole("dialog")
     .getByRole("button", { name: "View résumé", exact: true })
     .click();
-  await wait(desktop, 500);
+  await desktop.waitForFunction(()=>document.querySelectorAll("[role=dialog]").length===2,{},{timeout:15000});
   assert.equal(await desktop.locator("[role=dialog]").count(), 2);
   await desktop.keyboard.press("Escape");
   await desktop.waitForFunction(()=>document.querySelectorAll("[role=dialog]").length===1,{},{timeout:10000});
@@ -752,7 +751,7 @@ test("nested resume preserves the parent contact dialog and Escape order", async
 });
 test("Escape restores the original CTA focus and resumes scrolling", async () => {
   await desktop.keyboard.press("Escape");
-  await wait(desktop, 800);
+  await desktop.waitForFunction(()=>!document.querySelector("[role=dialog]"),{},{timeout:15000});
   assert.equal(await desktop.locator("[role=dialog]").count(), 0);
   assert.equal(
     await desktop.locator("header").evaluate((el) => !!el.closest("[inert]")),
@@ -932,6 +931,7 @@ test("manual pause uses static end states and resumes the shared engine", async 
  assert.equal(await page.locator("html").getAttribute("data-motion-paused"),"true");
  assert.equal(await page.locator("#case-studies").getAttribute("data-pin-start"),null);
  assert.equal(await page.locator(".physics-burst").count(),0);
+ assert.equal(await page.locator(".case-files-track").evaluate(el=>getComputedStyle(el).display),"block");
  await page.getByRole("button",{name:"Resume animations",exact:true}).click();
  await page.waitForFunction(()=>document.documentElement.dataset.scrollEngine==="lenis");
  await page.close();

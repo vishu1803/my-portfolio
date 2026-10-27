@@ -45,6 +45,7 @@ export default function CollaborateSection({
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonWrapperRef = useRef<HTMLDivElement>(null);
+  const hireButtonRef = useRef<HTMLButtonElement>(null);
   const handRef = useRef<SVGGElement>(null);
   const stringsGroupRef = useRef<SVGGElement>(null);
 
@@ -71,8 +72,10 @@ export default function CollaborateSection({
   const [copiedPhone, setCopiedPhone] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [copyError, setCopyError] = useState("");
-  const dialogRef = useAccessibleDialog(isOverlayOpen, () =>
-    setIsOverlayOpen(false),
+  const dialogRef = useAccessibleDialog(
+    isOverlayOpen,
+    () => setIsOverlayOpen(false),
+    hireButtonRef,
   );
   const [formState, setFormState] = useState({
     name: "",
@@ -337,6 +340,7 @@ export default function CollaborateSection({
                 touchAction: "pan-y",
               }}
               aria-describedby={`${contactId}-hint`}
+              ref={hireButtonRef}
               className="collaborate-pill"
               aria-label="Hire me — open contact details"
               aria-haspopup="dialog"

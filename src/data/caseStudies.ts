@@ -43,7 +43,7 @@ export const CASE_STUDIES: CaseStudy[] = [
   {
     "id": "ast-pr-analyzer",
     "summary": "Helps developers review GitHub pull requests with automated code-quality feedback.",
-    "imageAlt": "Code review dashboard showing pull-request analysis and review feedback.",
+    "imageAlt": "Code Review dashboard with repository and review counts, quality trends and recent activity.",
     "title": "AI-Powered Code Review Assistant",
     "chapter": "02 / MAKING CODE LEGIBLE",
     "category": "Developer tools",
@@ -74,7 +74,7 @@ export const CASE_STUDIES: CaseStudy[] = [
   {
     "id": "object-detection",
     "summary": "Lets visitors upload images and inspect object-detection results in the browser.",
-    "imageAlt": "Object detection screen with image input and model results.",
+    "imageAlt": "Object Detector screen with a tracking graph and Save Detection and Download Graph controls.",
     "title": "Object Detection Web App",
     "chapter": "03 / SEEING THROUGH SOFTWARE",
     "category": "Browser experiments",
@@ -104,7 +104,7 @@ export const CASE_STUDIES: CaseStudy[] = [
   {
     "id": "ai-career-hub",
     "summary": "Helps candidates connect repository evidence, resume claims and job-fit analysis.",
-    "imageAlt": "Career Hub interface for candidate profiles and repository evidence.",
+    "imageAlt": "AI Job Board landing page with a code photograph, Get Started, Login and Sign Up controls.",
     "title": "Career Hub",
     "chapter": "04 / EVIDENCE BEFORE ADVICE",
     "category": "Career intelligence",
@@ -134,7 +134,7 @@ export const CASE_STUDIES: CaseStudy[] = [
   {
     "id": "product-explorer-canvas",
     "summary": "Helps readers browse, search and filter a book catalogue.",
-    "imageAlt": "Book catalogue interface with browsing, search and filtering controls.",
+    "imageAlt": "Product Data Explorer showing a loading categories panel and a Scrape New Data control.",
     "title": "Product Data Explorer",
     "chapter": "05 / FROM DATA TO DISCOVERY",
     "category": "Full-stack exploration",
@@ -165,7 +165,7 @@ export const CASE_STUDIES: CaseStudy[] = [
   {
     "id": "webgl-instanced-3d",
     "summary": "Introduces my work through an interactive portfolio with 3D assets.",
-    "imageAlt": "Earlier portfolio page with a spatial composition and project navigation.",
+    "imageAlt": "Earlier portfolio with an illustrated astronaut, planets, oversized name and section navigation.",
     "title": "3D Portfolio",
     "chapter": "06 / A SPATIAL EXPLORATION",
     "category": "Creative development",
