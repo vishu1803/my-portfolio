@@ -7,7 +7,9 @@ const WORDS = ["SHIP", "TOGETHER", "HELLO", "LET’S", "BUILD", "TALK"];
 export default function PhysicsBurst({
   onComplete,
   onCancel,
+  origin,
 }: {
+  origin: { x: number; y: number };
   onComplete: () => void;
   onCancel: () => void;
 }) {
@@ -172,8 +174,10 @@ export default function PhysicsBurst({
           bodies = nodes.current.map((node, index) => {
             const angle = -Math.PI + (index * Math.PI) / 3;
             const body = Matter!.Bodies.rectangle(
-              width * 0.55 + Math.cos(angle) * 36,
-              height * 0.5 + Math.sin(angle) * 20,
+              Math.min(width - 70, Math.max(70, origin.x)) +
+                Math.cos(angle) * 36,
+              Math.min(height - 70, Math.max(70, origin.y)) +
+                Math.sin(angle) * 20,
               node!.offsetWidth,
               node!.offsetHeight,
               {
@@ -224,7 +228,7 @@ export default function PhysicsBurst({
         Matter.Engine.clear(engine);
       }
     };
-  }, [mounted]);
+  }, [mounted, origin]);
   if (!mounted) return null;
   return createPortal(
     <div
@@ -235,6 +239,12 @@ export default function PhysicsBurst({
       tabIndex={-1}
       className="physics-burst"
       data-lenis-prevent
+      style={
+        {
+          "--burst-x": `${origin.x}px`,
+          "--burst-y": `${origin.y}px`,
+        } as React.CSSProperties
+      }
     >
       <div ref={surface} className="physics-surface">
         <p className="micro-label physics-caption">

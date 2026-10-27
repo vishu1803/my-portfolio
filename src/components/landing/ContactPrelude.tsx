@@ -1,16 +1,13 @@
 "use client";
 import useReducedMotion from "../../hooks/useMotionPreference";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import useScrollScene from "../../hooks/useScrollScene";
 export default function ContactPrelude() {
   const root = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
-  useEffect(() => {
-    if (reduced || matchMedia("(prefers-reduced-motion: reduce)").matches)
-      return;
-    gsap.registerPlugin(ScrollTrigger);
+  useScrollScene(root, !reduced, (ScrollTrigger) => {
     const media = gsap.matchMedia();
     media.add("(min-width:768px)", () => {
       const ctx = gsap.context(() => {
@@ -37,7 +34,7 @@ export default function ContactPrelude() {
       return () => ctx.revert();
     });
     return () => media.revert();
-  }, [reduced]);
+  });
   return (
     <section
       ref={root}

@@ -1,9 +1,10 @@
 "use client";
 import useReducedMotion from "../../hooks/useMotionPreference";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
+import { LineReveal } from "../motion/TextReveals";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import useScrollScene from "../../hooks/useScrollScene";
 import CountUp from "../motion/CountUp";
 import Certifications from "./Certifications";
 export default function EditorialAbout({
@@ -13,10 +14,7 @@ export default function EditorialAbout({
 }) {
   const root = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
-  useEffect(() => {
-    if (reduced || matchMedia("(prefers-reduced-motion: reduce)").matches)
-      return;
-    gsap.registerPlugin(ScrollTrigger);
+  useScrollScene(root, !reduced, (ScrollTrigger) => {
     const ctx = gsap.context(() => {
       root.current?.querySelectorAll(".evidence-row").forEach((row) => {
         gsap.from(row.querySelector(".evidence-rule"), {
@@ -35,7 +33,7 @@ export default function EditorialAbout({
       });
     }, root);
     return () => ctx.revert();
-  }, [reduced]);
+  });
   return (
     <section
       id="about"
@@ -50,7 +48,9 @@ export default function EditorialAbout({
         <span>Experience · education · practice</span>
       </div>
       <h2 id="about-heading">
-        THE RECORD,<em>so far.</em>
+        <LineReveal>
+          THE RECORD,<em>so far.</em>
+        </LineReveal>
       </h2>
       <div className="evidence-ledger">
         <article className="evidence-row">

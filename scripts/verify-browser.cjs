@@ -159,6 +159,52 @@ test("identity, SEO, next/font variables, content and navigation remain intact",
     "hidden",
   );
 });
+test("first intro curtains finish before the hero entrance and repeat visits skip them", async () => {
+  const page = await browser.newPage({
+    viewport: { width: 1440, height: 1000 },
+  });
+  await page.addInitScript(() => {
+    window.__earlyHero = false;
+    new MutationObserver(() => {
+      const phase = document
+        .querySelector("[data-intro-state]")
+        ?.getAttribute("data-intro-state");
+      const style = document
+        .querySelector(".hero-name-line")
+        ?.getAttribute("style");
+      if (
+        (phase === "playing" || phase === "checking") &&
+        style?.includes("transform")
+      )
+        window.__earlyHero = true;
+    }).observe(document, {
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["style"],
+    });
+  });
+  await page.goto(base, { waitUntil: "networkidle" });
+  await page
+    .locator('[data-intro-state="done"]')
+    .waitFor({ state: "attached" });
+  assert.equal(await page.evaluate(() => window.__earlyHero), false);
+  assert.equal(
+    await page.evaluate(() => sessionStorage.getItem("portfolio-intro-seen")),
+    "1",
+  );
+  await page.reload({ waitUntil: "networkidle" });
+  assert.equal(
+    await page.locator("html").getAttribute("data-intro-skip"),
+    "true",
+  );
+  assert.equal(
+    await page
+      .locator(".monogram-preloader")
+      .evaluate((el) => getComputedStyle(el).visibility),
+    "hidden",
+  );
+  await page.close();
+});
 test("torch starts dark and reveals the actual photo and yellow backing with a real mask", async () => {
   const torch = desktop.locator("[data-torch]");
   assert.equal(
@@ -206,6 +252,40 @@ test("torch keyboard inspection exposes a static portrait and closes again", asy
     .getByRole("button", { name: "Hide details", exact: true })
     .press("Enter");
   await desktop.mouse.move(10, 90);
+});
+test("cursor dot is immediate while its ring lags and hero actions are magnetic", async () => {
+  const state = await desktop.evaluate(() => {
+    document.body.dispatchEvent(
+      new PointerEvent("pointermove", {
+        clientX: 300,
+        clientY: 300,
+        pointerType: "mouse",
+        bubbles: true,
+      }),
+    );
+    document.body.dispatchEvent(
+      new PointerEvent("pointermove", {
+        clientX: 500,
+        clientY: 400,
+        pointerType: "mouse",
+        bubbles: true,
+      }),
+    );
+    return {
+      dot: document.querySelector(".cursor-dot").style.transform,
+      ring: document.querySelector(".cursor-trail").style.transform,
+    };
+  });
+  assert.match(state.dot, /500px, 400px/);
+  assert.doesNotMatch(state.ring, /500px, 400px/);
+  const magnet = desktop.locator(".hero-actions .magnetic").first();
+  const box = await magnet.boundingBox();
+  await desktop.mouse.move(box.x + box.width * 0.8, box.y + box.height * 0.7);
+  await wait(desktop, 350);
+  assert.notEqual(
+    await magnet.evaluate((el) => getComputedStyle(el).transform),
+    "none",
+  );
 });
 test("drawn hero annotations use the existing 300+ claim rather than reference CGPA", async () => {
   assert.equal(await desktop.locator(".hero-ink-path").count(), 2);
@@ -265,8 +345,12 @@ test("subject scene has the duotone portrait, word reveal, marker sweeps and fac
   await wait(desktop, 1600);
   for (const marker of await desktop.locator(".marker-sweep").all())
     assert.equal(
-      await marker.evaluate((el) => getComputedStyle(el).backgroundSize),
-      "100% 100%",
+      await marker
+        .locator(".reveal-marker-ink")
+        .evaluate(
+          (el) => new DOMMatrixReadOnly(getComputedStyle(el).transform).a,
+        ),
+      1,
     );
   assert.match(
     await desktop.locator(".subject-specs").innerText(),
@@ -333,6 +417,11 @@ test("case visual tilts on pointer movement with independent depth labels", asyn
   const box = await visual.boundingBox();
   await desktop.mouse.move(box.x + box.width * 0.8, box.y + box.height * 0.3);
   await wait(desktop, 450);
+  assert.ok(
+    await visual.evaluate((el) =>
+      el.style.getPropertyValue("--glow-x").endsWith("px"),
+    ),
+  );
   assert.notEqual(
     await visual
       .locator(".case-tilt-frame")
@@ -510,11 +599,16 @@ test("Enter starts six actual Matter.js word bodies; Escape cancels without late
     exact: true,
   });
   await button.focus();
+  const origin = await button.boundingBox();
   await desktop.keyboard.press("Enter");
   await desktop
     .locator(".physics-surface[data-physics=running]")
     .waitFor({ state: "visible", timeout: 5000 });
   assert.equal(await desktop.locator(".physics-word").count(), 6);
+  const burstX = await desktop
+    .locator(".physics-burst")
+    .evaluate((el) => parseFloat(el.style.getPropertyValue("--burst-x")));
+  assert.ok(Math.abs(burstX - origin.x - origin.width / 2) < 10);
   assert.equal(
     await desktop
       .getByRole("button", { name: "Cancel word animation" })
@@ -709,6 +803,21 @@ for (const width of [1440, 390])
     await cords(page);
     await page.close();
   });
+test("Space activates the pill and contact can return to the beginning through Lenis", async () => {
+  await section(desktop, "contact");
+  const pill = desktop.getByRole("button", { name: triggerName, exact: true });
+  await pill.focus();
+  await desktop.keyboard.press("Space");
+  const dialog = desktop.getByRole("dialog", {
+    name: "Vishwanath Nishad",
+    exact: true,
+  });
+  await dialog.waitFor({ state: "visible", timeout: 6000 });
+  await dialog.getByRole("button", { name: "Back to the beginning" }).click();
+  await wait(desktop, 1800);
+  assert.equal(await desktop.getByRole("dialog").count(), 0);
+  assert.ok((await desktop.evaluate(() => scrollY)) < 5);
+});
 test("touch tap uses the light burst fallback and reaches contact", async () => {
   const page = await openPage({
     viewport: { width: 390, height: 844 },
