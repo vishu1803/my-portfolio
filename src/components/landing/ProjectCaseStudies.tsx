@@ -38,6 +38,24 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
             ease: "power3.out",
             scrollTrigger: { trigger: image, start: "top 92%", once: true },
           });
+        const visual = item.querySelector(".project-visual img");
+        if (visual && matchMedia("(min-width: 701px)").matches) {
+          gsap.fromTo(
+            visual,
+            { yPercent: 4, scale: 1.04 },
+            {
+              yPercent: -4,
+              scale: 1.04,
+              ease: "none",
+              scrollTrigger: {
+                trigger: image,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 0.55,
+              },
+            },
+          );
+        }
         if (copy)
           gsap.from(copy, {
             y: 30,

@@ -6,10 +6,12 @@ import {
   AnimatePresence,
   LayoutGroup,
   useReducedMotion,
+  useMotionValue,
+  useMotionValueEvent,
 } from "framer-motion";
 import PullingHand from "./PullingHand";
 import useAccessibleDialog from "../../hooks/useAccessibleDialog";
-import gsap from "gsap";
+import useCollaborationRig from "../../hooks/useCollaborationRig";
 import {
   ArrowUpRight,
   Copy,
@@ -23,8 +25,6 @@ import {
 } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
 interface CollaborateSectionProps {
   onOpenResume?: () => void;
 }
@@ -34,10 +34,6 @@ export default function CollaborateSection({
 }: CollaborateSectionProps) {
   const reduced = useReducedMotion();
   const contactId = useId();
-  const pointerSetters = useRef<{
-    x: (value: number) => void;
-    y: (value: number) => void;
-  } | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonWrapperRef = useRef<HTMLDivElement>(null);
@@ -75,118 +71,36 @@ export default function CollaborateSection({
     return () => window.clearTimeout(timer);
   }, [copiedEmail, copiedPhone]);
 
-  // GSAP + ScrollTrigger Entrance Animation
+  const [buttonHovered, setButtonHovered] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [motionPaused, setMotionPaused] = useState(false);
+  const draggedAt = useRef(-Infinity);
+  const dragX = useMotionValue(0);
+  const rig = useCollaborationRig({
+    stage: containerRef,
+    hand: handRef,
+    strings: stringsGroupRef,
+    button: buttonWrapperRef,
+    section: sectionRef,
+    reduced,
+  });
+  useMotionValueEvent(dragX, "change", (value) => rig.current?.drag(value));
   useEffect(() => {
-    const section = sectionRef.current;
-    if (
-      !section ||
-      reduced ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    )
-      return;
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    const ctx = gsap.context(() => {
-      if (stringsGroupRef.current) {
-        pointerSetters.current = {
-          x: gsap.quickTo(stringsGroupRef.current, "x", {
-            duration: 0.25,
-            ease: "power2.out",
-          }),
-          y: gsap.quickTo(stringsGroupRef.current, "y", {
-            duration: 0.25,
-            ease: "power2.out",
-          }),
-        };
-      }
-      const paths = section.querySelectorAll<SVGPathElement>(".tension-string");
-
-      paths.forEach((p) => {
-        const len = p.getTotalLength();
-        gsap.set(p, {
-          strokeDasharray: len,
-          strokeDashoffset: len,
-        });
-      });
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top 75%",
-          toggleActions: "play none none none",
-        },
-        defaults: { ease: "power3.out" },
-      });
-
-      tl.from(".collab-eyebrow", { opacity: 0, y: 12, duration: 0.4 }, 0)
-        .from(".collab-headline", { opacity: 0, y: 22, duration: 0.65 }, 0.1)
-        .to(
-          paths,
-          {
-            strokeDashoffset: 0,
-            duration: 0.9,
-            stagger: 0.06,
-            ease: "power2.inOut",
-          },
-          0.3,
-        )
-        .from(handRef.current, { opacity: 0, x: -12, y: 8, duration: 0.6 }, 0.2)
-        .from(
-          buttonWrapperRef.current,
-          { scale: 0.98, opacity: 0, y: 10, duration: 0.6 },
-          0.35,
-        )
-        .to(
-          paths,
-          {
-            y: 2,
-            duration: 1,
-            repeat: 1,
-            yoyo: true,
-            ease: "sine.inOut",
-            stagger: 0.04,
-          },
-          1.3,
-        )
-        .to(
-          handRef.current,
-          {
-            x: -2,
-            y: 2,
-            duration: 1,
-            repeat: 1,
-            yoyo: true,
-            ease: "sine.inOut",
-          },
-          "<",
-        );
-    }, section);
-
-    return () => {
-      pointerSetters.current = null;
-      ctx.revert();
-    };
-  }, [reduced]);
-
-  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (
-      reduced ||
-      e.pointerType !== "mouse" ||
-      !containerRef.current ||
-      window.matchMedia("(pointer: coarse)").matches
-    )
+    rig.current?.pause(isOverlayOpen || motionPaused);
+  }, [isOverlayOpen, motionPaused, reduced, rig]);
+  useEffect(() => {
+    rig.current?.hover(buttonHovered || dragging);
+  }, [buttonHovered, dragging, rig]);
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (reduced || event.pointerType !== "mouse" || !containerRef.current)
       return;
     const rect = containerRef.current.getBoundingClientRect();
-    pointerSetters.current?.x(
-      ((e.clientX - rect.left) / rect.width - 0.5) * 10,
+    rig.current?.aim(
+      (event.clientX - rect.left) / rect.width - 0.5,
+      (event.clientY - rect.top) / rect.height - 0.5,
     );
-    pointerSetters.current?.y(((e.clientY - rect.top) / rect.height - 0.5) * 6);
   };
-  const handlePointerLeave = () => {
-    pointerSetters.current?.x(0);
-    pointerSetters.current?.y(0);
-  };
+  const handlePointerLeave = () => rig.current?.aim(0, 0);
   const copyEmail = async () => {
     try {
       await navigator.clipboard.writeText(email);
@@ -287,23 +201,77 @@ export default function CollaborateSection({
             </g>
             <PullingHand ref={handRef} />
           </svg>
-          <span className="collab-stage-caption micro-label">
-            A little pull.
-            <br />A lot of possibility.
+          <span
+            id={`${contactId}-hint`}
+            className="collab-stage-caption micro-label"
+          >
+            Drag for a little tension.
+            <br />
+            Click for a conversation.
           </span>
           <div ref={buttonWrapperRef} className="collab-button-wrapper">
+            <div className="collab-callouts" aria-hidden="true">
+              {["BUILD", "HELLO", "TOGETHER", "LET’S TALK"].map(
+                (word, index) => (
+                  <motion.span
+                    key={word}
+                    className={`collab-word collab-word-${index}`}
+                    initial={false}
+                    animate={
+                      buttonHovered || dragging
+                        ? {
+                            opacity: 1,
+                            y: 0,
+                            scale: 1,
+                            rotate: [-12, 12, -7, 9][index],
+                          }
+                        : { opacity: 0, y: 12, scale: 0.8, rotate: 0 }
+                    }
+                    transition={{
+                      duration: reduced ? 0 : 0.3,
+                      delay: buttonHovered || dragging ? index * 0.035 : 0,
+                    }}
+                  >
+                    {word}
+                  </motion.span>
+                ),
+              )}
+            </div>
             <motion.button
               type="button"
               layoutId="contact-surface"
               onClick={() => {
+                if (performance.now() - draggedAt.current < 250) return;
+                setButtonHovered(false);
                 setFormSubmitted(false);
                 setIsOverlayOpen(true);
               }}
+              onHoverStart={() => setButtonHovered(true)}
+              onHoverEnd={() => setButtonHovered(false)}
+              onFocus={() => setButtonHovered(true)}
+              onBlur={() => setButtonHovered(false)}
+              drag={reduced ? false : "x"}
+              dragConstraints={{ left: -24, right: 24 }}
+              dragElastic={0.12}
+              dragSnapToOrigin
+              onDragStart={() => {
+                draggedAt.current = Infinity;
+                setDragging(true);
+              }}
+              onDragEnd={() => {
+                draggedAt.current = performance.now();
+                setDragging(false);
+              }}
               whileHover={
-                reduced ? undefined : { y: -5, rotateX: -4, rotateY: 4 }
+                reduced ? undefined : { rotateX: -3, rotateY: 2, scale: 1.02 }
               }
               whileTap={{ scale: 0.97 }}
-              style={{ transformPerspective: 900 }}
+              style={{
+                transformPerspective: 900,
+                x: dragX,
+                touchAction: "pan-y",
+              }}
+              aria-describedby={`${contactId}-hint`}
               className="collaborate-pill"
               aria-label="Let’s collaborate — open contact details"
               aria-haspopup="dialog"
@@ -315,6 +283,14 @@ export default function CollaborateSection({
               <ArrowUpRight size={23} aria-hidden="true" />
             </motion.button>
           </div>
+          <button
+            type="button"
+            className="collab-motion-toggle micro-label"
+            aria-pressed={motionPaused}
+            onClick={() => setMotionPaused((value) => !value)}
+          >
+            {motionPaused ? "Resume tug" : "Pause tug"}
+          </button>
           <span className="collab-hand-note micro-label" aria-hidden="true">
             Made for working together ↗
           </span>
@@ -340,6 +316,7 @@ export default function CollaborateSection({
         <AnimatePresence>
           {isOverlayOpen && (
             <motion.div
+              layoutRoot
               initial={{ opacity: reduced ? 1 : 0 }}
               transition={{ duration: reduced ? 0 : 0.22 }}
               animate={{ opacity: 1 }}
@@ -361,8 +338,12 @@ export default function CollaborateSection({
                   reduced ? { opacity: 0 } : { opacity: 0, scale: 0.97, y: 12 }
                 }
                 transition={{
-                  duration: reduced ? 0 : 0.4,
-                  ease: [0.25, 0.1, 0.25, 1],
+                  layout: {
+                    type: "spring",
+                    duration: reduced ? 0 : 0.65,
+                    bounce: 0.12,
+                  },
+                  opacity: { duration: reduced ? 0 : 0.2 },
                 }}
                 onClick={(e) => e.stopPropagation()}
                 layoutId="contact-surface"

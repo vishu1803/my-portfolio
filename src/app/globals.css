@@ -461,7 +461,8 @@ textarea {
 }
 .hero-note {
   position: absolute;
-  top: 242px;
+  top: auto;
+  bottom: clamp(210px, calc(18vw + 50px), 350px);
   left: 0;
   width: 320px;
 }
@@ -1044,7 +1045,7 @@ textarea {
   align-items: end;
   justify-content: space-between;
   gap: 30px;
-  padding-top: 65px;
+  padding-top: 36px;
 }
 .collab-eyebrow {
   font-size: 9px;
@@ -1054,7 +1055,7 @@ textarea {
 .collab-headline {
   font-family: var(--font-condensed);
   font-weight: 400;
-  font-size: clamp(60px, 8vw, 128px);
+  font-size: clamp(60px, 6.7vw, 106px);
   line-height: 1;
   letter-spacing: -0.025em;
 }
@@ -1073,7 +1074,7 @@ textarea {
 .collab-stage {
   position: relative;
   aspect-ratio: 1000/410;
-  width: min(100%, 1180px);
+  width: min(100%, 1000px);
   margin: 0 auto;
 }
 .collab-illustration {
@@ -1264,7 +1265,7 @@ textarea {
   }
   .hero-note {
     width: 260px;
-    top: 200px;
+    top: auto;
   }
   .hero-red-mark {
     right: 0;
@@ -1345,6 +1346,7 @@ textarea {
   }
   .hero-note {
     top: 145px;
+    bottom: auto;
     width: 33%;
   }
   .hero-note-label {
@@ -1703,6 +1705,172 @@ textarea {
     visibility: visible !important;
   }
   .pill-sheen {
+    display: none;
+  }
+}
+
+/* Reference motion: a compact scene and a connected hand / cord / pill rig. */
+.collab-button-wrapper {
+  will-change: transform;
+}
+.collab-callouts {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.collab-word {
+  position: absolute;
+  font-family: var(--font-condensed);
+  font-size: clamp(18px, 2.2vw, 30px);
+  line-height: 1;
+  white-space: nowrap;
+}
+.collab-word-0 {
+  top: -44px;
+  left: 4%;
+}
+.collab-word-1 {
+  top: -42px;
+  right: 5%;
+}
+.collab-word-2 {
+  bottom: -46px;
+  left: -12%;
+}
+.collab-word-3 {
+  bottom: -48px;
+  right: 1%;
+  color: #b3372d;
+}
+.collab-stage-caption {
+  top: 65%;
+}
+.contact-prelude {
+  position: relative;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 30px;
+  background: #101014;
+  color: #eeeae0;
+  padding: 55px var(--gutter) 48px;
+  overflow: clip;
+}
+.prelude-rule {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 7px;
+  background: #e4d92d;
+}
+.prelude-title-clip {
+  overflow: hidden;
+  padding-bottom: 8px;
+}
+.prelude-title {
+  font-family: var(--font-condensed);
+  font-size: clamp(50px, 8.2vw, 128px);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+.prelude-title > span {
+  color: #e4d92d;
+}
+.contact-prelude > .micro-label {
+  color: #b4b0a6;
+  padding-bottom: 12px;
+}
+@media (max-width: 700px) {
+  .collab-word {
+    font-size: clamp(13px, 3.8vw, 21px);
+  }
+  .collab-word-0 {
+    top: -28px;
+    left: -5%;
+  }
+  .collab-word-1 {
+    top: -29px;
+    right: 0;
+  }
+  .collab-word-2 {
+    bottom: -30px;
+    left: -26%;
+  }
+  .collab-word-3 {
+    bottom: -31px;
+    right: 0;
+  }
+  .collab-stage-caption {
+    top: 77%;
+    font-size: 7px;
+  }
+  .contact-prelude {
+    padding: 35px var(--gutter) 28px;
+    align-items: start;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .prelude-title {
+    font-size: clamp(43px, 11.8vw, 75px);
+  }
+  .contact-prelude > .micro-label {
+    font-size: 8px;
+    padding-bottom: 0;
+  }
+  .contact-prelude br {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .collab-button-wrapper {
+    will-change: auto;
+    transform: none !important;
+  }
+  .pulling-hand {
+    transform: none !important;
+  }
+  .tension-string {
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+  .prelude-title,
+  .prelude-rule {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
+.collab-motion-toggle {
+  position: absolute;
+  bottom: 1%;
+  right: 3%;
+  min-height: 36px;
+  padding: 6px 9px;
+  font-size: 8px;
+  color: #605b52;
+  border-bottom: 1px solid #aaa398;
+}
+.collab-motion-toggle:hover {
+  color: #101014;
+  border-color: #101014;
+}
+@media (max-width: 700px) {
+  .collab-button-wrapper {
+    left: 53%;
+    width: 43%;
+  }
+  .collab-motion-toggle {
+    right: 0;
+    bottom: 0;
+    font-size: 7px;
+    min-height: 32px;
+  }
+  .collab-stage-caption {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .collab-motion-toggle {
     display: none;
   }
 }

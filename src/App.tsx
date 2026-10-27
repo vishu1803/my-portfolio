@@ -8,6 +8,7 @@ import VideoReferenceHero from "./components/landing/VideoReferenceHero";
 import ProjectCaseStudies from "./components/landing/ProjectCaseStudies";
 import EditorialAbout from "./components/landing/EditorialAbout";
 import ReferenceSkillInterlude from "./components/landing/ReferenceSkillInterlude";
+import ContactPrelude from "./components/landing/ContactPrelude";
 import CollaborateSection from "./components/landing/CollaborateSection";
 import EditorialFooter from "./components/landing/EditorialFooter";
 
@@ -52,6 +53,7 @@ export default function App() {
 
             {/* Toolkit interlude, followed by the hand-and-string invitation */}
             <ReferenceSkillInterlude />
+            <ContactPrelude />
             <CollaborateSection onOpenResume={() => setResumeOpen(true)} />
           </main>
 
