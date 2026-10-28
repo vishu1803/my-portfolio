@@ -56,7 +56,7 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
 
             {/* Top metadata */}
             <div className="flex items-center gap-3 mb-2 flex-wrap">
-              <span className="text-[11px] font-mono uppercase tracking-widest text-[#89AACC]">
+              <span className="text-[11px] font-mono uppercase tracking-widest text-[#FF3B47]">
                 {article.category}
               </span>
               <span className="text-muted/40 text-xs">&bull;</span>
@@ -76,7 +76,7 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
               {article.title}
             </h2>
 
-            <p className="text-sm text-[#89AACC] font-mono mb-6 leading-relaxed">
+            <p className="text-sm text-[#FF3B47] font-mono mb-6 leading-relaxed">
               {article.subtitle}
             </p>
 
@@ -105,7 +105,7 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
               article.architecturePoints.length > 0 && (
                 <div className="mb-6 p-4 rounded-2xl bg-black/50 border border-white/10">
                   <h4 className="text-xs font-mono uppercase tracking-widest text-text-primary/90 mb-3 flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#89AACC]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FF3B47]" />
                     <span>Project highlights</span>
                   </h4>
                   <div className="space-y-2">
@@ -114,7 +114,7 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
                         key={i}
                         className="text-xs font-mono text-text-primary/80 flex items-start gap-2.5"
                       >
-                        <span className="text-[#89AACC]">0{i + 1}.</span>
+                        <span className="text-[#FF3B47]">0{i + 1}.</span>
                         <span>{pt}</span>
                       </div>
                     ))}
@@ -127,7 +127,7 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
               <div className="mb-8 rounded-2xl bg-black/80 border border-white/10 p-4 overflow-hidden">
                 <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10 text-xs font-mono text-muted">
                   <span>Illustrative code pattern</span>
-                  <span className="text-[#89AACC]">
+                  <span className="text-[#FF3B47]">
                     Explanation, not a repository extract
                   </span>
                 </div>

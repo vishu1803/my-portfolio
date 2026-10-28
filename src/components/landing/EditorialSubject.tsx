@@ -47,7 +47,7 @@ export default function EditorialSubject() {
       id="subject"
       ref={root}
       className="subject-scene paper-section"
-      data-scene="#eae8e2"
+      data-scene="#e9e2d0"
       data-ink="dark"
       aria-labelledby="subject-heading"
     >

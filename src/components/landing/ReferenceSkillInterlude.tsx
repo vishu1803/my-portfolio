@@ -57,8 +57,8 @@ export default function ReferenceSkillInterlude() {
       id="toolkit"
       ref={root}
       className="editorial-toolkit paper-section"
-      data-scene="#eae8e2"
-      data-ink="dark"
+      data-scene="#0b0b0c"
+      data-ink="light"
       aria-labelledby="toolkit-heading"
     >
       <div className="section-rule micro-label">

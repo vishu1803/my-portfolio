@@ -55,7 +55,7 @@ export default function App() {
   return (
     <MotionConfig reducedMotion={staticMotion ? "always" : "user"}>
       <Preloader>
-        <div className="relative min-h-screen bg-[#101014] text-[#FAF8F5] selection:bg-[#FFE600]/30 selection:text-white">
+        <div className="relative min-h-screen bg-[#0b0b0c] text-[#e9e2d0] selection:bg-[#b80f1a]/30 selection:text-white">
           <a className="skip-link" href="#main-content">
             Skip to content
           </a>

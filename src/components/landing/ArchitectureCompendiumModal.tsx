@@ -97,12 +97,12 @@ export default function ArchitectureCompendiumModal({
               ease: [0.25, 0.1, 0.25, 1],
             }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-5xl rounded-3xl border border-white/15 bg-[#0B0C0E] shadow-[0_0_80px_rgba(0,0,0,0.8)] flex flex-col max-h-[92vh] overflow-hidden"
+            className="relative w-full max-w-5xl rounded-3xl border border-white/15 bg-[#0B0B0C] shadow-[0_0_80px_rgba(0,0,0,0.8)] flex flex-col max-h-[92vh] overflow-hidden"
           >
             {/* Top Header Bar */}
-            <div className="flex items-center justify-between px-6 sm:px-8 py-5 border-b border-white/10 bg-[#0e1014]/90 backdrop-blur-md z-20 shrink-0">
+            <div className="flex items-center justify-between px-6 sm:px-8 py-5 border-b border-white/10 bg-[#0b0b0c]/90 backdrop-blur-md z-20 shrink-0">
               <div className="flex items-center gap-3">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#89AACC]" />
+                <span className="w-2.5 h-2.5 rounded-full bg-[#FF3B47]" />
                 <div>
                   <h3
                     id={dialogId}
@@ -133,7 +133,7 @@ export default function ArchitectureCompendiumModal({
             </div>
 
             {/* Quick-Jump Navigation Tabs */}
-            <div className="flex items-center gap-2 px-6 sm:px-8 py-3 bg-[#08090b] border-b border-white/5 overflow-x-auto scrollbar-none z-10 shrink-0">
+            <div className="flex items-center gap-2 px-6 sm:px-8 py-3 bg-[#0b0b0c] border-b border-white/5 overflow-x-auto scrollbar-none z-10 shrink-0">
               <span className="text-[11px] font-mono uppercase tracking-wider text-muted shrink-0 mr-1 hidden sm:inline">
                 Jump to:
               </span>
@@ -145,7 +145,7 @@ export default function ArchitectureCompendiumModal({
                     onClick={() => handleScrollToProject(article.id)}
                     className={`px-3 py-1 rounded-full text-xs font-mono transition-all shrink-0 border ${
                       isActive
-                        ? "bg-[#89AACC]/20 border-[#89AACC]/50 text-white font-medium"
+                        ? "bg-[#FF3B47]/20 border-[#FF3B47]/50 text-white font-medium"
                         : "bg-white/[0.02] border-white/5 text-muted hover:text-text-primary hover:border-white/20"
                     }`}
                   >
@@ -169,7 +169,7 @@ export default function ArchitectureCompendiumModal({
                   {/* Article Index & Category */}
                   <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
-                      <span className="text-xs font-mono text-[#89AACC] px-2.5 py-1 rounded-lg bg-[#89AACC]/10 border border-[#89AACC]/20">
+                      <span className="text-xs font-mono text-[#FF3B47] px-2.5 py-1 rounded-lg bg-[#FF3B47]/10 border border-[#FF3B47]/20">
                         PROJECT 0{index + 1}
                       </span>
                       <span className="text-xs font-mono uppercase tracking-widest text-muted">
@@ -201,7 +201,7 @@ export default function ArchitectureCompendiumModal({
                           aria-label={`Live site: ${article.title} (opens in a new tab)`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-3 py-1 rounded-full bg-[#89AACC]/20 hover:bg-[#89AACC]/30 border border-[#89AACC]/30 text-xs font-mono text-white transition-all flex items-center gap-1.5"
+                          className="px-3 py-1 rounded-full bg-[#FF3B47]/20 hover:bg-[#FF3B47]/30 border border-[#FF3B47]/30 text-xs font-mono text-white transition-all flex items-center gap-1.5"
                         >
                           <span>Live Site</span>
                           <span aria-hidden="true" className="text-[10px]">↗</span>
@@ -215,7 +215,7 @@ export default function ArchitectureCompendiumModal({
                     <h2 className="text-2xl sm:text-3xl md:text-4xl font-display italic text-text-primary mb-3">
                       {article.title}
                     </h2>
-                    <p className="text-sm sm:text-base text-[#89AACC] font-mono leading-relaxed">
+                    <p className="text-sm sm:text-base text-[#FF3B47] font-mono leading-relaxed">
                       {article.subtitle}
                     </p>
                   </div>
@@ -231,14 +231,14 @@ export default function ArchitectureCompendiumModal({
                       referrerPolicy="no-referrer"
                     />
                     <div className="absolute inset-0 halftone-overlay opacity-25 pointer-events-none" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B0C0E] via-transparent to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B0B0C] via-transparent to-transparent pointer-events-none" />
 
                     {/* Floating architectural badge */}
                     <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-[11px] font-mono text-white/90 bg-black/70 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10">
                       <span className="truncate">
                         {article.githubRepo.replace("https://", "")}
                       </span>
-                      <span className="text-[#89AACC] shrink-0 font-semibold">
+                      <span className="text-[#FF3B47] shrink-0 font-semibold">
                         {article.date}
                       </span>
                     </div>
@@ -249,7 +249,7 @@ export default function ArchitectureCompendiumModal({
                     article.architecturePoints.length > 0 && (
                       <div className="p-5 sm:p-6 rounded-2xl bg-black/40 border border-white/10 space-y-3">
                         <h4 className="text-xs font-mono uppercase tracking-widest text-text-primary flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#89AACC]" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#FF3B47]" />
                           <span>Core Architectural Pillars & Decisions</span>
                         </h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
@@ -258,7 +258,7 @@ export default function ArchitectureCompendiumModal({
                               key={i}
                               className="p-3 rounded-xl bg-white/[0.02] border border-white/5 text-xs font-mono text-text-primary/90 flex items-start gap-2.5 leading-relaxed"
                             >
-                              <span className="text-[#89AACC] font-bold">
+                              <span className="text-[#FF3B47] font-bold">
                                 0{i + 1}.
                               </span>
                               <span>{pt}</span>
@@ -286,8 +286,8 @@ export default function ArchitectureCompendiumModal({
                   {/* Production Code Snippet */}
                   {article.codeSnippet && (
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between px-4 py-2 rounded-t-xl bg-[#12141a] border-t border-x border-white/10 text-xs font-mono text-muted">
-                        <span className="text-[#89AACC]">
+                      <div className="flex items-center justify-between px-4 py-2 rounded-t-xl bg-[#141416] border-t border-x border-white/10 text-xs font-mono text-muted">
+                        <span className="text-[#FF3B47]">
                           {"// Illustrative pattern — not a repository extract"}
                         </span>
                         <button
@@ -307,7 +307,7 @@ export default function ArchitectureCompendiumModal({
                           </span>
                         </button>
                       </div>
-                      <pre className="p-4 sm:p-5 rounded-b-xl bg-[#07080a] border border-white/10 overflow-x-auto text-xs sm:text-[13px] font-mono text-text-primary/90 leading-relaxed scrollbar-thin scrollbar-thumb-white/10">
+                      <pre className="p-4 sm:p-5 rounded-b-xl bg-[#0B0B0C] border border-white/10 overflow-x-auto text-xs sm:text-[13px] font-mono text-text-primary/90 leading-relaxed scrollbar-thin scrollbar-thumb-white/10">
                         <code>{article.codeSnippet}</code>
                       </pre>
                     </div>
@@ -317,7 +317,7 @@ export default function ArchitectureCompendiumModal({
             </div>
 
             {/* Bottom Footer Action Bar */}
-            <div className="flex items-center justify-between px-6 sm:px-8 py-4 border-t border-white/10 bg-[#0e1014]/90 backdrop-blur-md shrink-0">
+            <div className="flex items-center justify-between px-6 sm:px-8 py-4 border-t border-white/10 bg-[#0b0b0c]/90 backdrop-blur-md shrink-0">
               <span className="text-xs font-mono text-muted">
                 Showing all {JOURNAL_DATA.length} GitHub repository
                 architectural dossiers

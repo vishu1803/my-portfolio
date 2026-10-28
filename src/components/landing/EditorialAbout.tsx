@@ -40,7 +40,7 @@ export default function EditorialAbout({
       id="about"
       ref={root}
       className="evidence-scene"
-      data-scene="#eae8e2"
+      data-scene="#e9e2d0"
       data-ink="dark"
       aria-labelledby="about-heading"
     >

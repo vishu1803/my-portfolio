@@ -87,7 +87,7 @@ export default function VideoReferenceHero({
       id="home"
       ref={root}
       className="editorial-hero"
-      data-scene="#101014"
+      data-scene="#0b0b0c"
       data-ink="light"
       aria-labelledby="hero-title"
     >
