@@ -1,69 +1,9 @@
 import { ImageResponse } from "next/og";
+import PortfolioMark from "../components/branding/PortfolioMark";
 
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
 
 export default function Icon() {
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          width: 32,
-          height: 32,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "linear-gradient(135deg, #0e1117 0%, #060709 100%)",
-          borderRadius: 8,
-          border: "1px solid rgba(137, 170, 204, 0.45)",
-          position: "relative",
-        }}
-      >
-        {/* Subtle glow circle */}
-        <div
-          style={{
-            position: "absolute",
-            width: 20,
-            height: 20,
-            borderRadius: "50%",
-            background: "rgba(78, 133, 191, 0.25)",
-            filter: "blur(4px)",
-          }}
-        />
-
-        {/* Monogram V */}
-        <span
-          style={{
-            fontSize: 20,
-            fontWeight: 800,
-            fontFamily: "system-ui, -apple-system, sans-serif",
-            background: "linear-gradient(180deg, #FFFFFF 0%, #89AACC 60%, #4E85BF 100%)",
-            backgroundClip: "text",
-            color: "transparent",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            marginTop: -1,
-          }}
-        >
-          V
-        </span>
-
-        {/* Top-right subtle accent spark */}
-        <div
-          style={{
-            position: "absolute",
-            top: 5,
-            right: 5,
-            width: 3,
-            height: 3,
-            borderRadius: "50%",
-            background: "#89AACC",
-            boxShadow: "0 0 4px #89AACC",
-          }}
-        />
-      </div>
-    ),
-    { ...size }
-  );
+  return new ImageResponse(<PortfolioMark size={size.width} />, size);
 }

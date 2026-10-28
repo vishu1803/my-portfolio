@@ -5,6 +5,7 @@ Reviewed 26 October 2026. This records the source for copy, not independent empl
 | Content | Source | Boundary |
 |---|---|---|
 | Name, role, city, email, phone, education, internship and 300+ LeetCode claim | Supplied `public/assets/aistudio/software-vishu_1f0ccd66.pdf` (identical `public/resume.pdf` mirror) | Owner-supplied resume claims; not an independent background check |
+| Current website LeetCode count: 600+ | Direct portfolio-owner update, 28 October 2026; centralized in `src/data/profile.ts` | Supersedes the older website count. Existing supplied résumé PDFs retain their original contents; current copy no longer attributes 600+ to those PDFs. |
 | Task Manager contribution and stack | Supplied resume; [repository README](https://github.com/vishu1803/Collaborative-task-manager/blob/main/README.md) | No sub-50ms/state-consistency benchmark asserted |
 | AI code-review contribution and stack | Supplied resume; [repository README](https://github.com/vishu1803/Ai-powered-code-review-assistant/blob/main/README.md) | No 68% token saving, guaranteed hallucination elimination or 1.2s latency asserted |
 | Object Detection Web App | [package manifest](https://github.com/vishu1803/Object-detection-web-app/blob/main/package.json) and existing portfolio screenshot/content | Describes a project and its declared stack, not a personal proficiency level or accuracy benchmark |

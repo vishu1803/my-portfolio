@@ -7,6 +7,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowDown, Download, Sparkles, Terminal, Code2, Cpu } from "lucide-react";
 import FlashlightReveal from "../interactive/FlashlightReveal";
+import { LEETCODE_SOLVED } from "../../data/profile";
 
 interface EditorialHeroProps {
   onContactClick?: () => void;
@@ -129,7 +130,7 @@ export default function EditorialHero({
         <div className="flex items-center gap-4">
           <span className="hidden md:inline text-muted">B.TECH ELECTRONICS ENG &bull; REC &apos;25</span>
           <span className="stamp-box px-2.5 py-0.5 border-[#FFE600]/40 text-[#FFE600] text-[10px] font-bold">
-            300+ LEETCODE DSA
+            {LEETCODE_SOLVED}+ LEETCODE DSA
           </span>
         </div>
       </div>
@@ -263,7 +264,7 @@ export default function EditorialHero({
                     <div className="p-3 rounded-xl bg-black/70 border border-[#FFE600]/40 backdrop-blur-md">
                       <div className="text-[10px] text-white/60 uppercase">Algorithmic Foundation</div>
                       <div className="text-sm font-bold text-white flex items-center justify-between mt-1">
-                        <span>300+ LeetCode Solved</span>
+                        <span>{LEETCODE_SOLVED}+ LeetCode Solved</span>
                         <span className="text-[#FFE600]">DP &bull; Trees &bull; Graphs</span>
                       </div>
                     </div>
@@ -341,7 +342,7 @@ export default function EditorialHero({
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-[#FFE600]" />
-            <span className="text-white/80">300+ LeetCode Algorithms Solved</span>
+            <span className="text-white/80">{LEETCODE_SOLVED}+ LeetCode Algorithms Solved</span>
           </div>
           <div className="hidden sm:flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-[#38BDF8]" />
