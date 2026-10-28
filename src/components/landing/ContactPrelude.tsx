@@ -27,11 +27,13 @@ export default function ContactPrelude() {
           .fromTo(
             ".prelude-title",
             { scale: 1, opacity: 0.6 },
-            { scale: 1.12, opacity: 1, ease: "none" },
+            { scale: 1.12, opacity: 1, duration: 1, ease: "none" },
             0,
           )
-          .to(".prelude-extrusion > span", { x: i => i + 1, y: i => i + 1, opacity: 1, stagger: .02, ease: "none" }, 0)
-          .from(".prelude-line", { opacity: 0, y: 25, stagger: 0.15 }, 0.15);
+          // Finish the depth while the heading is still above the rising sheet.
+          .to(".prelude-extrusion > span", { x: i => i + 1, y: i => i + 1, opacity: 1, duration: .2, stagger: .015, ease: "none" }, 0);
+        // GhostResolve owns the supporting lines' entrance. A second scrubbed
+        // opacity on their parents kept them hidden until the sheet covered them.
       }, root);
       return () => ctx.revert();
     });
