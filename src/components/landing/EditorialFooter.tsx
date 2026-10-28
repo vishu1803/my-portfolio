@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowUpRight } from "lucide-react";
+import { HERO_ART } from "../../data/heroArt";
 
 export default function EditorialFooter({
   onOpenResume,
@@ -29,6 +30,9 @@ export default function EditorialFooter({
           Résumé (PDF) <span aria-hidden="true">↗</span>
         </button>
       </div>
+      <p className="artwork-credit micro-label">
+        <a href={HERO_ART.creditUrl} target="_blank" rel="noopener noreferrer">{HERO_ART.credit}</a>
+      </p>
     </footer>
   );
 }

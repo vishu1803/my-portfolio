@@ -3,14 +3,13 @@ import useReducedMotion from "../../hooks/useMotionPreference";
 import { isLowPowerDevice } from "../../lib/motionQuality";
 
 import { useRef, useEffect } from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import gsap from "gsap";
 import useScrollScene from "../../hooks/useScrollScene";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { useIntroReady } from "../motion/Preloader";
 import Magnetic from "../motion/Magnetic";
-import TorchReveal from "../interactive/TorchReveal";
+import AnimeHero from "../interactive/AnimeHero";
 import { LEETCODE_SOLVED } from "../../data/profile";
 
 export default function VideoReferenceHero({
@@ -138,25 +137,7 @@ export default function VideoReferenceHero({
           </p>
         </div>
         <div ref={portrait} className="hero-portrait">
-          <div className="hero-portrait-intro"><TorchReveal scope={root}>
-            <div className="portrait-yellow" aria-hidden="true">
-              <span>N° 01</span>
-            </div>
-            <div className="hero-photo">
-              <Image
-                src="/vishwanath-portrait.jpg"
-                alt="Vishwanath Nishad, software engineer"
-                fill
-                priority
-                fetchPriority="high"
-                sizes="(max-width: 700px) 65vw, 36vw"
-                className="portrait-color"
-              />
-              <span className="portrait-cross" aria-hidden="true">
-                +
-              </span>
-            </div>
-          </TorchReveal></div>
+          <div className="hero-portrait-intro"><AnimeHero scope={root} /></div>
         </div>
         <div className="hero-identity">
           <p className="micro-label hero-byline">
