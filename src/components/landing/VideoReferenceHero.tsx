@@ -11,6 +11,7 @@ import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { useIntroReady } from "../motion/Preloader";
 import Magnetic from "../motion/Magnetic";
 import TorchReveal from "../interactive/TorchReveal";
+import { LEETCODE_SOLVED } from "../../data/profile";
 
 export default function VideoReferenceHero({
   onOpenResume,
@@ -118,8 +119,8 @@ export default function VideoReferenceHero({
               TypeScript / Full stack
             </span>
             <span className="hero-practice">
-              300<span><span aria-hidden="true">+</span></span>
-              <small>LeetCode problems · résumé</small>
+              {LEETCODE_SOLVED}<span><span aria-hidden="true">+</span></span>
+              <small>LeetCode problems · practice</small>
             </span>
             <svg viewBox="0 0 300 95" aria-hidden="true">
               <path

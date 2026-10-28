@@ -16,6 +16,7 @@ const PhysicsBurst = dynamic(() => import("../interactive/PhysicsBurst"), {
   ssr: false,
 });
 import { ENABLE_WORD_BURST } from "../../config/motion";
+import { LEETCODE_SOLVED } from "../../data/profile";
 import { isLowPowerDevice } from "../../lib/motionQuality";
 import TerminalHeading from "../motion/TerminalHeading";
 import CountUp from "../motion/CountUp";
@@ -528,11 +529,11 @@ export default function CollaborateSection({
                         </div>
                         <div>
                           <CountUp
-                            value={300}
+                            value={LEETCODE_SOLVED}
                             suffix="+"
-                            label="LeetCode problems recorded in resume"
+                            label="LeetCode problems solved"
                           />
-                          <span className="micro-label">LeetCode · résumé</span>
+                          <span className="micro-label">LeetCode · practice</span>
                         </div>
                       </div>
                     </div>
@@ -671,7 +672,7 @@ export default function CollaborateSection({
                             className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 text-xs font-mono text-white flex items-center gap-1.5 transition-colors"
                           >
                             <Code2 className="w-3.5 h-3.5" />
-                            <span>LeetCode (300<span aria-hidden="true">+</span>)</span>
+                            <span>LeetCode ({LEETCODE_SOLVED}<span aria-hidden="true">+</span>)</span>
                             <ArrowUpRight className="w-3 h-3 text-white/50" />
                           <span className="sr-only"> (opens in a new tab)</span></a>
                           <a

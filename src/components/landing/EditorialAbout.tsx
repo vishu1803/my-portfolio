@@ -7,6 +7,7 @@ import gsap from "gsap";
 import useScrollScene from "../../hooks/useScrollScene";
 import CountUp from "../motion/CountUp";
 import Certifications from "./Certifications";
+import { LEETCODE_SOLVED } from "../../data/profile";
 export default function EditorialAbout({
   onOpenResume,
 }: {
@@ -93,8 +94,8 @@ export default function EditorialAbout({
             <h3>Practice <span className="evidence-entity">Thinking through the problem.</span></h3>
             <em>Data structures &amp; algorithms</em>
             <p>
-              300+ LeetCode problems across dynamic programming, graphs, trees,
-              arrays, and binary search, as recorded in my resume.
+              {LEETCODE_SOLVED}+ LeetCode problems across dynamic programming,
+              graphs, trees, arrays, and binary search.
             </p>
             <a
               href="https://leetcode.com/u/vishwanatnishad"
@@ -106,11 +107,11 @@ export default function EditorialAbout({
           </div>
           <div className="evidence-value">
             <CountUp
-              value={300}
+              value={LEETCODE_SOLVED}
               suffix="+"
-              label="LeetCode problems recorded in my resume"
+              label="LeetCode problems solved"
             />
-            <span className="micro-label">Problems · résumé claim</span>
+            <span className="micro-label">Problems · continuing practice</span>
           </div>
         </article>
       </div>

@@ -284,7 +284,7 @@ test("cursor dot is immediate while its ring lags and hero actions are magnetic"
     "none",
   );
 });
-test("drawn hero annotations use the existing 300+ claim rather than reference CGPA", async () => {
+test("drawn hero annotations use the owner-updated 600+ count rather than reference CGPA", async () => {
   assert.equal(await desktop.locator(".hero-ink-path").count(), 2);
   for (const path of await desktop.locator(".hero-ink-path").all())
     assert.ok(
@@ -294,7 +294,7 @@ test("drawn hero annotations use the existing 300+ claim rather than reference C
         ),
       ) < 0.1,
     );
-  assert.match(await desktop.locator(".hero-practice").innerText(), /300/);
+  assert.match(await desktop.locator(".hero-practice").innerText(), /600/);
   assert.doesNotMatch(
     await desktop.locator("#home").innerText(),
     /9\.10|9\.24|465%/,
@@ -493,7 +493,7 @@ test("evidence ledger keeps the real internship, academic dates and verified cou
   const row = desktop.locator(".evidence-row").last();
   await row.scrollIntoViewIfNeeded();
   await wait(desktop, 1600);
-  assert.match(await row.locator(".count-up").innerText(), /300\+/);
+  assert.match(await row.locator(".count-up").innerText(), /600\+/);
   for (const rule of await desktop.locator(".evidence-rule").all())
     assert.ok(
       (await rule.evaluate(
@@ -663,7 +663,7 @@ test("primary collaboration action opens ink contact directly with word burst of
     await dialog.locator(".terminal-heading").innerText(),
     /Let’s talk about what we can build/,
   );
-  assert.match(await dialog.locator(".terminal-stats").innerText(), /300\+/);
+  assert.match(await dialog.locator(".terminal-stats").innerText(), /600\+/);
   assert.equal(
     await desktop.locator("header").evaluate((el) => !!el.closest("[inert]")),
     true,
