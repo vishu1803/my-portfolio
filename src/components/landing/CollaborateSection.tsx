@@ -219,7 +219,7 @@ export default function CollaborateSection({
         ref={sectionRef}
         aria-labelledby="contact-heading"
         className="editorial-collaborate paper-section"
-        data-scene="#eae8e2"
+        data-scene="#e9e2d0"
         data-ink="dark"
       >
         <div className="section-rule micro-label">
@@ -453,13 +453,13 @@ export default function CollaborateSection({
                     }}
                     onClick={(e) => e.stopPropagation()}
                     layoutId="contact-surface"
-                    className="contact-overlay-panel terminal-contact-panel relative w-full max-w-4xl select-text rounded-3xl bg-[#0E1014] text-[#FAF8F5] border border-white/15 shadow-[0_25px_80px_rgba(0,0,0,0.85)] p-6 sm:p-10 my-auto overflow-hidden"
+                    className="contact-overlay-panel terminal-contact-panel relative w-full max-w-4xl select-text rounded-3xl bg-[#0b0b0c] text-[#e9e2d0] border border-white/15 shadow-[0_25px_80px_rgba(0,0,0,0.85)] p-6 sm:p-10 my-auto overflow-hidden"
                   >
                     {/* Header Close Bar */}
                     <div className="flex items-center justify-between border-b border-white/10 pb-5 mb-8">
                       <div className="flex items-center gap-3">
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#FFE600]" />
-                        <span className="font-mono text-xs uppercase tracking-widest text-[#FFE600]">
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#b80f1a]" />
+                        <span className="font-mono text-xs uppercase tracking-widest text-[#FF3B47]">
                           LET’S MAKE SOMETHING TOGETHER
                         </span>
                       </div>
@@ -558,9 +558,9 @@ export default function CollaborateSection({
                         {/* Channel Cards */}
                         <div className="space-y-3">
                           {/* Email Card with Copy button */}
-                          <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-between group hover:border-[#FFE600]/40 transition-colors">
+                          <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-between group hover:border-[#b80f1a]/40 transition-colors">
                             <div className="flex items-center gap-3 min-w-0">
-                              <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-[#FFE600] shrink-0">
+                              <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-[#FF3B47] shrink-0">
                                 <Mail className="w-4 h-4" />
                               </div>
                               <div className="min-w-0">
@@ -582,7 +582,7 @@ export default function CollaborateSection({
                               title="Copy Email to Clipboard"
                             >
                               {copiedEmail ? (
-                                <Check className="w-3.5 h-3.5 text-[#FFE600]" />
+                                <Check className="w-3.5 h-3.5 text-[#FF3B47]" />
                               ) : (
                                 <Copy className="w-3.5 h-3.5" />
                               )}
@@ -593,9 +593,9 @@ export default function CollaborateSection({
                           </div>
 
                           {/* Phone Card */}
-                          <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-between group hover:border-[#FFE600]/40 transition-colors">
+                          <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-between group hover:border-[#b80f1a]/40 transition-colors">
                             <div className="flex items-center gap-3 min-w-0">
-                              <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-[#FFE600] shrink-0">
+                              <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-[#FF3B47] shrink-0">
                                 <Phone className="w-4 h-4" />
                               </div>
                               <div className="min-w-0">
@@ -617,7 +617,7 @@ export default function CollaborateSection({
                               title="Copy Phone"
                             >
                               {copiedPhone ? (
-                                <Check className="w-3.5 h-3.5 text-[#FFE600]" />
+                                <Check className="w-3.5 h-3.5 text-[#FF3B47]" />
                               ) : (
                                 <Copy className="w-3.5 h-3.5" />
                               )}
@@ -651,7 +651,7 @@ export default function CollaborateSection({
                             rel="noopener noreferrer"
                             className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 text-xs font-mono text-white flex items-center gap-1.5 transition-colors"
                           >
-                            <FaLinkedin className="w-3.5 h-3.5 text-[#38BDF8]" />
+                            <FaLinkedin className="w-3.5 h-3.5 text-[#FF3B47]" />
                             <span>LinkedIn</span>
                             <ArrowUpRight className="w-3 h-3 text-white/50" />
                           <span className="sr-only"> (opens in a new tab)</span></a>
@@ -679,7 +679,7 @@ export default function CollaborateSection({
                             href={resumeUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="px-3 py-1.5 rounded-full bg-[#FFE600]/15 hover:bg-[#FFE600]/25 border border-[#FFE600]/30 text-xs font-mono text-[#FFE600] flex items-center gap-1.5 transition-colors"
+                            className="px-3 py-1.5 rounded-full bg-[#b80f1a]/15 hover:bg-[#b80f1a]/25 border border-[#b80f1a]/30 text-xs font-mono text-[#FF3B47] flex items-center gap-1.5 transition-colors"
                           >
                             <Download className="w-3.5 h-3.5" />
                             <span>Resume (PDF)</span>
@@ -697,7 +697,7 @@ export default function CollaborateSection({
                         </h4>
                         <p className="text-xs text-white/60 mb-5 leading-relaxed">
                           Prepare an email draft to{" "}
-                          <span className="text-[#FFE600] font-mono">
+                          <span className="text-[#FF3B47] font-mono">
                             {email}
                           </span>
                           .
@@ -726,7 +726,7 @@ export default function CollaborateSection({
                                   })
                                 }
                                 placeholder="Jane Doe / Engineering Lead"
-                                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#FFE600] transition-colors font-body"
+                                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#b80f1a] transition-colors font-body"
                               />
                             </div>
                             <div>
@@ -751,7 +751,7 @@ export default function CollaborateSection({
                                   })
                                 }
                                 placeholder="jane@company.com"
-                                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#FFE600] transition-colors font-body"
+                                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#b80f1a] transition-colors font-body"
                               />
                             </div>
                           </div>
@@ -773,7 +773,7 @@ export default function CollaborateSection({
                                   projectType: e.target.value,
                                 })
                               }
-                              className="w-full px-3.5 py-2.5 rounded-xl bg-[#14161C] border border-white/10 text-sm text-white focus:outline-none focus:border-[#FFE600] transition-colors font-body"
+                              className="w-full px-3.5 py-2.5 rounded-xl bg-[#141416] border border-white/10 text-sm text-white focus:outline-none focus:border-[#b80f1a] transition-colors font-body"
                             >
                               <option value="Full-Time Software Engineer Role">
                                 Full-Time Software Engineer Role
@@ -813,13 +813,13 @@ export default function CollaborateSection({
                                 })
                               }
                               placeholder="Tell me about the role, your engineering stack, or problem you are solving..."
-                              className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#FFE600] transition-colors font-body resize-none"
+                              className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#b80f1a] transition-colors font-body resize-none"
                             />
                           </div>
 
                           <button
                             type="submit"
-                            className="w-full py-3.5 rounded-xl bg-[#FFE600] hover:bg-[#FFE600]/90 text-black font-semibold text-sm font-mono tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-[#FFE600]/20"
+                            className="w-full py-3.5 rounded-xl bg-[#b80f1a] hover:bg-[#8F0A12] text-[#E9E2D0] font-semibold text-sm font-mono tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-[#b80f1a]/20"
                           >
                             <span>Start a Project</span>
                             <ArrowUpRight className="w-4 h-4" />
@@ -830,7 +830,7 @@ export default function CollaborateSection({
                           </p>
                           <p
                             role="status"
-                            className="text-xs leading-relaxed text-[#FFE600]"
+                            className="text-xs leading-relaxed text-[#FF3B47]"
                           >
                             {formSubmitted
                               ? "Your email draft is ready. Send it in your email app."

@@ -43,7 +43,7 @@ export default function ContactPrelude() {
     <section
       ref={root}
       className="contact-prelude"
-      data-scene="#101014"
+      data-scene="#0b0b0c"
       data-ink="light"
       aria-labelledby="prelude-heading"
     >

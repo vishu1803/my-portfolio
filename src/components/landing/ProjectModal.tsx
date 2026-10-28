@@ -41,7 +41,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
               ease: [0.25, 0.1, 0.25, 1],
             }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-3xl rounded-3xl border border-white/10 bg-[#0B0C0E] shadow-2xl p-6 sm:p-8 max-h-[92vh] overflow-y-auto"
+            className="relative w-full max-w-3xl rounded-3xl border border-white/10 bg-[#0B0B0C] shadow-2xl p-6 sm:p-8 max-h-[92vh] overflow-y-auto"
           >
             {/* Close Button */}
             <button
@@ -56,7 +56,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
 
             {/* Top metadata */}
             <div className="flex items-center gap-3 mb-2">
-              <span className="text-[11px] font-mono uppercase tracking-widest text-[#89AACC]">
+              <span className="text-[11px] font-mono uppercase tracking-widest text-[#FF3B47]">
                 {project.category}
               </span>
               <span className="text-muted/40 text-xs">&bull;</span>

@@ -2,23 +2,44 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 const displayFont = localFont({
-  src: "../../public/fonts/anton-latin-400-normal.woff2",
-  variable: "--font-anton",
+  src: "../../public/fonts/grenze-gotisch-latin-700-normal.woff2",
+  variable: "--font-gothic",
+  weight: "700",
   display: "swap",
 });
 const serifFont = localFont({
   src: [
     {
-      path: "../../public/fonts/instrument-serif-latin-400-normal.woff2",
+      path: "../../public/fonts/eb-garamond-latin-400-normal.woff2",
+      weight: "400",
       style: "normal",
     },
     {
-      path: "../../public/fonts/instrument-serif-latin-400-italic.woff2",
+      path: "../../public/fonts/eb-garamond-latin-400-italic.woff2",
+      weight: "400",
       style: "italic",
     },
+    {
+      path: "../../public/fonts/eb-garamond-latin-600-normal.woff2",
+      weight: "600",
+      style: "normal",
+    },
   ],
-  variable: "--font-instrument",
+  variable: "--font-garamond",
   display: "swap",
+});
+const monoFont = localFont({
+  src: "../../public/fonts/jetbrains-mono-latin-400-normal.woff2",
+  variable: "--font-label",
+  weight: "400",
+  display: "swap",
+});
+const handwritingFont = localFont({
+  src: "../../public/fonts/homemade-apple-latin-400-normal.woff2",
+  variable: "--font-handwriting",
+  weight: "400",
+  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -48,7 +69,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${displayFont.variable} ${serifFont.variable} scroll-smooth dark`}
+      className={`${displayFont.variable} ${serifFont.variable} ${monoFont.variable} ${handwritingFont.variable} scroll-smooth dark`}
     >
       <head>
         <script

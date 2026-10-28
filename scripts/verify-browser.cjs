@@ -135,10 +135,10 @@ test("identity, SEO, next/font variables, content and navigation remain intact",
   );
   const fonts = await desktop.evaluate(() => ({
     display: getComputedStyle(document.documentElement).getPropertyValue(
-      "--font-anton",
+      "--font-gothic",
     ),
     serif: getComputedStyle(document.documentElement).getPropertyValue(
-      "--font-instrument",
+      "--font-garamond",
     ),
     computed: getComputedStyle(document.querySelector("h1")).fontFamily,
   }));
@@ -209,7 +209,7 @@ test("first intro curtains finish before the hero entrance and repeat visits ski
   );
   await page.close();
 });
-test("torch starts dark and reveals the actual photo and yellow backing with a real mask", async () => {
+test("torch starts dark and reveals the actual photo and accent backing with a real mask", async () => {
   const torch = desktop.locator("[data-torch]");
   assert.equal(
     await torch
@@ -462,7 +462,7 @@ test("project notes and project index dialogs escape the pin and preserve focus"
   await desktop.keyboard.press("Escape");
   await wait(desktop, 500);
 });
-test("toolkit preserves real skill groups and a short yellow accent band", async () => {
+test("toolkit preserves real skill groups and a short accent band", async () => {
   await section(desktop, "toolkit");
   assert.equal(await desktop.locator(".toolkit-row").count(), 4);
   assert.equal(
@@ -657,7 +657,7 @@ test("primary collaboration action opens ink contact directly with word burst of
     await dialog
       .locator(".terminal-contact-panel")
       .evaluate((el) => getComputedStyle(el).backgroundColor),
-    "rgb(16, 16, 20)",
+    "rgb(11, 11, 12)",
   );
   assert.match(
     await dialog.locator(".terminal-heading").innerText(),
@@ -963,7 +963,7 @@ test("ghost copies, reusable masks and interlude extrusion exist without changin
   await desktop.waitForFunction(()=>document.querySelectorAll(".subject-title .ghost-double").length>0);
   assert.ok(await desktop.locator("[data-clip-reveal]").count()>=7);
   assert.equal(await desktop.locator(".prelude-extrusion > span").count(),8);
-  assert.equal(await desktop.locator("#about").getAttribute("data-scene"),"#eae8e2");
+  assert.equal(await desktop.locator("#about").getAttribute("data-scene"),"#e9e2d0");
   assert.equal((await desktop.locator(".collaborate-pill").textContent()).trim(),"Let’s collaborate");
 });
 

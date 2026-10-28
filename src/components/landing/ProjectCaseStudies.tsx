@@ -15,6 +15,7 @@ const ArchitectureCompendiumModal = dynamic(
 );
 import CaseFileVisual from "./CaseFileVisual";
 import Magnetic from "../motion/Magnetic";
+import { isLowPowerDevice } from "../../lib/motionQuality";
 export { CASE_STUDIES } from "../../data/caseStudies";
 type Props = {
   onSelectProject?: (project: ProjectItem) => void;
@@ -42,7 +43,7 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
         const cards = [...el.querySelectorAll<HTMLElement>(".case-study-item")];
         const progress = el.querySelector(".case-track-progress span");
         const title = el.querySelector(".work-heading h2");
-        gsap.to(rail, {
+        const sequence = gsap.to(rail, {
           x: () => -distance(),
           ease: "none",
           scrollTrigger: {
@@ -85,6 +86,24 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
             },
           },
         });
+        if (!isLowPowerDevice()) {
+          cards.slice(1).forEach((card) => {
+            const page = card.querySelector(".case-file-layout");
+            if (!page) return;
+            gsap.fromTo(page, { rotationY: 18, opacity: .65 }, {
+              rotationY: 0,
+              opacity: 1,
+              ease: "none",
+              scrollTrigger: {
+                trigger: card,
+                containerAnimation: sequence,
+                start: "left 95%",
+                end: "left 25%",
+                scrub: .6,
+              },
+            });
+          });
+        }
       }, el);
       return () => {
         settle?.kill();
@@ -105,7 +124,7 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
         id="case-studies"
         ref={root}
         className="editorial-work case-files-scene"
-        data-scene="#101014"
+        data-scene="#0b0b0c"
         data-ink="light"
         aria-labelledby="work-heading"
       >

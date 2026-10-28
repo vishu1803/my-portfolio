@@ -55,7 +55,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               <span aria-hidden="true">✕</span>
             </button>
 
-            <span className="text-[11px] font-mono uppercase tracking-widest text-[#89AACC] block mb-2">
+            <span className="text-[11px] font-mono uppercase tracking-widest text-[#FF3B47] block mb-2">
               Curriculum Vitae
             </span>
 
@@ -76,17 +76,17 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                 href="/assets/aistudio/software-vishu_1f0ccd66.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-4 rounded-2xl bg-black/60 border border-white/10 hover:border-[#FFE600]/40 transition-all group"
+                className="flex items-center justify-between p-4 rounded-2xl bg-black/60 border border-white/10 hover:border-[#b80f1a]/40 transition-all group"
               >
                 <div>
-                  <h4 className="text-sm font-medium text-white group-hover:text-[#FFE600] transition-colors">
+                  <h4 className="text-sm font-medium text-white group-hover:text-[#FF3B47] transition-colors">
                     Software Engineer Resume (PDF)
                   </h4>
                   <p className="text-xs text-muted font-mono mt-0.5">
                     Resume &bull; Full-Stack, Backend &amp; Algorithms
                   </p>
                 </div>
-                <span className="text-xs font-mono text-black px-3.5 py-1.5 rounded-full bg-[#FFE600] group-hover:bg-white transition-colors font-semibold">
+                <span className="text-xs font-mono text-[#E9E2D0] px-3.5 py-1.5 rounded-full bg-[#b80f1a] group-hover:bg-[#8F0A12] transition-colors font-semibold">
                   Download ↓
                 </span>
               </a>
