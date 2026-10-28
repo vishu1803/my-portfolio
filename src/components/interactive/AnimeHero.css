@@ -1,0 +1,73 @@
+/* Presets: ink-red (default) --grade:.85; monochrome-red --grade:1,
+   --art-saturation:0; original --grade:0, --art-saturation:1. */
+.anime-hero {
+  --grade: .85;
+  --art-saturation: calc(1 - var(--grade) * .45);
+  --art-pos: 50% 50%;
+  --eye-x: 49.75%;
+  --eye-y: 26.35%;
+  --art-reveal: 0%; --art-intro-scale: 1; --art-blur: 0px;
+  --art-breath: 1; --art-lift: 0px; --art-zoom: 1.04;
+  --art-drift-x: -4px; --art-drift-y: 3px;
+  --art-x: 0px; --art-y: 0px; --art-rx: 0deg; --art-ry: 0deg;
+  --art-scroll-y: 0px; --art-glow-fade: 1;
+  --mist-a: -9%; --mist-b: 8%; --mist-c: -7%; --mist-alpha: 1;
+  --eye-alpha: 1; --eye-pulse: .8; --eye-flare: 1;
+  --rim-shift: -130%; --rim-alpha: 0; --glitch-alpha: 0; --ember-alpha: 1;
+  position: relative; width: 100%; aspect-ratio: 4/4.7; isolation: isolate;
+}
+.anime-hero .torch-dim { opacity: .35; }
+.anime-hero .hero-photo { height: 100%; }
+.anime-art, .anime-edge-mask {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 7%, #000 80%, transparent), linear-gradient(to right, transparent, #000 10%, #000 88%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 7%, #000 80%, transparent), linear-gradient(to right, transparent, #000 10%, #000 88%, transparent);
+  -webkit-mask-composite: source-in; mask-composite: intersect;
+}
+.anime-intro, .anime-scroll, .anime-parallax, .anime-breath, .anime-ken-burns {
+  position: absolute; inset: 0; transform-origin: center;
+}
+.anime-intro { clip-path: inset(0 0 var(--art-reveal) 0); transform: scale(var(--art-intro-scale)); filter: blur(var(--art-blur)); }
+.anime-scroll { transform: translate3d(0, var(--art-scroll-y), 0); }
+.anime-parallax { transform: perspective(1000px) translate3d(var(--art-x), var(--art-y), 0) rotateX(var(--art-rx)) rotateY(var(--art-ry)); }
+.anime-breath { transform: translateY(var(--art-lift)) scale(var(--art-breath)); }
+.anime-ken-burns { transform: translate3d(var(--art-drift-x), var(--art-drift-y), 0) scale(var(--art-zoom)); }
+.anime-cover-plane {
+  position: absolute; width: var(--cover-width, 209.07%); height: var(--cover-height, 100%);
+  left: var(--cover-left, -54.535%); top: var(--cover-top, 0px);
+}
+.anime-image { object-fit: cover; object-position: var(--art-pos); filter: grayscale(calc(var(--grade) * .6)) saturate(var(--art-saturation)) contrast(calc(1 + var(--grade) * .08)); }
+.anime-grade { position: absolute; inset: 0; background: #b80f1a; mix-blend-mode: color; opacity: calc(var(--grade) * .42); pointer-events: none; }
+.anime-art-scrim { position: absolute; inset: 0; background: linear-gradient(90deg, #0b0b0cd9, transparent 60%), linear-gradient(0deg, #0b0b0cf2, #0b0b0cbf 20%, transparent 60%); pointer-events: none; }
+.anime-index { position: absolute; top: 10px; right: 14px; color: #e9e2d0; writing-mode: vertical-rl; }
+.anime-hover-light, .anime-mist-overlay, .anime-eye-beacon, .anime-embers { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.anime-hover-light { background: radial-gradient(ellipse at 50% 36%, #ff3b47, transparent 62%); }
+.anime-hero:focus-within .anime-hover-light { opacity: .12 !important; }
+.anime-mist-overlay { overflow: hidden; opacity: calc(var(--mist-alpha) * var(--art-glow-fade)); }
+.anime-mist { position: absolute; inset: -18%; background: radial-gradient(ellipse 46% 21% at 55% 74%, #8f0a125c, transparent 72%); mix-blend-mode: screen; }
+.anime-mist-a { transform: translate3d(calc(var(--mist-a) + var(--art-x) * .6), 0, 0); }
+.anime-mist-b { background: radial-gradient(ellipse 40% 30% at 40% 35%, #e9e2d026, transparent 72%); transform: translate3d(var(--mist-b), 6%, 0); }
+.anime-mist-c { background: radial-gradient(ellipse 55% 24% at 60% 62%, #b80f1a40, transparent 70%); transform: translate3d(var(--mist-c), -5%, 0); }
+.anime-eye-beacon { overflow: hidden; opacity: calc(var(--eye-alpha) * var(--art-glow-fade)); mix-blend-mode: screen; }
+.anime-eyes {
+  position: absolute; left: var(--eye-x); top: var(--eye-y); width: 9%; height: 2.4%;
+  transform: translate(-50%, -50%); opacity: calc(var(--eye-pulse) * var(--eye-flare));
+  background: radial-gradient(ellipse 24% 70% at 22% 40%, #fff4e9 2%, #ff6c63a6 30%, transparent 100%), radial-gradient(ellipse 24% 70% at 78% 60%, #fff4e9 2%, #ff3b47a6 30%, transparent 100%);
+}
+.anime-embers { opacity: calc(var(--ember-alpha) * var(--art-glow-fade)); }
+.anime-rim { position: absolute; inset: 0; background: linear-gradient(105deg, transparent 45%, #e9e2d0 50%, transparent 55%); transform: translateX(var(--rim-shift)); opacity: var(--rim-alpha); mix-blend-mode: screen; pointer-events: none; }
+.anime-glitch { position: absolute; inset: 0; background: url('/hero/art.webp') center/100% 100%; opacity: var(--glitch-alpha); mix-blend-mode: screen; clip-path: inset(28% 0 52%); pointer-events: none; }
+.anime-glitch-red { transform: translateX(-2px); filter: sepia(1) saturate(4) hue-rotate(320deg); }
+.anime-glitch-blue { transform: translateX(2px); filter: sepia(1) saturate(3) hue-rotate(170deg); }
+.anime-hero[data-art-quality="limited"] .anime-glitch { display: none; }
+.anime-hero[data-art-motion="static"] :is(.anime-embers,.anime-glitch,.anime-rim),
+.anime-hero[data-art-motion="waiting"] :is(.anime-embers,.anime-glitch,.anime-rim) { display: none; }
+.artwork-credit { margin-top: 24px; color: #a5a5aa; }
+.artwork-credit a { display: inline; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.artwork-credit a:hover { color: #ff3b47; }
+@media (prefers-reduced-motion: reduce) {
+  .anime-hero :is(.anime-embers,.anime-glitch,.anime-rim) { display: none; }
+  .anime-hero :is(.anime-intro,.anime-scroll,.anime-parallax,.anime-breath,.anime-ken-burns,.anime-mist) { transform: none !important; filter: none !important; clip-path: none !important; }
+  .anime-eye-beacon { opacity: 1; }
+}
+html[data-motion-paused="true"] .anime-hero :is(.anime-embers,.anime-glitch,.anime-rim) { display: none; }
+html[data-motion-paused="true"] .anime-hero :is(.anime-intro,.anime-scroll,.anime-parallax,.anime-breath,.anime-ken-burns,.anime-mist) { transform: none !important; filter: none !important; clip-path: none !important; }

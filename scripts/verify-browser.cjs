@@ -209,7 +209,7 @@ test("first intro curtains finish before the hero entrance and repeat visits ski
   );
   await page.close();
 });
-test("torch starts dark and reveals the actual photo and accent backing with a real mask", async () => {
+test("torch starts dim and reveals the supplied artwork with a real mask", async () => {
   const torch = desktop.locator("[data-torch]");
   assert.equal(
     await torch
@@ -233,8 +233,8 @@ test("torch starts dark and reveals the actual photo and accent backing with a r
       .evaluate((el) => el.complete && el.naturalWidth > 0),
     true,
   );
-  assert.equal(await torch.locator(".torch-subject .portrait-yellow").count(), 1);
-  assert.equal(await torch.locator(".torch-dim").evaluate(el=>getComputedStyle(el).opacity), "0.1");
+  assert.equal(await torch.locator(".torch-subject .anime-image").count(), 1);
+  assert.equal(await torch.locator(".torch-dim").evaluate(el=>getComputedStyle(el).opacity), "0.35");
   assert.equal(await torch.locator(".torch-subject").getAttribute("aria-hidden"), "true");
   assert.equal(await torch.locator(".torch-ambient").evaluate(el=>getComputedStyle(el).opacity), "1");
   await desktop.waitForFunction(()=>Number(getComputedStyle(document.querySelector(".torch-instruction")).opacity)<.01,{},{timeout:15000});
