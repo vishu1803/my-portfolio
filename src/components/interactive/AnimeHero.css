@@ -1,73 +1,64 @@
-/* Presets: ink-red (default) --grade:.85; monochrome-red --grade:1,
-   --art-saturation:0; original --grade:0, --art-saturation:1. */
+/* Ink-red default; --grade:0 restores the supplied colours. Eye coordinates are source-relative. */
 .anime-hero {
-  --grade: .85;
-  --art-saturation: calc(1 - var(--grade) * .45);
-  --art-pos: 50% 50%;
-  --eye-x: 49.75%;
-  --eye-y: 26.35%;
-  --art-reveal: 0%; --art-intro-scale: 1; --art-blur: 0px;
-  --art-breath: 1; --art-lift: 0px; --art-zoom: 1.04;
-  --art-drift-x: -4px; --art-drift-y: 3px;
-  --art-x: 0px; --art-y: 0px; --art-rx: 0deg; --art-ry: 0deg;
-  --art-scroll-y: 0px; --art-glow-fade: 1;
-  --mist-a: -9%; --mist-b: 8%; --mist-c: -7%; --mist-alpha: 1;
-  --eye-alpha: 1; --eye-pulse: .8; --eye-flare: 1;
-  --rim-shift: -130%; --rim-alpha: 0; --glitch-alpha: 0; --ember-alpha: 1;
-  position: relative; width: 100%; aspect-ratio: 4/4.7; isolation: isolate;
+  --grade:.85; --art-pos:50% 50%; --eye-x:49.75%; --eye-y:26.35%;
+  --art-reveal:0%; --art-intro-scale:1; --art-blur:0px; --art-breath:1; --art-lift:0px;
+  --art-zoom:1; --art-drift-x:0%; --art-drift-y:0%; --pointer-x:0; --pointer-y:0;
+  --mist-0:-12%; --mist-1:12%; --mist-2:-12%; --mist-alpha:1; --eye-alpha:1;
+  --eye-pulse:.7; --eye-scale:1; --flare-alpha:0; --flare-scale:1; --ember-alpha:1;
+  --ray-angle:-6deg; --punch:1; --glitch-alpha:0; --streak-alpha:0; --streak-x:-120%;
+  position:relative; width:100%; height:100%; isolation:isolate; container-type:size;
 }
-.anime-hero .torch-dim { opacity: .35; }
-.anime-hero .hero-photo { height: 100%; }
-.anime-art, .anime-edge-mask {
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 7%, #000 80%, transparent), linear-gradient(to right, transparent, #000 10%, #000 88%, transparent);
-  mask-image: linear-gradient(to bottom, transparent, #000 7%, #000 80%, transparent), linear-gradient(to right, transparent, #000 10%, #000 88%, transparent);
-  -webkit-mask-composite: source-in; mask-composite: intersect;
+.anime-hero .hero-torch,.anime-hero .hero-photo { height:100%; aspect-ratio:auto; }
+.anime-hero .torch-dim { opacity:.62; }
+.anime-art,.anime-edge-mask {
+  mask-image:linear-gradient(to right,transparent 0%,#000 22%),linear-gradient(to bottom,transparent,#000 10%,#000 76%,transparent);
+  mask-composite:intersect;
+  -webkit-mask-image:linear-gradient(to right,transparent 0%,#000 22%),linear-gradient(to bottom,transparent,#000 10%,#000 76%,transparent);
+  -webkit-mask-composite:source-in;
 }
-.anime-intro, .anime-scroll, .anime-parallax, .anime-breath, .anime-ken-burns {
-  position: absolute; inset: 0; transform-origin: center;
-}
-.anime-intro { clip-path: inset(0 0 var(--art-reveal) 0); transform: scale(var(--art-intro-scale)); filter: blur(var(--art-blur)); }
-.anime-scroll { transform: translate3d(0, var(--art-scroll-y), 0); }
-.anime-parallax { transform: perspective(1000px) translate3d(var(--art-x), var(--art-y), 0) rotateX(var(--art-rx)) rotateY(var(--art-ry)); }
-.anime-breath { transform: translateY(var(--art-lift)) scale(var(--art-breath)); }
-.anime-ken-burns { transform: translate3d(var(--art-drift-x), var(--art-drift-y), 0) scale(var(--art-zoom)); }
-.anime-cover-plane {
-  position: absolute; width: var(--cover-width, 209.07%); height: var(--cover-height, 100%);
-  left: var(--cover-left, -54.535%); top: var(--cover-top, 0px);
-}
-.anime-image { object-fit: cover; object-position: var(--art-pos); filter: grayscale(calc(var(--grade) * .6)) saturate(var(--art-saturation)) contrast(calc(1 + var(--grade) * .08)); }
-.anime-grade { position: absolute; inset: 0; background: #b80f1a; mix-blend-mode: color; opacity: calc(var(--grade) * .42); pointer-events: none; }
-.anime-art-scrim { position: absolute; inset: 0; background: linear-gradient(90deg, #0b0b0cd9, transparent 60%), linear-gradient(0deg, #0b0b0cf2, #0b0b0cbf 20%, transparent 60%); pointer-events: none; }
-.anime-index { position: absolute; top: 10px; right: 14px; color: #e9e2d0; writing-mode: vertical-rl; }
-.anime-hover-light, .anime-mist-overlay, .anime-eye-beacon, .anime-embers { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-.anime-hover-light { background: radial-gradient(ellipse at 50% 36%, #ff3b47, transparent 62%); }
-.anime-hero:focus-within .anime-hover-light { opacity: .12 !important; }
-.anime-mist-overlay { overflow: hidden; opacity: calc(var(--mist-alpha) * var(--art-glow-fade)); }
-.anime-mist { position: absolute; inset: -18%; background: radial-gradient(ellipse 46% 21% at 55% 74%, #8f0a125c, transparent 72%); mix-blend-mode: screen; }
-.anime-mist-a { transform: translate3d(calc(var(--mist-a) + var(--art-x) * .6), 0, 0); }
-.anime-mist-b { background: radial-gradient(ellipse 40% 30% at 40% 35%, #e9e2d026, transparent 72%); transform: translate3d(var(--mist-b), 6%, 0); }
-.anime-mist-c { background: radial-gradient(ellipse 55% 24% at 60% 62%, #b80f1a40, transparent 70%); transform: translate3d(var(--mist-c), -5%, 0); }
-.anime-eye-beacon { overflow: hidden; opacity: calc(var(--eye-alpha) * var(--art-glow-fade)); mix-blend-mode: screen; }
-.anime-eyes {
-  position: absolute; left: var(--eye-x); top: var(--eye-y); width: 9%; height: 2.4%;
-  transform: translate(-50%, -50%); opacity: calc(var(--eye-pulse) * var(--eye-flare));
-  background: radial-gradient(ellipse 24% 70% at 22% 40%, #fff4e9 2%, #ff6c63a6 30%, transparent 100%), radial-gradient(ellipse 24% 70% at 78% 60%, #fff4e9 2%, #ff3b47a6 30%, transparent 100%);
-}
-.anime-embers { opacity: calc(var(--ember-alpha) * var(--art-glow-fade)); }
-.anime-rim { position: absolute; inset: 0; background: linear-gradient(105deg, transparent 45%, #e9e2d0 50%, transparent 55%); transform: translateX(var(--rim-shift)); opacity: var(--rim-alpha); mix-blend-mode: screen; pointer-events: none; }
-.anime-glitch { position: absolute; inset: 0; background: url('/hero/art.webp') center/100% 100%; opacity: var(--glitch-alpha); mix-blend-mode: screen; clip-path: inset(28% 0 52%); pointer-events: none; }
-.anime-glitch-red { transform: translateX(-2px); filter: sepia(1) saturate(4) hue-rotate(320deg); }
-.anime-glitch-blue { transform: translateX(2px); filter: sepia(1) saturate(3) hue-rotate(170deg); }
-.anime-hero[data-art-quality="limited"] .anime-glitch { display: none; }
-.anime-hero[data-art-motion="static"] :is(.anime-embers,.anime-glitch,.anime-rim),
-.anime-hero[data-art-motion="waiting"] :is(.anime-embers,.anime-glitch,.anime-rim) { display: none; }
-.artwork-credit { margin-top: 24px; color: #a5a5aa; }
-.artwork-credit a { display: inline; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
-.artwork-credit a:hover { color: #ff3b47; }
-@media (prefers-reduced-motion: reduce) {
-  .anime-hero :is(.anime-embers,.anime-glitch,.anime-rim) { display: none; }
-  .anime-hero :is(.anime-intro,.anime-scroll,.anime-parallax,.anime-breath,.anime-ken-burns,.anime-mist) { transform: none !important; filter: none !important; clip-path: none !important; }
-  .anime-eye-beacon { opacity: 1; }
-}
-html[data-motion-paused="true"] .anime-hero :is(.anime-embers,.anime-glitch,.anime-rim) { display: none; }
-html[data-motion-paused="true"] .anime-hero :is(.anime-intro,.anime-scroll,.anime-parallax,.anime-breath,.anime-ken-burns,.anime-mist) { transform: none !important; filter: none !important; clip-path: none !important; }
+.anime-intro,.anime-scroll,.anime-camera { position:absolute; inset:0; transform-origin:var(--face-x,50%) var(--face-y,26.35%); }
+.anime-intro { clip-path:inset(var(--art-reveal) 0 0); transform:scale(var(--art-intro-scale)); filter:blur(var(--art-blur)); }
+.anime-scroll { transform:scale(var(--dolly-scale,1)); }
+.anime-cover-plane { position:absolute; width:var(--cover-width,max(100cqw,177.9322328cqh)); height:var(--cover-height,max(100cqh,56.2011719cqw)); left:var(--cover-left,calc((100cqw - max(100cqw,177.9322328cqh))*.5)); top:var(--cover-top,calc((100cqh - max(100cqh,56.2011719cqw))*.5)); }
+.anime-image { object-fit:cover; filter:grayscale(calc(var(--grade)*.65)) saturate(calc(1 - var(--grade)*.3)) contrast(1.1); }
+.anime-grade { position:absolute; inset:0; background:#b80f1a; mix-blend-mode:color; opacity:calc(var(--grade)*.6); }
+.anime-atmosphere,.anime-hover-light { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+.anime-atmosphere { overflow:hidden; }
+.anime-rays { position:absolute; inset:-15%; background:repeating-conic-gradient(from 0deg at 50% 28%,transparent 0deg 10deg,#ffb4a1 14deg,transparent 19deg 31deg); mix-blend-mode:screen; opacity:calc(var(--mist-alpha)*var(--ray-opacity)*(.7 + var(--eye-pulse)*.3)); transform:translate(calc(var(--pointer-x)*var(--parallax-bg)),calc(var(--pointer-y)*var(--parallax-bg))) rotate(var(--ray-angle)); mask-image:radial-gradient(ellipse at 50% 30%,transparent 14%,#000 35%,transparent 68%); }
+.anime-aura { position:absolute; inset:0; background:radial-gradient(ellipse 26% 28% at 50% 35%,#b80f1a73,transparent 95%); opacity:calc(var(--eye-alpha)*(.6 + var(--dolly-glow,0)*.4)); mix-blend-mode:screen; }
+.anime-shadow-wrap { position:absolute; inset:0; mix-blend-mode:multiply; opacity:calc(var(--shadow-opacity)*var(--mist-alpha)); }
+.anime-shadow-raster { position:absolute; top:0; left:0; width:512px; height:287.75px; transform:scale(var(--shadow-scale,3)); transform-origin:0 0; will-change:transform; contain:paint; }
+.anime-shadow { display:block; width:512px; height:287.75px; }
+.anime-mist-overlay { position:absolute; inset:0; opacity:var(--mist-alpha); transform:translateY(calc(var(--dolly-progress,0)*-5%)); }
+.anime-mist { position:absolute; inset:-10%; background:radial-gradient(ellipse 48% 21% at 55% 75%,#b80f1a,transparent 75%); mix-blend-mode:screen; }
+.anime-mist-0 { transform:translate(calc(var(--mist-0) + var(--pointer-x)*var(--parallax-mist)),5%); }
+.anime-mist-1 { background:radial-gradient(ellipse 35% 28% at 42% 45%,#5e1b23,transparent 80%); transform:translate(var(--mist-1),-7%); }
+.anime-mist-2 { background:radial-gradient(ellipse 55% 24% at 60% 82%,#420912,transparent 76%); transform:translate(var(--mist-2),2%); }
+.anime-eye-beacon { position:absolute; inset:0; opacity:var(--eye-alpha); mix-blend-mode:screen; }
+.anime-eyes { position:absolute; left:var(--eye-x); top:var(--eye-y); width:9%; height:3.2%; transform:translate(-50%,-50%) scale(var(--eye-scale)); opacity:var(--eye-pulse); background:radial-gradient(ellipse 26% 65% at 22% 40%,#fff4e9 8%,#ff6c63 35%,#ff3b4733 66%,transparent),radial-gradient(ellipse 26% 65% at 78% 60%,#fff4e9 8%,#ff6c63 35%,#ff3b4733 66%,transparent); }
+.anime-eye-ring { position:absolute; left:var(--eye-x); top:var(--eye-y); width:10%; aspect-ratio:1; border:1px solid #ffada5; border-radius:50%; opacity:var(--flare-alpha); transform:translate(-50%,-50%) scale(var(--flare-scale)); background:radial-gradient(#ff3b4766,transparent 65%); }
+.anime-pointer-light { position:absolute; width:65%; height:65%; left:17.5%; top:10%; border-radius:50%; background:radial-gradient(ellipse,#ffad70, #b80f1a66 45%,transparent 70%); mix-blend-mode:soft-light; opacity:calc(var(--light-strength)*var(--mist-alpha)); transform:translate(calc(var(--pointer-x)*45%),calc(var(--pointer-y)*35%)); }
+.anime-embers { position:absolute; inset:0; width:100%; height:100%; opacity:var(--ember-alpha); transform:translate(calc(var(--pointer-x)*var(--parallax-particles)),calc(var(--pointer-y)*var(--parallax-particles))); }
+.anime-hover-light { background:radial-gradient(ellipse at 50% 36%,#ff3b47,transparent 65%); }
+.anime-glitch { position:absolute; inset:0; opacity:var(--glitch-alpha); clip-path:inset(20% 0 55%); mix-blend-mode:screen; }
+.anime-split-red,.anime-split-blue { position:absolute; inset:0; background-position:center; background-size:100% 100%; }
+.anime-split-red { transform:translateX(-5px); filter:sepia(1) saturate(4) hue-rotate(320deg); }
+.anime-split-blue { transform:translateX(5px); filter:sepia(1) saturate(3) hue-rotate(170deg); }
+.anime-streak { position:absolute; inset:0; background:linear-gradient(112deg,transparent 42%,#e9e2d0aa 43%,transparent 44%,transparent 49%,#ff3b4788 50%,transparent 51%); opacity:var(--streak-alpha); transform:translateX(var(--streak-x)); }
+.anime-hero[data-art-quality="limited"] :is(.anime-glitch,.anime-streak,.anime-eye-ring) { display:none; }
+.anime-hero[data-art-motion="static"] :is(.anime-embers,.anime-glitch,.anime-streak,.anime-eye-ring,.anime-shadow-wrap) { display:none; }
+.anime-hero[data-art-motion="static"] :is(.anime-intro,.anime-scroll,.anime-camera,.anime-mist) { transform:none; filter:none; clip-path:none; }
+.anime-hero[data-art-motion="static"] :is(.anime-eye-beacon,.anime-mist-overlay) { opacity:1; }
+.artwork-credit { margin-top:24px; color:#a5a5aa; }
+.artwork-credit a { display:inline; color:inherit; text-decoration:underline; text-underline-offset:3px; }
+.artwork-credit a:hover { color:#ff3b47; }
+/* Measured sustained frame pressure drops only costly filters, never the entire scene. */
+.anime-hero[data-effects-budget="reduced"] :is(.anime-shadow-wrap,.anime-rays,.anime-pointer-light,.anime-glitch,.anime-streak) { display:none; }
+.anime-hero[data-effects-budget="reduced"] .anime-mist { filter:none!important; mix-blend-mode:normal; }
+.anime-hero[data-art-motion="running"] .anime-camera { will-change:transform; backface-visibility:hidden; }
+/* On a slow renderer the surrounding hero scrim supplies the edge blend; keep
+   the flashlight's radial mask but avoid two extra full-image filter passes. */
+.anime-hero[data-effects-budget="reduced"] .anime-image { filter:none; }
+.anime-hero[data-effects-budget="reduced"] .anime-art { mask-image:none; -webkit-mask-image:none; }
+.anime-hero[data-effects-budget="reduced"] .anime-grade { mix-blend-mode:normal; opacity:calc(var(--grade)*.22); }
+.anime-hero[data-effects-budget="reduced"] :is(.anime-eye-beacon,.anime-aura) { mix-blend-mode:normal; }

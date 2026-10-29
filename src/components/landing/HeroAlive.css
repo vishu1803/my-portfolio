@@ -1,0 +1,66 @@
+/* Every composition rule is scoped to this hero; section order and all other scenes stay intact. */
+.editorial-hero.alive-hero {
+  --dolly-scale:1; --dolly-glow:0; --dolly-progress:0;
+  min-height:max(860px,100svh); padding:126px var(--gutter) 32px; display:flex; isolation:isolate;
+}
+.alive-hero .hero-art-stage { position:absolute; inset:60px 0 0 34%; z-index:0; }
+.alive-hero .hero-calm-scrim { position:absolute; inset:0; z-index:1; pointer-events:none; background:linear-gradient(90deg,#0b0b0c 0%,#0b0b0cf2 31%,#0b0b0cc9 43%,#0b0b0c66 53%,transparent 64%),linear-gradient(0deg,#0b0b0c 0%,#0b0b0ce6 14%,transparent 40%); }
+.alive-hero .hero-grain { z-index:2; opacity:.3; animation:none; }
+.alive-hero .hero-topline { display:flex; justify-content:space-between; gap:20px; position:relative; z-index:3; color:#a5a5aa; font-size:11px; }
+.alive-hero .hero-story { position:relative; z-index:3; margin-top:auto; padding-top:70px; width:64%; pointer-events:none; }
+.alive-hero .hero-story a,.alive-hero .hero-story button { pointer-events:auto; }
+.alive-hero .hero-kicker { color:#a5a5aa; font-size:11px; margin-bottom:20px; }
+.alive-hero .hero-name { font-family:var(--font-condensed); font-size:clamp(64px,8.8vw,158px); line-height:.91; font-weight:700; letter-spacing:-.025em; text-transform:none; overflow:visible; padding:0; margin:0 0 24px; }
+.alive-hero .hero-line-clip { display:block; overflow:hidden; padding:3px 0 9px; margin-bottom:-5px; }
+.alive-hero [data-hero-line] { display:block; }
+.alive-hero .hero-name .hero-line-clip { padding-bottom:.14em; margin-bottom:-.1em; }
+.alive-hero .hero-surname { font-size:1.24em; color:#e9e2d0; }
+.alive-hero .hero-name-period { color:#ff3b47; }
+.alive-hero .hero-tagline { font:400 clamp(25px,2.4vw,36px)/1.08 var(--font-display); margin:8px 0 22px; color:#e9e2d0; }
+.alive-hero .hero-tagline em { font-weight:400; }
+.alive-hero .hero-actions { display:flex; gap:26px; flex-wrap:wrap; padding:3px 0 8px; }
+.alive-hero .hero-facts { font-size:11px; line-height:1.8; color:#a5a5aa; margin:24px 0 0; max-width:60ch; }
+.alive-hero .hero-footer-strip { position:relative; z-index:3; display:flex; align-items:end; justify-content:space-between; gap:24px; margin-top:52px; padding-top:18px; border-top:1px solid #e9e2d033; font-size:10px; line-height:1.85; color:#a5a5aa; }
+.alive-hero .hero-footer-strip em { font-style:normal; }
+.alive-hero .hero-scroll-cue { display:flex; gap:12px; align-items:center; margin-right:170px; white-space:nowrap; }
+.alive-hero .torch-inspect { top:54px; bottom:auto; left:auto; right:var(--gutter); width:auto; min-height:44px; font-size:10px; border-radius:24px; z-index:8; }
+.alive-hero .torch-instruction { display:block; top:auto; bottom:25%; left:44%; right:var(--gutter); font-size:10px!important; text-align:left; width:max-content; max-width:65%; }
+.alive-hero .torch-instruction .status-dot { animation:none; background:#ff3b47; border-radius:45% 50% 40% 45%; }
+.alive-hero .hero-ink-wipe { position:absolute; inset:0; z-index:6; pointer-events:none; background:linear-gradient(100deg,#0b0b0c 0%,#25090d 65%,#8f0a12); transform:scaleX(0); transform-origin:right center; }
+.alive-hero .hero-motion-notice { position:absolute; top:166px; left:var(--gutter); z-index:7; display:flex; flex-wrap:wrap; align-items:center; gap:12px; width:fit-content; margin-top:18px; padding:10px 14px; border:1px solid #a5a5aa66; background:#0b0b0c; color:#e9e2d0; font:11px/1.5 var(--font-mono); }
+.alive-hero .hero-motion-notice button { display:flex; align-items:center; gap:8px; min-height:44px; text-decoration:underline; text-underline-offset:4px; }
+.alive-hero .hero-motion-notice button:disabled { text-decoration:none; color:#a5a5aa; }
+.alive-hero .hero-motion-debug { position:fixed; top:100px; right:12px; z-index:150; width:250px; padding:14px; background:#0b0b0cf5; color:#e9e2d0; border:1px solid #ff3b47; font:11px/1.5 var(--font-mono); pointer-events:none; }
+.alive-hero .hero-motion-debug pre { margin-top:8px; font:inherit; white-space:pre-wrap; }
+@media(max-width:899px) {
+  .editorial-hero.alive-hero { min-height:max(920px,100svh); padding-top:145px; }
+  .alive-hero .hero-story { width:90%; padding-top:240px; }
+  .alive-hero .hero-art-stage { inset:90px -18% 16% 10%; }
+  .alive-hero .hero-calm-scrim { background:linear-gradient(90deg,#0b0b0cc9,transparent 55%),linear-gradient(0deg,#0b0b0c 12%,#0b0b0cf2 37%,#0b0b0c80 57%,transparent 78%); }
+  .alive-hero .hero-name { font-size:clamp(64px,12vw,105px); }
+  .alive-hero .hero-footer-strip { flex-wrap:wrap; margin-top:38px; gap:12px 30px; padding-bottom:50px; }
+  .alive-hero .hero-scroll-cue { margin-right:0; }
+  .alive-hero .torch-instruction { left:30%; bottom:auto; top:43%; max-width:60%; }
+  .alive-hero .torch-inspect { right:20%; top:60px; }
+}
+@media(max-width:600px) {
+  .editorial-hero.alive-hero { min-height:1040px; padding:148px 24px 22px; }
+  .alive-hero .hero-topline { font-size:9px; gap:10px; }
+  .alive-hero .hero-story { width:100%; padding-top:180px; margin-top:0; }
+  .alive-hero .hero-kicker { font-size:9px; margin-bottom:16px; }
+  .alive-hero .hero-name { font-size:16.6vw; }
+  .alive-hero .hero-tagline { font-size:27px; margin-top:18px; }
+  .alive-hero .hero-facts { font-size:10px; max-width:34ch; }
+  .alive-hero .hero-art-stage { inset:100px -28% 30% -6%; }
+  .alive-hero .hero-footer-strip { font-size:10.5px; margin-top:34px; padding-bottom:55px; }
+  .alive-hero .torch-inspect { top:54px; right:26%; font-size:9px; }
+  .alive-hero .torch-instruction { top:34%; left:26%; font-size:9px!important; }
+  .alive-hero .hero-motion-debug { top:140px; width:210px; font-size:10px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .alive-hero .hero-grain,.alive-hero .status-dot { animation:none!important; }
+}
+body:has(.alive-hero[data-hero-in-view="true"]) .animation-toggle::before { content:""; display:inline-block; width:9px; height:10px; margin-right:9px; background:linear-gradient(90deg,currentColor 0 3px,transparent 3px 6px,currentColor 6px); }
+
+@media(max-width:600px) { .alive-hero .hero-motion-notice { top:200px; left:24px; right:24px; } }
+.alive-hero:has([data-effects-budget="reduced"]) .hero-art-stage::after { content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(180deg,#0b0b0c,transparent 20%); }

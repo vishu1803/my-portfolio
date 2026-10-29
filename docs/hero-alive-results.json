@@ -1,0 +1,174 @@
+{
+  "desktop": {
+    "fetchTime": "2026-10-29T09:21:58.190Z",
+    "scores": {
+      "performance": 0.93,
+      "accessibility": 0.96,
+      "best-practices": 1
+    },
+    "metrics": {
+      "largest-contentful-paint": "0.9\u00a0s",
+      "total-blocking-time": "120\u00a0ms",
+      "cumulative-layout-shift": "0"
+    },
+    "sample": {
+      "reduced": false,
+      "cores": 9,
+      "memory": 8,
+      "paused": "false",
+      "state": {
+        "animeHero": "true",
+        "artMotion": "running",
+        "artQuality": "full",
+        "rafRunning": "true",
+        "fps": "30",
+        "filterFps": "0",
+        "effectsBudget": "reduced"
+      },
+      "debug": "MOTION / DEVELOPER VIEW\nReduced motion: off\nPaused: off\nLow power: off\nSession override: off\nrAF: yes\nFPS: 30 (hero loop)\nSVG updates/s: 0\nState: running\nEffects budget: reduced\nViewport: 1440 \u00d7 960\nmist: mounted\nembers: mounted\neyes: mounted\nparallax: mounted\ngrain: mounted\nshadow: mounted (hidden)\nrays: mounted (hidden)",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "overflow": false,
+      "heading": "Vishwanath\nNishad.",
+      "headingStyle": {
+        "opacity": "1",
+        "transform": "matrix(1, 0, 0, 1, 0, 0)"
+      },
+      "image": "http://127.0.0.1:3199/_next/image?url=%2Fhero%2Fart.webp&w=1920&q=75",
+      "canvas": {
+        "width": 947,
+        "height": 900
+      }
+    },
+    "consoleAudit": 1
+  },
+  "mobile": {
+    "fetchTime": "2026-10-29T09:22:12.209Z",
+    "scores": {
+      "performance": 0.85,
+      "accessibility": 0.96,
+      "best-practices": 1
+    },
+    "metrics": {
+      "largest-contentful-paint": "4.1\u00a0s",
+      "total-blocking-time": "130\u00a0ms",
+      "cumulative-layout-shift": "0.002"
+    },
+    "sample": {
+      "reduced": false,
+      "cores": 9,
+      "memory": 8,
+      "paused": "false",
+      "state": {
+        "animeHero": "true",
+        "artMotion": "running",
+        "artQuality": "limited",
+        "rafRunning": "true",
+        "fps": "60",
+        "filterFps": "0",
+        "effectsBudget": "reduced"
+      },
+      "debug": "MOTION / DEVELOPER VIEW\nReduced motion: off\nPaused: off\nLow power: off\nSession override: off\nrAF: yes\nFPS: 60 (hero loop)\nSVG updates/s: 0\nState: running\nEffects budget: reduced\nViewport: 390 \u00d7 844\nmist: mounted\nembers: mounted\neyes: mounted\nparallax: mounted\ngrain: mounted\nshadow: not mounted\nrays: mounted (hidden)",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "overflow": false,
+      "heading": "Vishwanath\nNishad.",
+      "headingStyle": {
+        "opacity": "1",
+        "transform": "matrix(1, 0, 0, 1, 0, 0)"
+      },
+      "image": "http://127.0.0.1:3199/_next/image?url=%2Fhero%2Fart.webp&w=640&q=75",
+      "canvas": {
+        "width": 523,
+        "height": 678
+      }
+    },
+    "consoleAudit": 1
+  },
+  "reduced-desktop": {
+    "fetchTime": "2026-10-29T09:22:29.325Z",
+    "scores": {
+      "performance": 0.99,
+      "accessibility": 0.96,
+      "best-practices": 1
+    },
+    "metrics": {
+      "largest-contentful-paint": "0.9\u00a0s",
+      "total-blocking-time": "70\u00a0ms",
+      "cumulative-layout-shift": "0"
+    },
+    "sample": {
+      "reduced": true,
+      "cores": 9,
+      "memory": 8,
+      "paused": "false",
+      "state": {
+        "animeHero": "true",
+        "artMotion": "static",
+        "artQuality": "limited",
+        "rafRunning": "false",
+        "fps": "0",
+        "filterFps": "0"
+      },
+      "debug": "MOTION / DEVELOPER VIEW\nReduced motion: on\nPaused: off\nLow power: off\nSession override: off\nrAF: no\nFPS: 0 (hero loop)\nSVG updates/s: 0\nState: static\nEffects budget: static\nViewport: 1440 \u00d7 960\nmist: mounted\nembers: not mounted\neyes: mounted\nparallax: mounted\ngrain: mounted\nshadow: not mounted\nrays: mounted",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "overflow": false,
+      "heading": "Vishwanath\nNishad.",
+      "headingStyle": {
+        "opacity": "1",
+        "transform": "none"
+      },
+      "image": "http://127.0.0.1:3199/_next/image?url=%2Fhero%2Fart.webp&w=1920&q=75",
+      "canvas": null
+    },
+    "consoleAudit": 1
+  },
+  "reduced-mobile": {
+    "fetchTime": "2026-10-29T09:22:40.954Z",
+    "scores": {
+      "performance": 0.87,
+      "accessibility": 0.96,
+      "best-practices": 1
+    },
+    "metrics": {
+      "largest-contentful-paint": "4.0\u00a0s",
+      "total-blocking-time": "80\u00a0ms",
+      "cumulative-layout-shift": "0.002"
+    },
+    "sample": {
+      "reduced": true,
+      "cores": 9,
+      "memory": 8,
+      "paused": "false",
+      "state": {
+        "animeHero": "true",
+        "artMotion": "static",
+        "artQuality": "limited",
+        "rafRunning": "false",
+        "fps": "0",
+        "filterFps": "0"
+      },
+      "debug": "MOTION / DEVELOPER VIEW\nReduced motion: on\nPaused: off\nLow power: off\nSession override: off\nrAF: no\nFPS: 0 (hero loop)\nSVG updates/s: 0\nState: static\nEffects budget: static\nViewport: 390 \u00d7 844\nmist: mounted\nembers: not mounted\neyes: mounted\nparallax: mounted\ngrain: mounted\nshadow: not mounted\nrays: mounted",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "overflow": false,
+      "heading": "Vishwanath\nNishad.",
+      "headingStyle": {
+        "opacity": "1",
+        "transform": "none"
+      },
+      "image": "http://127.0.0.1:3199/_next/image?url=%2Fhero%2Fart.webp&w=640&q=75",
+      "canvas": null
+    },
+    "consoleAudit": 1
+  }
+}
