@@ -1,5 +1,5 @@
 "use client";
-import useReducedMotion from "../../hooks/useMotionPreference";
+import useReducedMotion from "../../hooks/useChapterMotion";
 import { useRef } from "react";
 
 import gsap from "gsap";
@@ -18,7 +18,7 @@ export default function ContactPrelude() {
       const media=gsap.matchMedia();
       media.add(M.rail.media,()=>{
         gsap.to('.prelude-title-clip',{y:-M.prelude.travel,ease:'none',scrollTrigger:{trigger:root.current,start:'top top',end:'bottom top',scrub:.6}});
-        gsap.to('.prelude-extrusion > span',{x:i=>(i+1)*.55,y:i=>(i+1)*.55,opacity:.65,stagger:.02,duration:.6,
+        gsap.to('.prelude-extrusion > span',{x:i=>i+1,y:i=>i+1,opacity:.65,stagger:.02,duration:.6,
           scrollTrigger:{trigger:root.current,start:'top 35%',once:true}});
       });
       return ()=>media.revert();
@@ -37,7 +37,7 @@ export default function ContactPrelude() {
       <div className="prelude-rule" aria-hidden="true" />
       <div className="prelude-title-clip">
         <h2 id="prelude-heading" className="prelude-title">
-          <span className="prelude-extrusion" aria-hidden="true">{Array.from({ length: 8 }, (_, i) => <span key={i}>One last thing.</span>)}</span>
+          <span className="prelude-extrusion" aria-hidden="true">{Array.from({ length: 8 }, (_, i) => <span key={i} aria-hidden="true">One last thing.</span>)}</span>
           <span className="prelude-front">One last thing<span>.</span></span>
         </h2>
       </div>

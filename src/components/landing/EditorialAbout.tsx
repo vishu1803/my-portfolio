@@ -1,5 +1,5 @@
 "use client";
-import useReducedMotion from "../../hooks/useMotionPreference";
+import useReducedMotion from "../../hooks/useChapterMotion";
 import { useRef } from "react";
 
 import { LineReveal } from "../motion/TextReveals";

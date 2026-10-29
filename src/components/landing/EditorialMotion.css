@@ -13,8 +13,11 @@
 .toolkit-row { position:relative; border-top:0; }
 .toolkit-row-rule { position:absolute; inset:0 0 auto; height:1px; background:currentColor; opacity:.2; transform-origin:left; }
 .toolkit-row:first-child .toolkit-row-rule { display:none; }
-/* All words keep their contrast while the pointer moves across the toolkit. */
+/* Hover dim remains readable and is confined to interactive motion mode. */
 .toolkit-rows:has(.skill-word:hover) .skill-word:not(:hover),.toolkit-words:has(.skill-word:hover) .skill-word:not(:hover) { opacity:1; }
+@media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) {
+  .editorial-toolkit[data-chapter-static="false"] .toolkit-rows:has(.skill-word:hover) .skill-word:not(:hover) { opacity:.72; }
+}
 .prelude-line { overflow:clip; padding-bottom:.15em; margin-bottom:-.15em; }
 .prelude-line > span { display:block; }
 .prelude-front { display:block; }

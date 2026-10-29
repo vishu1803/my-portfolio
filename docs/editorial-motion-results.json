@@ -1,0 +1,160 @@
+{
+  "date": "2026-10-29",
+  "checks_passed": 28,
+  "profile": "Local Lighthouse simulated throttling with ?debug=motion; initial rendered state, no scroll automation.",
+  "results": {
+    "desktop": {
+      "performance": 98,
+      "accessibility": 100,
+      "best_practices": 100,
+      "lcp": "0.9\u00a0s",
+      "tbt": "0\u00a0ms",
+      "cls": 1.2488580351831393e-06,
+      "console_audit_passed": true,
+      "sample": {
+        "subject": {
+          "ghostLetters": 11,
+          "titleOpacity": "1",
+          "portraitWidth": 534.5625,
+          "portraitHeight": 641.46875,
+          "specRows": 4
+        },
+        "caseLayout": "vertical",
+        "caseActionLinks": 6,
+        "reduced": false,
+        "cores": 9,
+        "memory": 8,
+        "paused": "false",
+        "debug": "MOTION / DEVELOPER VIEW\nReduced motion: off\nPaused: off\nLow power: off\nSession override: off\nVideo state: poster\nTime: 0.00s\nPaused: true\nSource attached: no\nReady state: 0\nViewport: 1440 \u00d7 960",
+        "viewport": {
+          "width": 1440,
+          "height": 960
+        },
+        "overflow": false,
+        "heading": "Vishwanath\nNishad.",
+        "headingStyle": {
+          "opacity": "1",
+          "transform": "matrix(1, 0, 0, 1, 0, 0)"
+        },
+        "image": "http://127.0.0.1:3199/_next/image?url=%2Fhero%2Fvideo-poster.webp&w=1920&q=75",
+        "canvas": null
+      }
+    },
+    "mobile": {
+      "performance": 83,
+      "accessibility": 100,
+      "best_practices": 100,
+      "lcp": "4.0\u00a0s",
+      "tbt": "210\u00a0ms",
+      "cls": 0.001520598992394255,
+      "console_audit_passed": true,
+      "sample": {
+        "subject": {
+          "ghostLetters": 11,
+          "titleOpacity": "1",
+          "portraitWidth": 346,
+          "portraitHeight": 380.59375,
+          "specRows": 4
+        },
+        "caseLayout": "vertical",
+        "caseActionLinks": 6,
+        "reduced": false,
+        "cores": 9,
+        "memory": 8,
+        "paused": "false",
+        "debug": "MOTION / DEVELOPER VIEW\nReduced motion: off\nPaused: off\nLow power: off\nSession override: off\nVideo state: poster\nTime: 0.00s\nPaused: true\nSource attached: no\nReady state: 0\nViewport: 390 \u00d7 844",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "overflow": false,
+        "heading": "Vishwanath\nNishad.",
+        "headingStyle": {
+          "opacity": "1",
+          "transform": "matrix(1, 0, 0, 1, 0, 0)"
+        },
+        "image": "http://127.0.0.1:3199/_next/image?url=%2Fhero%2Fvideo-poster.webp&w=640&q=75",
+        "canvas": null
+      }
+    },
+    "reduced-desktop": {
+      "performance": 99,
+      "accessibility": 100,
+      "best_practices": 100,
+      "lcp": "0.9\u00a0s",
+      "tbt": "40\u00a0ms",
+      "cls": 0.0002136924426968884,
+      "console_audit_passed": true,
+      "sample": {
+        "subject": {
+          "ghostLetters": 11,
+          "titleOpacity": "1",
+          "portraitWidth": 534.5625,
+          "portraitHeight": 641.46875,
+          "specRows": 4
+        },
+        "caseLayout": "vertical",
+        "caseActionLinks": 6,
+        "reduced": true,
+        "cores": 9,
+        "memory": 8,
+        "paused": "false",
+        "debug": "MOTION / DEVELOPER VIEW\nReduced motion: on\nPaused: off\nLow power: off\nSession override: off\nVideo state: static\nTime: 0.00s\nPaused: true\nSource attached: no\nReady state: 0\nViewport: 1440 \u00d7 960",
+        "viewport": {
+          "width": 1440,
+          "height": 960
+        },
+        "overflow": false,
+        "heading": "Vishwanath\nNishad.",
+        "headingStyle": {
+          "opacity": "1",
+          "transform": "none"
+        },
+        "image": "http://127.0.0.1:3199/_next/image?url=%2Fhero%2Fvideo-poster.webp&w=1920&q=75",
+        "canvas": null
+      }
+    },
+    "reduced-mobile": {
+      "performance": 85,
+      "accessibility": 100,
+      "best_practices": 100,
+      "lcp": "4.0\u00a0s",
+      "tbt": "180\u00a0ms",
+      "cls": 0.001520598992394255,
+      "console_audit_passed": true,
+      "sample": {
+        "subject": {
+          "ghostLetters": 11,
+          "titleOpacity": "1",
+          "portraitWidth": 346,
+          "portraitHeight": 380.59375,
+          "specRows": 4
+        },
+        "caseLayout": "vertical",
+        "caseActionLinks": 6,
+        "reduced": true,
+        "cores": 9,
+        "memory": 8,
+        "paused": "false",
+        "debug": "MOTION / DEVELOPER VIEW\nReduced motion: on\nPaused: off\nLow power: off\nSession override: off\nVideo state: static\nTime: 0.00s\nPaused: true\nSource attached: no\nReady state: 0\nViewport: 390 \u00d7 844",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "overflow": false,
+        "heading": "Vishwanath\nNishad.",
+        "headingStyle": {
+          "opacity": "1",
+          "transform": "none"
+        },
+        "image": "http://127.0.0.1:3199/_next/image?url=%2Fhero%2Fvideo-poster.webp&w=640&q=75",
+        "canvas": null
+      }
+    }
+  },
+  "limitations": [
+    "Mobile performance target 90 is unmet.",
+    "No interactive branch preview, recordings or animation FPS verification.",
+    "Headless profiles use the vertical case fallback; this does not validate pointer-driven pinning."
+  ]
+}

@@ -1,5 +1,5 @@
 "use client";
-import useReducedMotion from "../../hooks/useMotionPreference";
+import useReducedMotion from "../../hooks/useChapterMotion";
 import gsap from "gsap";
 import useScrollScene from "../../hooks/useScrollScene";
 import Lenis from "lenis";

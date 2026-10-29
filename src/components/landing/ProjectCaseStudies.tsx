@@ -1,5 +1,5 @@
 "use client";
-import useReducedMotion from "../../hooks/useMotionPreference";
+import useReducedMotion from "../../hooks/useChapterMotion";
 import { useRef, useState } from "react";
 
 import { LineReveal } from "../motion/TextReveals";
@@ -61,6 +61,10 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
       el.dataset.caseLayout = 'rail';
       const distance = () => Math.max(0, rail.scrollWidth - frame.clientWidth);
       let stops = updateStops();
+      const heading = el.querySelector('.work-heading h2');
+      const velocity = {skew:0};
+      let settle: gsap.core.Tween | undefined;
+      const paintSkew = () => {if (heading) gsap.set(heading,{skewX:velocity.skew});};
       const sequence = gsap.to(rail, {
         x: () => -distance(), ease:'none',
         scrollTrigger: {
@@ -70,6 +74,9 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
           onUpdate:self=>{
             if(progress) gsap.set(progress,{scaleX:self.progress});
             setActive(activeCase(stops,self.progress*distance()));
+            velocity.skew=Math.max(-2,Math.min(2,self.getVelocity()/1000));
+            settle?.kill();
+            settle=gsap.to(velocity,{skew:0,duration:.22,onUpdate:paintSkew});
           },
         },
       });
@@ -83,7 +90,7 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
           {clipPath:'inset(0% 0% 0% 0%)',x:0,duration:M.image.duration,ease:index===0?M.entrance.ease:'none',scrollTrigger:trigger});
         gsap.fromTo(copy,{y:index===0?20:36},{y:0,duration:M.entrance.duration,ease:index===0?M.entrance.ease:'none',scrollTrigger:trigger});
       });
-      return ()=>{delete el.dataset.caseLayout;delete el.dataset.pinStart;delete el.dataset.pinEnd;};
+      return ()=>{settle?.kill();gsap.set(heading,{clearProps:'transform'});delete el.dataset.caseLayout;delete el.dataset.pinStart;delete el.dataset.pinEnd;};
     });
     return ()=>{
       media.revert();
@@ -178,16 +185,19 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
 
                       <div className="case-links">
                         <Magnetic>
-                          <button
-                            type="button"
+                          <a
+                            href={study.github}
+                            aria-haspopup={article && onSelectArticle ? 'dialog' : undefined}
                             className="case-file-cta"
                             aria-label={`View case file: ${study.title}`}
-                            onClick={() =>
-                              article && onSelectArticle?.(article)
-                            }
+                            onClick={event => {
+                              if (!article || !onSelectArticle || event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                              event.preventDefault();
+                              onSelectArticle(article);
+                            }}
                           >
                             View case file <span aria-hidden="true">→</span>
-                          </button>
+                          </a>
                         </Magnetic>
                         <a
                           href={study.github}

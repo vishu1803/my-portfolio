@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import gsap from "gsap";
 import useScrollScene from "../../hooks/useScrollScene";
-import useMotionPreference from "../../hooks/useMotionPreference";
+import useMotionPreference from "../../hooks/useChapterMotion";
 import { ArrowUpRight } from "lucide-react";
 import { HERO_ART } from "../../data/heroArt";
 

@@ -2,17 +2,19 @@
 import { ReactNode, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { isLowPowerDevice } from "../../lib/motionQuality";
-import useReducedMotion from "../../hooks/useMotionPreference";
+import useReducedMotion from "../../hooks/useChapterMotion";
 
 type Kind = "line" | "blur" | "marker";
 function Reveal({
   children,
   kind,
   className = "",
+  delay = 0,
 }: {
   children: ReactNode;
   kind: Kind;
   className?: string;
+  delay?: number;
 }) {
   const root = useRef<HTMLSpanElement>(null);
   const reduced = useReducedMotion();
@@ -40,31 +42,15 @@ function Reveal({
         ? { scaleX: 1 }
         : { yPercent: 0, y: 0, opacity: 1, filter: "blur(0px)" };
     const context = gsap.context(() => {}, node);
-    let prepared = false;
-    const prepare = () => {
-      if (prepared) return;
-      prepared = true;
-      context.add(() => gsap.set(target, from));
-    };
-    const preparation = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        prepare();
-        preparation.disconnect();
-      },
-      { rootMargin: "150px 0px" },
-    );
-    preparation.observe(node);
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
         observer.disconnect();
-        preparation.disconnect();
-        prepare();
         context.add(() =>
-          gsap.to(target, {
+          gsap.fromTo(target, from, {
             ...to,
             duration: kind === "marker" ? 0.8 : 0.7,
+            delay,
             ease: "power3.out",
           }),
         );
@@ -74,10 +60,9 @@ function Reveal({
     observer.observe(node);
     return () => {
       observer.disconnect();
-      preparation.disconnect();
       context.revert();
     };
-  }, [kind, reduced]);
+  }, [kind, reduced, delay]);
   return (
     <span
       ref={root}
@@ -113,8 +98,8 @@ export const BlurIn = ({
     {children}
   </Reveal>
 );
-export const MarkerSweep = ({ children }: { children: ReactNode }) => (
-  <Reveal kind="marker" className="marker-sweep">
+export const MarkerSweep = ({ children, delay = 0 }: { children: ReactNode; delay?: number }) => (
+  <Reveal kind="marker" className="marker-sweep" delay={delay}>
     {children}
   </Reveal>
 );

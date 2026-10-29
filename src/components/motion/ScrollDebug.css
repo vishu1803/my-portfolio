@@ -1,0 +1,2 @@
+.scroll-debug { position:fixed; z-index:95; bottom:16px; left:16px; width:min(450px,calc(100vw - 32px)); max-height:38svh; overflow:auto; background:var(--ink,#0b0b0c); color:var(--bone,#e9e2d0); border:1px solid currentColor; padding:12px; font:12px/1.5 var(--font-label),monospace; }
+.scroll-debug pre { white-space:pre-wrap; margin-top:8px; }

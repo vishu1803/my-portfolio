@@ -1,8 +1,9 @@
 "use client";
-import useReducedMotion from "../../hooks/useMotionPreference";
+import useReducedMotion from "../../hooks/useChapterMotion";
 import { useEffect, useRef } from "react";
 
 import gsap from "gsap";
+import { isLowPowerDevice } from "../../lib/motionQuality";
 export default function TerminalHeading({ text }: { text: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const reduced = useReducedMotion();
@@ -10,7 +11,7 @@ export default function TerminalHeading({ text }: { text: string }) {
     const node = ref.current;
     if (
       !node ||
-      reduced ||
+      reduced || isLowPowerDevice() ||
       matchMedia("(prefers-reduced-motion: reduce)").matches
     )
       return;

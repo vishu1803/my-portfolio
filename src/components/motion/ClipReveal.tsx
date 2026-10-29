@@ -2,7 +2,7 @@
 import { ReactNode, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { isLowPowerDevice } from "../../lib/motionQuality";
-import useMotionPreference from "../../hooks/useMotionPreference";
+import useMotionPreference from "../../hooks/useChapterMotion";
 
 export default function ClipReveal({ children, className = "" }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);

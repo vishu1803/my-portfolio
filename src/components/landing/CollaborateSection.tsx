@@ -1,5 +1,5 @@
 "use client";
-import useReducedMotion from "../../hooks/useMotionPreference";
+import useReducedMotion from "../../hooks/useChapterMotion";
 
 import { useEffect, useRef, useState, useId } from "react";
 import { createPortal } from "react-dom";
@@ -454,9 +454,8 @@ export default function CollaborateSection({
                     }
                     transition={{
                       layout: {
-                        type: "spring",
                         duration: reduced ? 0 : 0.65,
-                        bounce: 0.12,
+                        ease: [.76, 0, .24, 1],
                       },
                       opacity: { duration: reduced ? 0 : 0.2 },
                     }}
@@ -502,27 +501,27 @@ export default function CollaborateSection({
                           },
                         }}
                       >
-                        <Magnetic>
+                        <motion.span variants={{hidden:{opacity:0,y:12},visible:{opacity:1,y:0}}} transition={{duration:reduced?0:.35}}><Magnetic>
                           <a
                             href={`mailto:${email}`}
                             className="terminal-primary"
                           >
                             Start a Project <span aria-hidden="true">↗</span>
                           </a>
-                        </Magnetic>
-                        <Magnetic>
+                        </Magnetic></motion.span>
+                        <motion.span variants={{hidden:{opacity:0,y:12},visible:{opacity:1,y:0}}} transition={{duration:reduced?0:.35}}><Magnetic>
                           <button type="button" onClick={onOpenResume}>
                             View résumé <span aria-hidden="true">↗</span>
                           </button>
-                        </Magnetic>
-                        <Magnetic>
+                        </Magnetic></motion.span>
+                        <motion.span variants={{hidden:{opacity:0,y:12},visible:{opacity:1,y:0}}} transition={{duration:reduced?0:.35}}><Magnetic>
                           <button
                             type="button"
                             onClick={() => navigateTo("case-studies")}
                           >
                             Explore my work <span aria-hidden="true">↓</span>
                           </button>
-                        </Magnetic>
+                        </Magnetic></motion.span>
                       </motion.div>
                       <button
                         type="button"
@@ -596,7 +595,15 @@ export default function CollaborateSection({
                                 <Copy className="w-3.5 h-3.5" />
                               )}
                               <span className="hidden sm:inline">
-                                {copiedEmail ? "Copied" : "Copy"}
+                                <AnimatePresence mode="wait" initial={false}>
+                                  <motion.span key={copiedEmail ? 'copied' : 'copy'}
+                                    initial={reduced ? false : {opacity:0,y:4,rotateX:-15}}
+                                    animate={{opacity:1,y:0,rotateX:0}}
+                                    exit={reduced ? {opacity:0} : {opacity:0,y:-4,rotateX:15}}
+                                    transition={{duration:reduced?0:.16}}>
+                                    {copiedEmail ? "Copied" : "Copy"}
+                                  </motion.span>
+                                </AnimatePresence>
                               </span>
                             </button>
                           </div>
