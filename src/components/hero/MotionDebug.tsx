@@ -10,17 +10,18 @@ export default function MotionDebug({ scope, state }: { scope: RefObject<HTMLEle
   useEffect(() => {
     if (!enabled) return;
     const read = () => {
-      const hero = scope.current, art = hero?.querySelector<HTMLElement>('[data-anime-hero]');
-      const layers = ['embers', 'eyes', 'grain'];
+      const hero = scope.current;
+      const node = hero?.querySelector<HTMLElement>('[data-hero-video]');
+      const media = hero?.querySelector<HTMLVideoElement>('video');
       setReading([
-        `rAF: ${art?.dataset.rafRunning === 'true' ? 'yes' : 'no'}`,
-        `FPS: ${art?.dataset.fps ?? '0'} (hero loop)`,
-        `Emission paints/s: ${art?.dataset.emissionFps ?? '0'}`,
-        `State: ${art?.dataset.artMotion ?? 'initializing'}`,
-        `Effects budget: ${art?.dataset.effectsBudget ?? 'static'}`,
+        `Video state: ${node?.dataset.videoState ?? 'poster'}`,
+        `Time: ${media?.currentTime.toFixed(2) ?? '0.00'}s`,
+        `Paused: ${media?.paused ?? true}`,
+        `Source attached: ${media?.getAttribute('src') ? 'yes' : 'no'}`,
+        `Ready state: ${media?.readyState ?? 0}`,
         `Viewport: ${innerWidth} × ${innerHeight}`,
-        ...layers.map(layer => { const el = hero?.querySelector(`[data-layer="${layer}"]`); return `${layer}: ${el ? `mounted${el.getClientRects().length ? '' : ' (hidden)'}` : 'not mounted'}`; }),
       ].join('\n'));
+
     };
     read(); const timer = window.setInterval(read, 1000);
     return () => clearInterval(timer);

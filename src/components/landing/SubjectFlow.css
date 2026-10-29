@@ -1,0 +1,6 @@
+#home,#subject { scroll-margin-top:88px; }
+#subject .subject-title { padding-top:32px; padding-bottom:24px; }
+#subject .subject-columns { margin-top:48px; }
+#subject .subject-emphasis { text-decoration:underline; text-decoration-color:var(--blood); text-underline-offset:4px; text-decoration-thickness:1px; }
+#subject .subject-portrait img { transform:none; }
+@media(max-width:767px) { #subject .subject-title { padding-top:24px; padding-bottom:20px; } #subject .subject-columns { margin-top:30px; } }

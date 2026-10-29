@@ -4,10 +4,9 @@ import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ArrowDownRight, ArrowUpRight, Play } from 'lucide-react';
 import { useIntroReady } from '../motion/Preloader';
-import { loadScrollTrigger } from '../../hooks/useScrollScene';
 import useHeroMotion from '../../hooks/useHeroMotion';
 import { HERO_MOTION as M } from '../../config/heroMotion';
-import AnimeHero from '../interactive/AnimeHero';
+import HeroVideoBackground from '../interactive/HeroVideoBackground';
 import MotionDebug from '../hero/MotionDebug';
 import { LEETCODE_SOLVED } from '../../data/profile';
 import './HeroAlive.css';
@@ -30,38 +29,9 @@ export default function VideoReferenceHero({ onOpenResume }: { onOpenResume?: ()
     }, node);
     return () => context.revert();
   }, [introReady, state.ready, state.staticMode]);
-  useEffect(() => {
-    if (!root.current || state.staticMode || !introReady) return;
-    let live = true;
-    let context: gsap.Context | undefined;
-    let media: gsap.MatchMedia | undefined;
-    loadScrollTrigger().then(() => {
-      if (!live || !root.current) return;
-      context = gsap.context(() => {
-        media = gsap.matchMedia();
-        media.add('(min-width: 900px) and (min-height: 650px) and (pointer: fine)', () => {
-          // Native reduced motion remains unpinned even after the hero-only override.
-          if (state.reduced || state.lowPower) return;
-          const timeline = gsap.timeline({ scrollTrigger: { trigger: root.current, start: 'top top', end: () => `+=${innerHeight * M.scroll.pinVh / 100}`, pin: true, scrub: M.scroll.scrub, invalidateOnRefresh: true } });
-          timeline.to(root.current, { '--dolly-scale': M.scroll.zoom, '--dolly-glow': 1, '--dolly-progress': 1, duration: 1, ease: 'none' }, 0)
-            .to('.hero-story', { xPercent: -16, opacity: 0, duration: .55, ease: 'none' }, .28)
-            .to('.hero-ink-wipe', { scaleX: 1, duration: .22, ease: 'none' }, .78)
-            .to('.hero-ink-wipe', { opacity: 0, duration: .06, ease: 'none' }, .96);
-          const revealFocusedLink = () => {
-            const trigger = timeline.scrollTrigger;
-            if (trigger && trigger.progress > .2) { trigger.scroll(trigger.start); trigger.update(); }
-          };
-          const story = root.current?.querySelector('.hero-story');
-          story?.addEventListener('focusin', revealFocusedLink);
-          return () => story?.removeEventListener('focusin', revealFocusedLink);
-        });
-      }, root);
-    });
-    return () => { live = false; media?.revert(); context?.revert(); };
-  }, [introReady, state.staticMode, state.reduced, state.lowPower]);
 
-  return <section id="home" ref={root} className="editorial-hero alive-hero" data-scene="#0b0b0c" data-ink="light" data-hero-static={state.staticMode} aria-labelledby="hero-title">
-    <div className="hero-art-stage"><AnimeHero scope={root} staticMode={state.staticMode} ready={introReady && state.ready} limited={state.lowPower || state.reduced} /></div>
+  return <section id="home" ref={root} className="editorial-hero alive-hero video-hero" data-scene="#0b0b0c" data-ink="light" data-hero-static={state.staticMode} aria-labelledby="hero-title">
+    <div className="hero-art-stage"><HeroVideoBackground scope={root} staticMode={state.staticMode} /></div>
     <div className="hero-calm-scrim" aria-hidden="true" />
     <div className="film-grain hero-grain" data-layer="grain" aria-hidden="true" />
     <div className="hero-topline micro-label"><span><i className="status-dot" />A portfolio in five chapters / 2026</span><span>N° 01</span></div>

@@ -6,6 +6,8 @@ import { isLowPowerDevice } from "../../lib/motionQuality";
 
 type Props = {
   children?: ReactNode;
+  revealContent?: ReactNode;
+  revealOnScroll?: boolean;
   layers?: ReactNode;
   scope: RefObject<HTMLElement>;
   radius?: number;
@@ -17,7 +19,7 @@ type Props = {
 
 /** A dim accessible base plus a masked, presentational copy of the actual content. */
 export default function TorchReveal({
-  children, layers, scope, radius = 120, softness = 80, ambient = 0.1,
+  children, layers, revealContent, revealOnScroll = false, scope, radius = 120, softness = 80, ambient = 0.1,
   disabled = false, lowPower = false,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
@@ -71,7 +73,10 @@ export default function TorchReveal({
       finish(false);
       return () => { context.revert(); light.current = () => {}; };
     }
-    const measure = () => { needsMeasure = true; };
+    const measure = () => {
+      needsMeasure = true;
+      if (revealOnScroll && scrollY > 8 && target.getBoundingClientRect().bottom > 88) finish(false);
+    };
     const paint = (time: number) => {
       frame = 0;
       if (!visible || document.hidden || latched.current) return;
@@ -157,7 +162,7 @@ export default function TorchReveal({
       if (frame) cancelAnimationFrame(frame);
       context.revert(); light.current = () => {};
     };
-  }, [scope, reduced, disabled, lowPower, radius]);
+  }, [scope, reduced, disabled, lowPower, radius, revealOnScroll]);
   const content = layers ?? children;
   return (
     <div ref={ref} className="hero-torch" data-torch style={{
@@ -165,7 +170,7 @@ export default function TorchReveal({
       "--torch-softness": `${softness}px`, "--torch-ambient": ambient,
     } as CSSProperties}>
       <div className="torch-dim">{content}</div>
-      <div className="torch-subject" aria-hidden="true">{content}</div>
+      <div className="torch-subject" aria-hidden="true">{revealContent ?? content}</div>
       <div className="torch-ambient" aria-hidden="true" />
       <div className="torch-instruction micro-label"><i className="status-dot" />Move the torch. Find the subject.</div>
       <button className="torch-inspect micro-label" type="button" aria-disabled={lit}
