@@ -27,6 +27,6 @@ Production already contains these sections. The implementation refines their cho
 - Case rail policy checks: 5/5 passed, covering unequal offsets, final-panel clamping, reverse scrolling, midpoint ties and zero-distance layouts.
 - Git comparison confirms the hero, flashlight, global stylesheet, font configuration, data and public media are unchanged.
 
-Browser validation of the changed branch is pending deployment. Managed local preview is unavailable: its launcher appends Vite-only `--host`/`--strictPort` arguments to this Next.js project. Application scripts were not changed to compensate. The production browser review does not verify unpublished changes. No new FPS, Lighthouse or recording claim is made.
+Vercel deployment passed for PR #19. Opening its preview redirects to Vercel sign-in, so interactive browser validation of the changed branch remains pending. Managed local preview is unavailable: its launcher appends Vite-only `--host`/`--strictPort` arguments to this Next.js project. Application scripts were not changed to compensate. The production browser review does not verify unpublished changes. No new FPS, Lighthouse or recording claim is made.
 
 Before merging, review the branch preview at desktop and mobile widths: scroll through all six cases in both directions; use numbered controls and keyboard Tab; check short-screen vertical flow; follow every chapter anchor; toggle reduced motion/pause; open Contact and close with Escape; verify focus returns and scrolling resumes.
