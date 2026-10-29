@@ -3748,3 +3748,5 @@ html[data-motion-paused="true"] .case-file-layout { transform: none !important; 
   .subject-scene::before, .case-files-scene::before, .editorial-toolkit::before { clip-path: none; }
 }
 html[data-motion-paused="true"] :is(.subject-scene,.case-files-scene,.editorial-toolkit)::before { clip-path: none; }
+/* Keep the toolkit introduction readable on its actual ink background. */
+.editorial-toolkit .toolkit-title > p { color:var(--ash); }

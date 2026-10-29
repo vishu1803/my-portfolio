@@ -59,6 +59,7 @@ export default function SmoothScroll() {
         : id === "#home"
           ? 0
           : target.getBoundingClientRect().top + window.scrollY - 88;
+      lenis.resize();
       lenis.scrollTo(top, {
         duration: 1.05,
         onComplete: () => {
@@ -68,15 +69,41 @@ export default function SmoothScroll() {
       });
     };
     document.addEventListener("click", anchor);
+    // Pinned scenes change document offsets after the browser's native hash jump.
+    // Keep the requested initial anchor aligned until the visitor takes control.
+    let initialAnchor = location.hash && location.hash !== '#home' ? location.hash : '';
+    let anchorTimer = 0;
+    const alignInitialAnchor = () => {
+      clearTimeout(anchorTimer);
+      if (!initialAnchor) return;
+      anchorTimer = window.setTimeout(() => {
+        lenis.resize();
+        const target = document.getElementById(initialAnchor.slice(1));
+        if (target) lenis.scrollTo(target.getBoundingClientRect().top + scrollY - 88, { immediate:true });
+      }, 120);
+    };
+    const releaseAnchor = () => { initialAnchor=''; clearTimeout(anchorTimer); };
+    ScrollTrigger.addEventListener('refresh', alignInitialAnchor);
+    window.addEventListener('wheel',releaseAnchor,{passive:true});
+    window.addEventListener('pointerdown',releaseAnchor,{passive:true});
+    window.addEventListener('keydown',releaseAnchor);
+    alignInitialAnchor();
+
     const direct = (event: Event) => {
       event.preventDefault();
       const { top, immediate = true } = (
         event as CustomEvent<{ top: number; immediate?: boolean }>
       ).detail;
+      lenis.resize();
       lenis.scrollTo(top, { immediate, duration: 1.05 });
     };
     window.addEventListener("portfolio:scroll", direct);
     return () => {
+      clearTimeout(anchorTimer);
+      ScrollTrigger.removeEventListener('refresh',alignInitialAnchor);
+      window.removeEventListener('wheel',releaseAnchor);
+      window.removeEventListener('pointerdown',releaseAnchor);
+      window.removeEventListener('keydown',releaseAnchor);
       observer.disconnect();
       document.removeEventListener("visibilitychange", syncLock);
       document.removeEventListener("click", anchor);
