@@ -35,6 +35,7 @@ export default function SmoothScroll() {
       attributeFilter: ["style"],
     });
     document.addEventListener("visibilitychange", syncLock);
+    const headerOffset = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-offset')) || 88;
     const anchor = (event: MouseEvent) => {
       if (
         event.defaultPrevented ||
@@ -58,7 +59,8 @@ export default function SmoothScroll() {
         ? Number(target.dataset.pinStart)
         : id === "#home"
           ? 0
-          : target.getBoundingClientRect().top + window.scrollY - 88;
+          : target.getBoundingClientRect().top + window.scrollY - headerOffset();
+      releaseAnchor();
       lenis.resize();
       lenis.scrollTo(top, {
         duration: 1.05,
@@ -79,7 +81,7 @@ export default function SmoothScroll() {
       anchorTimer = window.setTimeout(() => {
         lenis.resize();
         const target = document.getElementById(initialAnchor.slice(1));
-        if (target) lenis.scrollTo(target.getBoundingClientRect().top + scrollY - 88, { immediate:true });
+        if (target) lenis.scrollTo(target.getBoundingClientRect().top + scrollY - headerOffset(), { immediate:true });
       }, 120);
     };
     const releaseAnchor = () => { initialAnchor=''; clearTimeout(anchorTimer); };

@@ -15,6 +15,7 @@ export default function Navbar({
   const [active, setActive] = useState("home");
   const [scrolled, setScrolled] = useState(false);
   const progress = useRef<HTMLSpanElement>(null);
+  const header = useRef<HTMLElement>(null);
   useEffect(() => {
     let frame = 0;
     const read = () => {
@@ -32,6 +33,11 @@ export default function Navbar({
     const queue = () => {
       if (!frame) frame = requestAnimationFrame(read);
     };
+    const size = new ResizeObserver(() => {
+      if(header.current) document.documentElement.style.setProperty('--header-offset', `${header.current.getBoundingClientRect().height + 8}px`);
+      queue();
+    });
+    if(header.current) size.observe(header.current);
     const observer = new IntersectionObserver(queue, {
       rootMargin: "-85px 0px -65% 0px",
       threshold: 0,
@@ -44,14 +50,15 @@ export default function Navbar({
     addEventListener("resize", queue);
     read();
     return () => {
-      observer.disconnect();
+      observer.disconnect(); size.disconnect();
+      document.documentElement.style.removeProperty('--header-offset');
       removeEventListener("scroll", queue);
       removeEventListener("resize", queue);
       cancelAnimationFrame(frame);
     };
   }, []);
   return (
-    <header className={`editorial-header ${scrolled ? "is-scrolled" : ""}`}>
+    <header ref={header} className={`editorial-header ${scrolled ? "is-scrolled" : ""}`}>
       <motion.nav
         aria-label="Primary navigation"
         className="editorial-nav"
@@ -88,15 +95,14 @@ export default function Navbar({
               key={section.id}
               href={`#${section.id}`}
               aria-current={
-                active === section.id || (active === "home" && index === 0)
+                active === section.id
                   ? "location"
                   : undefined
               }
             >
               <sup>0{index + 1}</sup>
               {section.label}
-              {(active === section.id ||
-                (active === "home" && index === 0)) && (
+              {active === section.id && (
                 <motion.span
                   layoutId="chapter-nav-underline"
                   className="nav-underline"

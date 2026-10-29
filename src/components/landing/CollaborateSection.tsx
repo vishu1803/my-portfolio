@@ -24,6 +24,9 @@ import Magnetic from "../motion/Magnetic";
 import PullingHand from "./PullingHand";
 import useAccessibleDialog from "../../hooks/useAccessibleDialog";
 import useCollaborationRig from "../../hooks/useCollaborationRig";
+import useScrollScene from "../../hooks/useScrollScene";
+import gsap from "gsap";
+import { EDITORIAL_MOTION as M } from "../../config/editorialMotion";
 import {
   ArrowUpRight,
   Copy,
@@ -54,6 +57,12 @@ export default function CollaborateSection({
   const hireButtonRef = useRef<HTMLButtonElement>(null);
   const handRef = useRef<SVGGElement>(null);
   const stringsGroupRef = useRef<SVGGElement>(null);
+  useScrollScene(sectionRef, !reduced, () => {
+    gsap.fromTo(sectionRef.current,
+      { y: M.prelude.sheetTravel, clipPath: 'inset(0% 0% 0% 0% round 32px 32px 0px 0px)' },
+      { y: 0, clipPath: 'inset(0% 0% 0% 0% round 0px 0px 0px 0px)', ease: 'none',
+        scrollTrigger: { trigger: sectionRef.current, start: 'top 98%', end: 'top 65%', scrub: .5 } });
+  });
 
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
   const [bursting, setBursting] = useState(false);
@@ -317,7 +326,7 @@ export default function CollaborateSection({
             <motion.span className="pill-hover-shadow" aria-hidden="true" initial={false} animate={{ opacity: buttonHovered ? 1 : 0 }} transition={{ duration: reduced ? 0 : .25 }} />
             <motion.button
               type="button"
-              layoutId="contact-surface"
+              layoutId={reduced ? undefined : "contact-surface"}
               onClick={(event) => {
                 if (performance.now() - draggedAt.current < 250) return;
                 setButtonHovered(false);
@@ -351,7 +360,7 @@ export default function CollaborateSection({
                 reduced ? undefined : { y: -4, scale: 1.03 }
               }
               whileFocus={reduced ? undefined : { y: -4, scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              whileTap={reduced ? undefined : { scale: 0.97 }}
               style={{
                 transformPerspective: 800,
                 rotateX, rotateY,
@@ -452,7 +461,7 @@ export default function CollaborateSection({
                       opacity: { duration: reduced ? 0 : 0.2 },
                     }}
                     onClick={(e) => e.stopPropagation()}
-                    layoutId="contact-surface"
+                    layoutId={reduced ? undefined : "contact-surface"}
                     className="contact-overlay-panel terminal-contact-panel relative w-full max-w-4xl select-text rounded-3xl bg-[#0b0b0c] text-[#e9e2d0] border border-white/15 shadow-[0_25px_80px_rgba(0,0,0,0.85)] p-6 sm:p-10 my-auto overflow-hidden"
                   >
                     {/* Header Close Bar */}

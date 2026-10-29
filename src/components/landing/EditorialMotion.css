@@ -1,0 +1,33 @@
+/* Chapter motion only. The existing type, colours, content and hero stay intact. */
+.case-files-scene:not([data-case-layout="rail"]) { height:auto; min-height:0; overflow:clip; }
+.case-files-scene:not([data-case-layout="rail"]) .case-files-track { display:block; width:auto; }
+.case-files-scene:not([data-case-layout="rail"]) .case-file.case-study-item { width:100%; max-width:none; margin-bottom:32px; }
+.case-files-scene:not([data-case-layout="rail"]) :is(.case-track-progress,.case-track-hint,.case-chapter-controls) { display:none; }
+.case-files-scene[data-case-layout="rail"] { height:calc(100svh - 88px); min-height:0; }
+.case-chapter-controls { display:flex; justify-content:space-between; gap:8px; padding-top:8px; }
+.case-chapter-controls button { position:relative; flex:1; min-height:44px; text-align:left; opacity:.65; }
+.case-chapter-controls button[aria-current="step"],.case-chapter-controls button:hover,.case-chapter-controls button:focus-visible { opacity:1; }
+.case-chapter-controls button::after { content:""; position:absolute; inset:auto 0 0; height:1px; background:currentColor; transform:scaleX(0); transform-origin:left; transition:transform .3s; }
+.case-chapter-controls button[aria-current="step"]::after { transform:scaleX(1); }
+.case-files-scene[data-case-layout="rail"] .case-track-hint { padding-top:6px; }
+.toolkit-row { position:relative; border-top:0; }
+.toolkit-row-rule { position:absolute; inset:0 0 auto; height:1px; background:currentColor; opacity:.2; transform-origin:left; }
+.toolkit-row:first-child .toolkit-row-rule { display:none; }
+/* All words keep their contrast while the pointer moves across the toolkit. */
+.toolkit-rows:has(.skill-word:hover) .skill-word:not(:hover),.toolkit-words:has(.skill-word:hover) .skill-word:not(:hover) { opacity:1; }
+.prelude-line { overflow:clip; padding-bottom:.15em; margin-bottom:-.15em; }
+.prelude-line > span { display:block; }
+.prelude-front { display:block; }
+.editorial-collaborate { transform-origin:center top; }
+.evidence-rule { transform-origin:left; }
+.editorial-nav [aria-current] { isolation:isolate; }
+@media(max-width:1023px),(max-height:819px),(pointer:coarse) {
+  .case-file-layout { transform:none!important; }
+  .case-file .case-copy { max-width:none; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .case-chapter-controls button::after { transition:none; }
+}
+html[data-motion-paused="true"] .case-chapter-controls { display:none; }
+
+main :is(#subject,#case-studies,#toolkit,#about,#contact) { scroll-margin-top:var(--header-offset,88px); }

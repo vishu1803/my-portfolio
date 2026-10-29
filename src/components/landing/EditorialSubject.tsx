@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import "./SubjectFlow.css";
+import { EDITORIAL_MOTION as M } from "../../config/editorialMotion";
 
 export default function EditorialSubject() {
   const root = useRef<HTMLElement>(null);
@@ -16,7 +17,11 @@ export default function EditorialSubject() {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
         observer.unobserve(entry.target);
-        context.add(() => gsap.fromTo(entry.target, { y: 12 }, { y: 0, duration: .55, ease: 'power2.out' }));
+        context.add(() => {
+          const portrait=entry.target.matches('.subject-portrait-mask');
+          gsap.fromTo(entry.target, portrait?{clipPath:M.image.inset,y:24}:{y:24},
+            {clipPath:'inset(0% 0% 0% 0%)',y:0,duration:portrait?M.image.duration:M.entrance.duration,ease:M.entrance.ease});
+        });
       });
     }, { threshold: .08 });
     node.querySelectorAll('[data-subject-reveal]').forEach(el => {

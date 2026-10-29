@@ -3,42 +3,29 @@ import useReducedMotion from "../../hooks/useMotionPreference";
 import { useRef } from "react";
 
 import gsap from "gsap";
-import GhostResolve from "../motion/GhostResolve";
+import { EDITORIAL_MOTION as M } from "../../config/editorialMotion";
 import useScrollScene from "../../hooks/useScrollScene";
 export default function ContactPrelude() {
   const root = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
   useScrollScene(root, !reduced, (ScrollTrigger) => {
-    const media = gsap.matchMedia();
-    media.add("(min-width:768px)", () => {
-      const ctx = gsap.context(() => {
-        gsap
-          .timeline({
-            scrollTrigger: {
-              id: "last-thing-pin",
-              trigger: root.current,
-              start: "top 84px",
-              end: "+=100%",
-              pin: true,
-              pinSpacing: false,
-              scrub: 0.6,
-            },
-          })
-          .fromTo(
-            ".prelude-title",
-            { scale: 1, opacity: 0.6 },
-            { scale: 1.12, opacity: 1, duration: 1, ease: "none" },
-            0,
-          )
-          // Finish the depth while the heading is still above the rising sheet.
-          .to(".prelude-extrusion > span", { x: i => i + 1, y: i => i + 1, opacity: 1, duration: .2, stagger: .015, ease: "none" }, 0);
-        // GhostResolve owns the supporting lines' entrance. A second scrubbed
-        // opacity on their parents kept them hidden until the sheet covered them.
-      }, root);
-      return () => ctx.revert();
-    });
-    return () => media.revert();
+    const ctx=gsap.context(()=>{
+      const entrance=gsap.timeline({scrollTrigger:{trigger:root.current,start:'top 78%',once:true}});
+      entrance.fromTo('.prelude-front',{yPercent:105},{yPercent:0,duration:.95,ease:'power4.out'},0)
+        .fromTo('.prelude-line > span',{yPercent:110},{yPercent:0,duration:M.entrance.duration,stagger:.11,ease:M.entrance.ease},.18)
+        .fromTo('.prelude-name',{y:16},{y:0,duration:.65},.4)
+        .fromTo('.prelude-rule',{scaleX:0},{scaleX:1,duration:.9,transformOrigin:'left'},0);
+      const media=gsap.matchMedia();
+      media.add(M.rail.media,()=>{
+        gsap.to('.prelude-title-clip',{y:-M.prelude.travel,ease:'none',scrollTrigger:{trigger:root.current,start:'top top',end:'bottom top',scrub:.6}});
+        gsap.to('.prelude-extrusion > span',{x:i=>(i+1)*.55,y:i=>(i+1)*.55,opacity:.65,stagger:.02,duration:.6,
+          scrollTrigger:{trigger:root.current,start:'top 35%',once:true}});
+      });
+      return ()=>media.revert();
+    },root);
+    return ()=>ctx.revert();
   });
+
   return (
     <section
       ref={root}
@@ -55,8 +42,8 @@ export default function ContactPrelude() {
         </h2>
       </div>
       <div className="prelude-lines">
-        <p className="prelude-line"><GhostResolve text="The next chapter starts" /></p>
-        <p className="prelude-line"><GhostResolve text="with a conversation." /></p>
+        <p className="prelude-line"><span>The next chapter starts</span></p>
+        <p className="prelude-line"><span>with a conversation.</span></p>
       </div>
       <p className="prelude-name micro-label">Vishwanath Nishad</p>
     </section>
