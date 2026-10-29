@@ -1,47 +1,30 @@
 "use client";
 import useReducedMotion from "../../hooks/useMotionPreference";
-import { useRef } from "react";
-import { LineReveal, BlurIn, MarkerSweep } from "../motion/TextReveals";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
-import GhostResolve from "../motion/GhostResolve";
-import ClipReveal from "../motion/ClipReveal";
 import gsap from "gsap";
-import useScrollScene from "../../hooks/useScrollScene";
+import "./SubjectFlow.css";
 
 export default function EditorialSubject() {
   const root = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
-  useScrollScene(root, !reduced, (ScrollTrigger) => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        ".subject-portrait img",
-        { scale: 1.15, yPercent: 5 },
-        {
-          scale: 1,
-          yPercent: -4,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".subject-portrait",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 0.8,
-          },
-        },
-      );
-      gsap.from(".subject-spec-row", {
-        opacity: 0,
-        y: 18,
-        stagger: 0.12,
-        duration: 0.65,
-        scrollTrigger: {
-          trigger: ".subject-specs",
-          start: "top 88%",
-          once: true,
-        },
+  useEffect(() => {
+    const node = root.current;
+    if (!node || reduced) return;
+    const context = gsap.context(() => {}, node);
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        observer.unobserve(entry.target);
+        context.add(() => gsap.fromTo(entry.target, { y: 12 }, { y: 0, duration: .55, ease: 'power2.out' }));
       });
-    }, root);
-    return () => ctx.revert();
-  });
+    }, { threshold: .08 });
+    node.querySelectorAll('[data-subject-reveal]').forEach(el => {
+      // Direct navigation must never hide or rebuild text already in view.
+      if (el.getBoundingClientRect().top >= innerHeight) observer.observe(el);
+    });
+    return () => { observer.disconnect(); context.revert(); };
+  }, [reduced]);
   return (
     <section
       id="subject"
@@ -55,13 +38,13 @@ export default function EditorialSubject() {
         <span>01 / The subject</span>
         <span>Vishwanath Nishad · Gorakhpur</span>
       </div>
-      <p className="subject-title"><GhostResolve text="The subject." /></p>
-      <h2 id="subject-heading" className="subject-heading">
-        <LineReveal>Thoughtful interfaces.</LineReveal>
-        <em><GhostResolve text="Reliable systems underneath." /></em>
+      <p className="subject-title" data-subject-reveal>The subject.</p>
+      <h2 id="subject-heading" className="subject-heading" data-subject-reveal>
+        Thoughtful interfaces.
+        <em>Reliable systems underneath.</em>
       </h2>
       <div className="subject-columns">
-        <ClipReveal className="subject-portrait-mask"><figure className="subject-portrait">
+        <div className="subject-portrait-mask" data-subject-reveal><figure className="subject-portrait">
           <Image
             src="/vishwanath-portrait.jpg"
             alt="Vishwanath Nishad — portrait in yellow duotone"
@@ -71,27 +54,27 @@ export default function EditorialSubject() {
           <figcaption className="micro-label">
             The person behind the work / 01
           </figcaption>
-        </figure></ClipReveal>
+        </figure></div>
         <div>
-          <div className="subject-bio">
+          <div className="subject-bio" data-subject-reveal>
             <p>
-              <BlurIn>
+
                 I’m Vishwanath, a{" "}
-                <MarkerSweep>full-stack developer</MarkerSweep> connecting
+                <span className="subject-emphasis">full-stack developer</span> connecting
                 responsive interfaces with the systems behind them.
-              </BlurIn>
+
             </p>
             <p>
-              <BlurIn>
-                My work spans <MarkerSweep>authenticated APIs</MarkerSweep>,
+
+                My work spans <span className="subject-emphasis">authenticated APIs</span>,
                 relational data, and interactive web applications.
-              </BlurIn>
+
             </p>
             <p>
-              <BlurIn>
+
                 I like understanding how the pieces fit together — then turning that
                 understanding into something useful.
-              </BlurIn>
+
             </p>
           </div>
           <dl className="subject-specs">
@@ -101,7 +84,7 @@ export default function EditorialSubject() {
               ["Location", "Gorakhpur, India"],
               ["Focus", "Interfaces, backend APIs and full-stack applications"],
             ].map(([label, value]) => (
-              <div className="subject-spec-row" key={label}>
+              <div className="subject-spec-row" data-subject-reveal key={label}>
                 <dt className="micro-label">{label}</dt>
                 <dd>{value}</dd>
               </div>
