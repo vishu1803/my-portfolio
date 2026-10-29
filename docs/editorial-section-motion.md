@@ -83,3 +83,13 @@ These pairs do not establish every pixel's contrast over the unchanged hero/vide
 - All four headless profiles use the vertical case fallback. They do not validate fine-pointer pinning, scrolling, runtime trigger stability or animation FPS. Results are in `docs/editorial-motion-results.json`.
 
 The managed local preview launcher appends unsupported Vite arguments to Next.js. Its failure was not worked around by changing application scripts. Vercel branch preview previously redirected to sign-in. No authentication protection was weakened. Interactive checks of the updated branch, runtime trigger stability, 1440px/390px recordings, touch dragging and full reduced-motion UI review remain pending accessible preview. This PR stays a draft; production is not changed by pushing this branch.
+
+## Latest control and rail adjustment
+
+The case rail now runs at widths of 768px and above, without a tall-window or fine-pointer requirement. Taller case content remains in normal flow until its bottom reaches the viewport, then pins for the horizontal sequence; short screens do not clip the project actions. Below 768px, cases remain vertically stacked. Reduced-motion, manual-pause and low-power static fallbacks remain available.
+
+The hero portrait-reveal button, hero-only override buttons, blocked-play button, separate Pause tug / Play with words controls and six case-jump buttons are removed. The single global Pause animations / Resume animations toggle controls the video and chapter/hand loops. Pointer/touch torch reveal and automatic lights-on after scrolling remain. Browser-blocked video playback retains the poster.
+
+Earlier performance measurements in this document describe the preceding revision. This adjustment is validated separately; interactive protected-preview review remains pending.
+
+Control-cleanup validation: lint, typecheck, production build and 29 checks pass. Lighthouse initial samples at 1440×960 confirm rail layout; 390×844 confirms vertical case layout with no horizontal overflow. Both report CLS 0 and accessibility 100; performance is 98 desktop / 84 mobile. The mobile performance target remains unmet. These layout samples do not replace a manual touch/scroll interaction review.

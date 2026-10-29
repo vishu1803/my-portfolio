@@ -4,7 +4,6 @@ import { useRef, useState } from "react";
 
 import { LineReveal } from "../motion/TextReveals";
 import gsap from "gsap";
-import { motion } from "framer-motion";
 import { EDITORIAL_MOTION as M } from "../../config/editorialMotion";
 import { activeCase, caseRailStops } from "../../lib/caseRail";
 import "./EditorialMotion.css";
@@ -38,15 +37,11 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
     scrollPlugin.current = ScrollTrigger;
     const el = root.current!, rail = track.current!, frame = viewport.current!;
     const cards = [...el.querySelectorAll<HTMLElement>('.case-study-item')];
-    const controls = [...el.querySelectorAll<HTMLButtonElement>('[data-case-step]')];
     const progress = el.querySelector('.case-track-progress span');
     const media = gsap.matchMedia();
     const setActive = (index: number) => {
       cards.forEach((card, i) => { card.dataset.active = String(i === index); });
-      controls.forEach((button, i) => {
-        if (i === index) button.setAttribute('aria-current', 'step');
-        else button.removeAttribute('aria-current');
-      });
+
     };
     const updateStops = () => caseRailStops(cards.map(card => card.offsetLeft - cards[0].offsetLeft), Math.max(0, rail.scrollWidth - frame.clientWidth));
     media.add({ rail: M.rail.media, fallback: 'all' }, context => {
@@ -68,7 +63,7 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
       const sequence = gsap.to(rail, {
         x: () => -distance(), ease:'none',
         scrollTrigger: {
-          id:'case-files-track',trigger:el,start:'top 88px',end:()=>`+=${distance()}`,
+          id:'case-files-track',trigger:el,start:()=>el.offsetHeight>innerHeight-88?'bottom bottom':'top 88px',end:()=>`+=${distance()}`,
           pin:true,pinSpacing:true,scrub:M.rail.scrub,anticipatePin:1,invalidateOnRefresh:true,
           onRefresh:self=>{stops=updateStops();el.dataset.pinStart=String(self.start);el.dataset.pinEnd=String(self.end);},
           onUpdate:self=>{
@@ -230,15 +225,6 @@ export default function ProjectCaseStudies({ onSelectArticle }: Props) {
         <div className="case-track-progress" aria-hidden="true">
           <span />
         </div>
-        <nav className="case-chapter-controls micro-label" aria-label="Case files">
-          {CASE_STUDIES.map((study,index)=><motion.button
-            key={study.id} type="button" data-case-step
-            aria-label={`Go to case file: ${study.title}`}
-            aria-current={index===0?'step':undefined}
-            onClick={()=>goToCase(index)}
-            whileHover={reduced?undefined:{y:-2}} whileTap={reduced?undefined:{scale:.96}}
-          >{String(index+1).padStart(2,'0')}</motion.button>)}
-        </nav>
         <p className="case-track-hint micro-label">
           Scroll to turn the case files <span aria-hidden="true">→</span>
         </p>

@@ -52,3 +52,7 @@ test('normal production markup has no debug panel, and the preserved hero has on
   assert.equal((hero.match(/N° 01/g)||[]).length,1);
   assert.equal((html.match(/<h1\b/g)||[]).length,1);
 });
+test('one global animation control replaces the redundant scene buttons',()=>{
+  assert.equal((html.match(/class="animation-toggle"/g)||[]).length,1);
+  assert.doesNotMatch(html,/class="torch-inspect|class="hero-motion-notice|class="collab-controls|class="case-chapter-controls|class="hero-video-play/);
+});

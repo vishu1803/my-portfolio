@@ -117,7 +117,6 @@ export default function CollaborateSection({
 
   const [buttonHovered, setButtonHovered] = useState(false);
   const [dragging, setDragging] = useState(false);
-  const [motionPaused, setMotionPaused] = useState(false);
   const draggedAt = useRef(-Infinity);
   const dragX = useMotionValue(0);
   const tiltX = useMotionValue(0), tiltY = useMotionValue(0);
@@ -143,8 +142,8 @@ export default function CollaborateSection({
   });
   useMotionValueEvent(dragX, "change", (value) => rig.current?.drag(value));
   useEffect(() => {
-    rig.current?.pause(isOverlayOpen || bursting || motionPaused);
-  }, [isOverlayOpen, bursting, motionPaused, reduced, rig]);
+    rig.current?.pause(isOverlayOpen || bursting);
+  }, [isOverlayOpen, bursting, reduced, rig]);
   useEffect(() => {
     rig.current?.hover(buttonHovered || dragging);
   }, [buttonHovered, dragging, rig]);
@@ -380,16 +379,6 @@ export default function CollaborateSection({
               <ArrowUpRight size={23} aria-hidden="true" />
             </motion.button></div>
           </div>
-          <div className="collab-controls">
-          <button type="button" className="collab-word-toggle micro-label" onClick={startWords}>Play with words</button>
-          <button
-            type="button"
-            className="collab-motion-toggle micro-label"
-            aria-pressed={motionPaused}
-            onClick={() => setMotionPaused((value) => !value)}
-          >
-            {motionPaused ? "Resume tug" : "Pause tug"}
-          </button></div>
           <span className="collab-hand-note micro-label" aria-hidden="true">
             Made for working together <span aria-hidden="true">↗</span>
           </span>

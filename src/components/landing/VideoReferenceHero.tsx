@@ -2,7 +2,7 @@
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
-import { ArrowDownRight, ArrowUpRight, Play } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight } from 'lucide-react';
 import { useIntroReady } from '../motion/Preloader';
 import useHeroMotion from '../../hooks/useHeroMotion';
 import { HERO_MOTION as M } from '../../config/heroMotion';
@@ -50,7 +50,7 @@ export default function VideoReferenceHero({ onOpenResume }: { onOpenResume?: ()
       <span>Curious by nature. <em>Engineer by practice.</em><br /><span>TypeScript / Full stack · LeetCode problems · practice</span></span>
       <span className="hero-scroll-cue">Scroll to unfold <ArrowDownRight size={16} aria-hidden="true" /></span>
     </div>
-    {state.ready && (state.staticMode || state.override) && <div className="hero-motion-notice"><span>{state.override ? 'Hero motion enabled for this session.' : 'Motion is paused. Turn animations on'}</span><button type="button" onClick={() => state.setOverride(!state.override)}><Play size={14} aria-hidden="true" />{state.override ? 'Pause hero motion' : 'Enable hero for this session'}</button></div>}
+
     <div className="hero-ink-wipe" aria-hidden="true" />
     <MotionDebug scope={root} state={state} />
   </section>;
