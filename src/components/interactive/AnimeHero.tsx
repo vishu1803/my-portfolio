@@ -37,7 +37,9 @@ export default function AnimeHero({ scope, staticMode, ready, limited }: {
     const eyes = node.querySelector<HTMLElement>('.anime-eyes');
     const measure = () => { dirty = true; };
     const resize = () => {
-      width = node.clientWidth; height = node.clientHeight; rect = node.getBoundingClientRect();
+      rect = node.getBoundingClientRect();
+      if (context && width === node.clientWidth && height === node.clientHeight) { dirty = false; return; }
+      width = node.clientWidth; height = node.clientHeight;
       geometry = coverFrame(width,height,HERO_ART.width,HERO_ART.height,.5,.5);
       Object.entries(geometry).forEach(([key,value]) => node.style.setProperty(`--cover-${key}`,`${value}px`));
       node.style.setProperty('--face-x',`${geometry.left+geometry.width*.4975}px`);
@@ -136,7 +138,7 @@ export default function AnimeHero({ scope, staticMode, ready, limited }: {
       node.dataset.artMotion=staticMode?'static':active?'running':'offscreen';node.dataset.rafRunning=String(active);hero.dataset.heroInView=String(visible);
       timelines.forEach(t=>active?t.resume():t.pause());
       if(active&&!frame) {last=0;frame=requestAnimationFrame(paint);}
-      if(!active) {cancelAnimationFrame(frame);frame=0;node.dataset.fps='0';}
+      if(!active) {cancelAnimationFrame(frame);frame=0;node.dataset.fps='0';node.dataset.emissionFps='0';}
     };
     const observer=new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;activity();},{threshold:.01});observer.observe(hero);
     const move=(e:PointerEvent)=>{tx=(e.clientX-rect.left)/Math.max(width,1)*2-1;ty=(e.clientY-rect.top)/Math.max(height,1)*2-1;};
