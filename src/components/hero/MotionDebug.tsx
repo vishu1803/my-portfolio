@@ -11,11 +11,11 @@ export default function MotionDebug({ scope, state }: { scope: RefObject<HTMLEle
     if (!enabled) return;
     const read = () => {
       const hero = scope.current, art = hero?.querySelector<HTMLElement>('[data-anime-hero]');
-      const layers = ['mist', 'embers', 'eyes', 'parallax', 'grain', 'shadow', 'rays'];
+      const layers = ['embers', 'eyes', 'grain'];
       setReading([
         `rAF: ${art?.dataset.rafRunning === 'true' ? 'yes' : 'no'}`,
         `FPS: ${art?.dataset.fps ?? '0'} (hero loop)`,
-        `SVG updates/s: ${art?.dataset.filterFps ?? '0'}`,
+        `Emission paints/s: ${art?.dataset.emissionFps ?? '0'}`,
         `State: ${art?.dataset.artMotion ?? 'initializing'}`,
         `Effects budget: ${art?.dataset.effectsBudget ?? 'static'}`,
         `Viewport: ${innerWidth} × ${innerHeight}`,

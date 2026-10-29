@@ -1,0 +1,66 @@
+{
+  "desktop": {
+    "fetchTime": "2026-10-29T09:46:51.338Z",
+    "scores": {
+      "performance": 0.98,
+      "accessibility": 1,
+      "best-practices": 1
+    },
+    "debug": "MOTION / DEVELOPER VIEW\nReduced motion: off\nPaused: off\nLow power: off\nSession override: off\nrAF: yes\nFPS: 50 (hero loop)\nEmission paints/s: 22\nState: running\nEffects budget: emission\nViewport: 1440 \u00d7 960\nembers: mounted\neyes: mounted\ngrain: mounted",
+    "overflow": false,
+    "metrics": {
+      "largest-contentful-paint": "0.9\u00a0s",
+      "total-blocking-time": "10\u00a0ms",
+      "cumulative-layout-shift": "0"
+    },
+    "consoleAudit": 1
+  },
+  "mobile": {
+    "fetchTime": "2026-10-29T09:47:04.700Z",
+    "scores": {
+      "performance": 0.86,
+      "accessibility": 1,
+      "best-practices": 1
+    },
+    "debug": "MOTION / DEVELOPER VIEW\nReduced motion: off\nPaused: off\nLow power: off\nSession override: off\nrAF: yes\nFPS: 60 (hero loop)\nEmission paints/s: 23\nState: running\nEffects budget: touch-emission\nViewport: 390 \u00d7 844\nembers: mounted\neyes: mounted\ngrain: mounted",
+    "overflow": false,
+    "metrics": {
+      "largest-contentful-paint": "4.0\u00a0s",
+      "total-blocking-time": "70\u00a0ms",
+      "cumulative-layout-shift": "0.002"
+    },
+    "consoleAudit": 1
+  },
+  "reduced-desktop": {
+    "fetchTime": "2026-10-29T09:47:21.473Z",
+    "scores": {
+      "performance": 0.99,
+      "accessibility": 1,
+      "best-practices": 1
+    },
+    "debug": "MOTION / DEVELOPER VIEW\nReduced motion: on\nPaused: off\nLow power: off\nSession override: off\nrAF: no\nFPS: 0 (hero loop)\nEmission paints/s: 0\nState: static\nEffects budget: touch-emission\nViewport: 1440 \u00d7 960\nembers: mounted (hidden)\neyes: mounted\ngrain: mounted",
+    "overflow": false,
+    "metrics": {
+      "largest-contentful-paint": "0.9\u00a0s",
+      "total-blocking-time": "0\u00a0ms",
+      "cumulative-layout-shift": "0"
+    },
+    "consoleAudit": 1
+  },
+  "reduced-mobile": {
+    "fetchTime": "2026-10-29T09:47:32.416Z",
+    "scores": {
+      "performance": 0.87,
+      "accessibility": 1,
+      "best-practices": 1
+    },
+    "debug": "MOTION / DEVELOPER VIEW\nReduced motion: on\nPaused: off\nLow power: off\nSession override: off\nrAF: no\nFPS: 0 (hero loop)\nEmission paints/s: 0\nState: static\nEffects budget: touch-emission\nViewport: 390 \u00d7 844\nembers: mounted (hidden)\neyes: mounted\ngrain: mounted",
+    "overflow": false,
+    "metrics": {
+      "largest-contentful-paint": "4.0\u00a0s",
+      "total-blocking-time": "60\u00a0ms",
+      "cumulative-layout-shift": "0.002"
+    },
+    "consoleAudit": 1
+  }
+}
