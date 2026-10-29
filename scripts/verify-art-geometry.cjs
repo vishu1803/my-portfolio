@@ -44,3 +44,17 @@ test("the optimized supplied artwork has the declared dimensions", async () => {
   assert.equal(metadata.width, 2048);
   assert.equal(metadata.height, 1151);
 });
+
+for (const [viewport, width, height, left] of [[1440, 950.4, 900, 489.6], [390, 522.6, 628, -23.4]]) {
+  test(`${viewport}px viewport: CSS cover fallback matches measured geometry before hydration`, () => {
+    const frame = coverFrame(width, height, 2048, 1151);
+    const cssWidth = Math.max(width, height * 2048 / 1151);
+    const cssHeight = Math.max(height, width * 1151 / 2048);
+    assert.ok(Math.abs(frame.width - cssWidth) < .001);
+    assert.ok(Math.abs(frame.height - cssHeight) < .001);
+    assert.ok(Math.abs(frame.left - (width - cssWidth) / 2) < .001);
+    const faceX = left + frame.left + frame.width * .4975;
+    if (viewport === 1440) assert.ok(faceX / viewport >= .62 && faceX / viewport <= .7);
+    else assert.ok(faceX > 0 && faceX < viewport);
+  });
+}
