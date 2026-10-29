@@ -1,0 +1,31 @@
+/* Chapter motion only. The existing type, colours, content and hero stay intact. */
+.case-files-scene:not([data-case-layout="rail"]) { height:auto; min-height:0; overflow:clip; }
+.case-files-scene:not([data-case-layout="rail"]) .case-files-track { display:block; width:auto; }
+.case-files-scene:not([data-case-layout="rail"]) .case-file.case-study-item { width:100%; max-width:none; margin-bottom:32px; }
+.case-files-scene:not([data-case-layout="rail"]) :is(.case-track-progress,.case-track-hint,.case-chapter-controls) { display:none; }
+.case-files-scene[data-case-layout="rail"] { height:auto; min-height:calc(100svh - 88px); }
+.case-files-scene[data-case-layout="rail"] .case-track-hint { padding-top:6px; }
+.toolkit-row { position:relative; border-top:0; }
+.toolkit-row-rule { position:absolute; inset:0 0 auto; height:1px; background:currentColor; opacity:.2; transform-origin:left; }
+.toolkit-row:first-child .toolkit-row-rule { display:none; }
+/* Hover dim remains readable and is confined to interactive motion mode. */
+.toolkit-rows:has(.skill-word:hover) .skill-word:not(:hover),.toolkit-words:has(.skill-word:hover) .skill-word:not(:hover) { opacity:1; }
+@media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) {
+  .editorial-toolkit[data-chapter-static="false"] .toolkit-rows:has(.skill-word:hover) .skill-word:not(:hover) { opacity:.72; }
+}
+.prelude-line { overflow:clip; padding-bottom:.15em; margin-bottom:-.15em; }
+.prelude-line > span { display:block; }
+.prelude-front { display:block; }
+.editorial-collaborate { transform-origin:center top; }
+.evidence-rule { transform-origin:left; }
+.editorial-nav [aria-current] { isolation:isolate; }
+@media(max-width:767px) {
+  .case-file-layout { transform:none!important; }
+  .case-file .case-copy { max-width:none; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .case-chapter-controls button::after { transition:none; }
+}
+html[data-motion-paused="true"] .case-chapter-controls { display:none; }
+
+main :is(#subject,#case-studies,#toolkit,#about,#contact) { scroll-margin-top:var(--header-offset,88px); }

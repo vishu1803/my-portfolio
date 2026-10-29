@@ -1,10 +1,11 @@
 "use client";
-import useReducedMotion from "../../hooks/useMotionPreference";
+import useReducedMotion from "../../hooks/useChapterMotion";
 import { useRef } from "react";
 
 import { LineReveal } from "../motion/TextReveals";
 import gsap from "gsap";
 import useScrollScene from "../../hooks/useScrollScene";
+import { EDITORIAL_MOTION as M } from "../../config/editorialMotion";
 import CountUp from "../motion/CountUp";
 import Certifications from "./Certifications";
 import { LEETCODE_SOLVED } from "../../data/profile";
@@ -18,19 +19,12 @@ export default function EditorialAbout({
   useScrollScene(root, !reduced, (ScrollTrigger) => {
     const ctx = gsap.context(() => {
       root.current?.querySelectorAll(".evidence-row").forEach((row) => {
-        gsap.from(row.querySelector(".evidence-rule"), {
-          scaleX: 0,
-          transformOrigin: "left",
-          duration: 0.9,
-          scrollTrigger: { trigger: row, start: "top 85%", once: true },
-        });
-        gsap.from(row.querySelectorAll(".evidence-copy,.evidence-value"), {
-          y: 24,
-          opacity: 0,
-          duration: 0.7,
-          stagger: 0.12,
-          scrollTrigger: { trigger: row, start: "top 84%", once: true },
-        });
+        const timeline=gsap.timeline({scrollTrigger:{trigger:row,start:'top 88%',once:true}});
+        timeline.fromTo(row.querySelector('.evidence-rule'),{scaleX:0},{scaleX:1,duration:.9,ease:'power2.inOut'},0)
+          .fromTo(row.querySelector(':scope > .micro-label'),{y:16},{y:0,duration:.65,ease:M.entrance.ease},.1)
+          .fromTo(row.querySelector('.evidence-copy'),{y:28},{y:0,duration:M.entrance.duration,ease:M.entrance.ease},.16)
+          .fromTo(row.querySelector('.evidence-value'),{x:24,clipPath:'inset(0% 100% 0% 0%)'},
+            {x:0,clipPath:'inset(0% 0% 0% 0%)',duration:.9,ease:M.entrance.ease},.24);
       });
     }, root);
     return () => ctx.revert();

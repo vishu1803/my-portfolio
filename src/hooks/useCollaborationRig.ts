@@ -4,13 +4,8 @@ import { RefObject, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { isLowPowerDevice } from "../lib/motionQuality";
 import { loadScrollTrigger } from "./useScrollScene";
+import { createRigControls } from '../lib/rigControls';
 
-type RigControls = {
-  aim: (x: number, y: number) => void;
-  hover: (value: boolean) => void;
-  drag: (pixels: number) => void;
-  pause: (value: boolean) => void;
-};
 type RigOptions = {
   stage: RefObject<HTMLDivElement>;
   hand: RefObject<SVGGElement>;
@@ -36,14 +31,15 @@ export default function useCollaborationRig({
   section,
   reduced,
 }: RigOptions) {
-  const controls = useRef<RigControls | null>(null);
+  const controller = useRef(createRigControls());
+  const controls = useRef(controller.current.controls);
   useEffect(() => {
     const surface = stage.current,
       palm = hand.current,
       cords = strings.current,
       pill = button.current;
     if (!surface || !palm || !cords || !pill || !section.current) return;
-    if (reduced || matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (reduced || isLowPowerDevice() || matchMedia("(prefers-reduced-motion: reduce)").matches) {
       surface.dataset.motion = "reduced";
       return;
     }
@@ -57,12 +53,12 @@ export default function useCollaborationRig({
       const state = { cycle: 0, intro: 1, aimX: 0, aimY: 0, hover: 0, drag: 0 };
       let frame = 0,
         visible = false,
-        paused = false,
+        paused = controller.current.intent.paused,
         entered = false;
       let geometry = { scale: 1, x: 580, y: 94, height: 90 };
       const limited = isLowPowerDevice();
       let idle: gsap.core.Tween;
-      let hovered = false;
+      let hovered = controller.current.intent.hover;
 
       const paint = () => {
         frame = 0;
@@ -152,7 +148,7 @@ export default function useCollaborationRig({
           duration: 0.35,
           onUpdate: queuePaint,
         });
-        controls.current = {
+        controller.current.connect({
           aim: (x, y) => {
             aimX(x);
             aimY(y);
@@ -170,7 +166,7 @@ export default function useCollaborationRig({
             paused = value;
             updateActivity();
           },
-        };
+        });
         idle = gsap.to(state, {
           cycle: Math.PI * 2,
           duration: 2.8,
@@ -226,7 +222,7 @@ export default function useCollaborationRig({
       document.addEventListener("visibilitychange", updateActivity);
       measure();
       dispose = () => {
-        controls.current = null;
+        controller.current.connect(null);
         observer.disconnect();
         sizeObserver.disconnect();
         document.removeEventListener("visibilitychange", updateActivity);

@@ -1,9 +1,10 @@
 "use client";
-import useReducedMotion from "../../hooks/useMotionPreference";
+import useReducedMotion from "../../hooks/useChapterMotion";
 import { useRef } from "react";
 import { LineReveal, BlurIn } from "../motion/TextReveals";
 import gsap from "gsap";
 import useScrollScene from "../../hooks/useScrollScene";
+import { EDITORIAL_MOTION as M } from "../../config/editorialMotion";
 
 const GROUPS = [
   {
@@ -28,16 +29,14 @@ export default function ReferenceSkillInterlude() {
   const reduced = useReducedMotion();
   useScrollScene(root, !reduced, (ScrollTrigger) => {
     const ctx = gsap.context(() => {
-      root.current?.querySelectorAll(".toolkit-row").forEach((row, index) =>
-        gsap.from(row, {
-          x: index % 2 ? -55 : 55,
-          skewX: index % 2 ? 4 : -4,
-          opacity: 0,
-          duration: 0.85,
-          ease: "power3.out",
-          scrollTrigger: { trigger: row, start: "top 88%", once: true },
-        }),
-      );
+      root.current?.querySelectorAll('.toolkit-row').forEach((row,index)=>{
+        const timeline=gsap.timeline({scrollTrigger:{trigger:row,start:'top 88%',once:true}});
+        timeline.fromTo(row,{x:index%2?-46:46,skewX:index%2?2:-2},{x:0,skewX:0,duration:.8,ease:M.entrance.ease},0)
+          .fromTo(row.querySelector('.toolkit-row-rule'),{scaleX:0},{scaleX:1,duration:.65,ease:'power2.out'},0)
+          .fromTo(row.querySelectorAll('.toolkit-category,.toolkit-description'),{y:14},{y:0,duration:.65,stagger:.07,ease:M.entrance.ease},0)
+          .fromTo(row.querySelectorAll('.toolkit-words'),{y:30,rotation:index%2?-1.5:1.5,clipPath:'inset(0% 0% 100% 0%)'},
+            {y:0,rotation:0,clipPath:'inset(0% 0% 0% 0%)',duration:M.entrance.duration,stagger:.12,ease:M.entrance.ease},.1);
+      });
       gsap.from(".toolkit-yellow-rise", {
         scaleY: 0,
         transformOrigin: "bottom",
@@ -60,6 +59,7 @@ export default function ReferenceSkillInterlude() {
       data-scene="#0b0b0c"
       data-ink="light"
       aria-labelledby="toolkit-heading"
+      data-chapter-static={reduced}
     >
       <div className="section-rule micro-label">
         <span>03 / The toolkit</span>
@@ -90,6 +90,7 @@ export default function ReferenceSkillInterlude() {
               key={group.title}
               style={{ "--skill-depth": index } as React.CSSProperties}
             >
+              <span className="toolkit-row-rule" aria-hidden="true" />
               <div className="toolkit-category micro-label">
                 <span>0{index + 1}</span>
                 <span>{group.title}</span>

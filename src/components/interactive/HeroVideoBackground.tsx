@@ -12,7 +12,6 @@ export default function HeroVideoBackground({scope, staticMode}: {scope:RefObjec
   const root=useRef<HTMLDivElement>(null);
   const video=useRef<HTMLVideoElement>(null);
   const [started,setStarted]=useState(false);
-  const [blocked,setBlocked]=useState(false);
   const [posterMissing,setPosterMissing]=useState(false);
   useEffect(()=>{
     const hero=scope.current,node=root.current,media=video.current;
@@ -27,11 +26,10 @@ export default function HeroVideoBackground({scope, staticMode}: {scope:RefObjec
       if(!media.paused && media.readyState>=2){node.dataset.videoState='playing';return;}
       media.muted=true;
       const playing=media.play();
-      playing?.catch(()=>{if(live&&visible&&!document.hidden&&!staticMode&&scrollY>8){node.dataset.videoState='blocked';setBlocked(true);showPoster();}});
+      playing?.catch(()=>{if(live&&visible&&!document.hidden&&!staticMode&&scrollY>8){node.dataset.videoState='blocked';showPoster();}});
     };
     const onPlaying=()=>{
       if(!live||!started||staticMode||!visible||document.hidden||scrollY<=8){media.pause();return;}
-      setBlocked(false);
       node.dataset.videoState='playing';
       ctx.add(()=>gsap.to(media,{opacity:1,duration:.35,overwrite:true,ease:'power2.out'}));
     };
@@ -51,6 +49,6 @@ export default function HeroVideoBackground({scope, staticMode}: {scope:RefObjec
   const poster=<div className="hero-video-poster"><Image src={posterMissing?HERO_ART.src:'/hero/video-poster.webp'} onError={()=>setPosterMissing(true)} alt={HERO_ART.alt} fill priority fetchPriority="high" sizes="100vw" /></div>;
   return <div ref={root} className="hero-video-background" data-hero-video>
     <TorchReveal scope={scope} revealOnScroll revealContent={<>{poster}<video ref={video} src={started?'/hero/animation.mp4':undefined} muted loop playsInline preload="none" aria-hidden="true" tabIndex={-1} className="hero-background-video" /></>}>{poster}</TorchReveal>
-    {blocked&&!staticMode&&<button type="button" className="hero-video-play micro-label" onClick={()=>{video.current?.play().catch(()=>{});}}>Play background animation</button>}
+
   </div>;
 }

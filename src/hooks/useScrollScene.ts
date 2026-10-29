@@ -1,6 +1,7 @@
 "use client";
 import { RefObject, useEffect, useRef } from "react";
 import gsap from "gsap";
+import { isLowPowerDevice } from "../lib/motionQuality";
 type Plugin = typeof import("gsap/ScrollTrigger").ScrollTrigger;
 let pending: Promise<Plugin> | undefined;
 let input: Promise<void> | undefined;
@@ -18,6 +19,7 @@ function whenNeeded() {
 export function loadScrollTrigger() {
   return (pending ??= whenNeeded().then(()=>import("gsap/ScrollTrigger")).then(({ ScrollTrigger }) => {
     gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.defaults({ markers: new URLSearchParams(location.search).get('debug') === 'scroll' });
     return ScrollTrigger;
   }));
 }
@@ -32,12 +34,14 @@ export default function useScrollScene<T extends Element>(
   const latest = useRef(setup);
   latest.current = setup;
   useEffect(() => {
-    if (!enabled || matchMedia("(prefers-reduced-motion: reduce)").matches)
+    if (!enabled || isLowPowerDevice() || matchMedia("(prefers-reduced-motion: reduce)").matches)
       return;
     let live = true;
+    let initialized = false;
     let dispose: (() => void) | undefined;
     const initialize = () => loadScrollTrigger().then((plugin) => {
-      if (!live) return;
+      if (!live || initialized) return;
+      initialized = true;
       let cleanup: void | (() => void);
       const context = gsap.context(() => {
         cleanup = latest.current(plugin);

@@ -1,5 +1,5 @@
 "use client";
-import useReducedMotion from "../../hooks/useMotionPreference";
+import useReducedMotion from "../../hooks/useChapterMotion";
 
 import { useEffect, useRef, useState, useId } from "react";
 import { createPortal } from "react-dom";
@@ -24,6 +24,9 @@ import Magnetic from "../motion/Magnetic";
 import PullingHand from "./PullingHand";
 import useAccessibleDialog from "../../hooks/useAccessibleDialog";
 import useCollaborationRig from "../../hooks/useCollaborationRig";
+import useScrollScene from "../../hooks/useScrollScene";
+import gsap from "gsap";
+import { EDITORIAL_MOTION as M } from "../../config/editorialMotion";
 import {
   ArrowUpRight,
   Copy,
@@ -54,6 +57,12 @@ export default function CollaborateSection({
   const hireButtonRef = useRef<HTMLButtonElement>(null);
   const handRef = useRef<SVGGElement>(null);
   const stringsGroupRef = useRef<SVGGElement>(null);
+  useScrollScene(sectionRef, !reduced, () => {
+    gsap.fromTo(sectionRef.current,
+      { y: M.prelude.sheetTravel, clipPath: 'inset(0% 0% 0% 0% round 32px 32px 0px 0px)' },
+      { y: 0, clipPath: 'inset(0% 0% 0% 0% round 0px 0px 0px 0px)', ease: 'none',
+        scrollTrigger: { trigger: sectionRef.current, start: 'top 98%', end: 'top 65%', scrub: .5 } });
+  });
 
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
   const [bursting, setBursting] = useState(false);
@@ -108,7 +117,6 @@ export default function CollaborateSection({
 
   const [buttonHovered, setButtonHovered] = useState(false);
   const [dragging, setDragging] = useState(false);
-  const [motionPaused, setMotionPaused] = useState(false);
   const draggedAt = useRef(-Infinity);
   const dragX = useMotionValue(0);
   const tiltX = useMotionValue(0), tiltY = useMotionValue(0);
@@ -134,8 +142,8 @@ export default function CollaborateSection({
   });
   useMotionValueEvent(dragX, "change", (value) => rig.current?.drag(value));
   useEffect(() => {
-    rig.current?.pause(isOverlayOpen || bursting || motionPaused);
-  }, [isOverlayOpen, bursting, motionPaused, reduced, rig]);
+    rig.current?.pause(isOverlayOpen || bursting);
+  }, [isOverlayOpen, bursting, reduced, rig]);
   useEffect(() => {
     rig.current?.hover(buttonHovered || dragging);
   }, [buttonHovered, dragging, rig]);
@@ -317,7 +325,7 @@ export default function CollaborateSection({
             <motion.span className="pill-hover-shadow" aria-hidden="true" initial={false} animate={{ opacity: buttonHovered ? 1 : 0 }} transition={{ duration: reduced ? 0 : .25 }} />
             <motion.button
               type="button"
-              layoutId="contact-surface"
+              layoutId={reduced ? undefined : "contact-surface"}
               onClick={(event) => {
                 if (performance.now() - draggedAt.current < 250) return;
                 setButtonHovered(false);
@@ -351,7 +359,7 @@ export default function CollaborateSection({
                 reduced ? undefined : { y: -4, scale: 1.03 }
               }
               whileFocus={reduced ? undefined : { y: -4, scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              whileTap={reduced ? undefined : { scale: 0.97 }}
               style={{
                 transformPerspective: 800,
                 rotateX, rotateY,
@@ -371,16 +379,6 @@ export default function CollaborateSection({
               <ArrowUpRight size={23} aria-hidden="true" />
             </motion.button></div>
           </div>
-          <div className="collab-controls">
-          <button type="button" className="collab-word-toggle micro-label" onClick={startWords}>Play with words</button>
-          <button
-            type="button"
-            className="collab-motion-toggle micro-label"
-            aria-pressed={motionPaused}
-            onClick={() => setMotionPaused((value) => !value)}
-          >
-            {motionPaused ? "Resume tug" : "Pause tug"}
-          </button></div>
           <span className="collab-hand-note micro-label" aria-hidden="true">
             Made for working together <span aria-hidden="true">↗</span>
           </span>
@@ -445,14 +443,13 @@ export default function CollaborateSection({
                     }
                     transition={{
                       layout: {
-                        type: "spring",
                         duration: reduced ? 0 : 0.65,
-                        bounce: 0.12,
+                        ease: [.76, 0, .24, 1],
                       },
                       opacity: { duration: reduced ? 0 : 0.2 },
                     }}
                     onClick={(e) => e.stopPropagation()}
-                    layoutId="contact-surface"
+                    layoutId={reduced ? undefined : "contact-surface"}
                     className="contact-overlay-panel terminal-contact-panel relative w-full max-w-4xl select-text rounded-3xl bg-[#0b0b0c] text-[#e9e2d0] border border-white/15 shadow-[0_25px_80px_rgba(0,0,0,0.85)] p-6 sm:p-10 my-auto overflow-hidden"
                   >
                     {/* Header Close Bar */}
@@ -493,27 +490,27 @@ export default function CollaborateSection({
                           },
                         }}
                       >
-                        <Magnetic>
+                        <motion.span variants={{hidden:{opacity:0,y:12},visible:{opacity:1,y:0}}} transition={{duration:reduced?0:.35}}><Magnetic>
                           <a
                             href={`mailto:${email}`}
                             className="terminal-primary"
                           >
                             Start a Project <span aria-hidden="true">↗</span>
                           </a>
-                        </Magnetic>
-                        <Magnetic>
+                        </Magnetic></motion.span>
+                        <motion.span variants={{hidden:{opacity:0,y:12},visible:{opacity:1,y:0}}} transition={{duration:reduced?0:.35}}><Magnetic>
                           <button type="button" onClick={onOpenResume}>
                             View résumé <span aria-hidden="true">↗</span>
                           </button>
-                        </Magnetic>
-                        <Magnetic>
+                        </Magnetic></motion.span>
+                        <motion.span variants={{hidden:{opacity:0,y:12},visible:{opacity:1,y:0}}} transition={{duration:reduced?0:.35}}><Magnetic>
                           <button
                             type="button"
                             onClick={() => navigateTo("case-studies")}
                           >
                             Explore my work <span aria-hidden="true">↓</span>
                           </button>
-                        </Magnetic>
+                        </Magnetic></motion.span>
                       </motion.div>
                       <button
                         type="button"
@@ -587,7 +584,15 @@ export default function CollaborateSection({
                                 <Copy className="w-3.5 h-3.5" />
                               )}
                               <span className="hidden sm:inline">
-                                {copiedEmail ? "Copied" : "Copy"}
+                                <AnimatePresence mode="wait" initial={false}>
+                                  <motion.span key={copiedEmail ? 'copied' : 'copy'}
+                                    initial={reduced ? false : {opacity:0,y:4,rotateX:-15}}
+                                    animate={{opacity:1,y:0,rotateX:0}}
+                                    exit={reduced ? {opacity:0} : {opacity:0,y:-4,rotateX:15}}
+                                    transition={{duration:reduced?0:.16}}>
+                                    {copiedEmail ? "Copied" : "Copy"}
+                                  </motion.span>
+                                </AnimatePresence>
                               </span>
                             </button>
                           </div>

@@ -1,5 +1,5 @@
 "use client";
-import useReducedMotion from "../../hooks/useMotionPreference";
+import useReducedMotion from "../../hooks/useChapterMotion";
 import gsap from "gsap";
 import useScrollScene from "../../hooks/useScrollScene";
 export default function ScrollColors() {
@@ -41,8 +41,17 @@ export default function ScrollColors() {
         });
       });
     });
-    const refresh = () => ScrollTrigger.refresh();
+    let refreshTimer = 0;
+    const refresh = () => {
+      clearTimeout(refreshTimer);
+      refreshTimer = window.setTimeout(() => ScrollTrigger.refresh(), 100);
+    };
+    const imageSettled = (event: Event) => {
+      if (event.target instanceof HTMLImageElement && event.target.closest('main')) refresh();
+    };
     window.addEventListener("load", refresh);
+    window.addEventListener('pageshow', refresh);
+    document.addEventListener('load', imageSettled, true);
     let live = true;
     document.fonts.ready.then(() => {
       if (live) refresh();
@@ -50,6 +59,9 @@ export default function ScrollColors() {
     return () => {
       live = false;
       window.removeEventListener("load", refresh);
+      window.removeEventListener('pageshow', refresh);
+      document.removeEventListener('load', imageSettled, true);
+      clearTimeout(refreshTimer);
       ctx.revert();
       delete document.documentElement.dataset.chapterTheme;
     };

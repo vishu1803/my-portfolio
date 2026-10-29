@@ -1,5 +1,9 @@
 "use client";
 
+import { useRef } from "react";
+import gsap from "gsap";
+import useScrollScene from "../../hooks/useScrollScene";
+import useMotionPreference from "../../hooks/useChapterMotion";
 import { ArrowUpRight } from "lucide-react";
 import { HERO_ART } from "../../data/heroArt";
 
@@ -8,8 +12,14 @@ export default function EditorialFooter({
 }: {
   onOpenResume?: () => void;
 }) {
+  const root=useRef<HTMLElement>(null);
+  const reduced=useMotionPreference();
+  useScrollScene(root,!reduced,()=>{
+    gsap.fromTo('.colophon-top > div',{y:24,clipPath:'inset(0% 0% 100% 0%)'},
+      {y:0,clipPath:'inset(0% 0% 0% 0%)',duration:.85,ease:'power3.out',scrollTrigger:{trigger:root.current,start:'top 92%',once:true}});
+  });
   return (
-    <footer className="editorial-colophon">
+    <footer ref={root} className="editorial-colophon">
       <div className="colophon-top">
         <div>
           <h2>Vishwanath Nishad</h2>

@@ -1,5 +1,5 @@
 "use client";
-import { CSSProperties, ReactNode, RefObject, useEffect, useRef, useState } from "react";
+import { CSSProperties, ReactNode, RefObject, useEffect, useRef } from "react";
 import gsap from "gsap";
 import useReducedMotion from "../../hooks/useMotionPreference";
 import { isLowPowerDevice } from "../../lib/motionQuality";
@@ -23,9 +23,7 @@ export default function TorchReveal({
   disabled = false, lowPower = false,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
-  const light = useRef<(animate?: boolean) => void>(() => {});
   const latched = useRef(false);
-  const [lit, setLit] = useState(false);
   const reduced = useReducedMotion();
   useEffect(() => {
     const node = ref.current, target = scope.current;
@@ -48,7 +46,6 @@ export default function TorchReveal({
         return;
       }
       latched.current = true;
-      setLit(true);
       target.dataset.lit = "true";
       node.dataset.lit = "true";
       node.dataset.active = "true";
@@ -68,10 +65,9 @@ export default function TorchReveal({
         bubbles: true, detail: { animate: animate && !simple },
       }));
     };
-    light.current = finish;
     if (simple || latched.current) {
       finish(false);
-      return () => { context.revert(); light.current = () => {}; };
+      return () => { context.revert(); };
     }
     const measure = () => {
       needsMeasure = true;
@@ -160,7 +156,7 @@ export default function TorchReveal({
       window.removeEventListener("scroll", measure);
       document.removeEventListener("visibilitychange", visibility);
       if (frame) cancelAnimationFrame(frame);
-      context.revert(); light.current = () => {};
+      context.revert();
     };
   }, [scope, reduced, disabled, lowPower, radius, revealOnScroll]);
   const content = layers ?? children;
@@ -173,11 +169,7 @@ export default function TorchReveal({
       <div className="torch-subject" aria-hidden="true">{revealContent ?? content}</div>
       <div className="torch-ambient" aria-hidden="true" />
       <div className="torch-instruction micro-label"><i className="status-dot" />Move the torch. Find the subject.</div>
-      <button className="torch-inspect micro-label" type="button" aria-disabled={lit}
-        aria-label={lit ? "Portrait revealed" : "Reveal portrait details"}
-        onClick={() => light.current()}>
-        {lit ? "Portrait revealed" : "Reveal portrait details"}
-      </button>
+
     </div>
   );
 }

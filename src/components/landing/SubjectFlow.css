@@ -4,3 +4,15 @@
 #subject .subject-emphasis { text-decoration:underline; text-decoration-color:var(--blood); text-underline-offset:4px; text-decoration-thickness:1px; }
 #subject .subject-portrait img { transform:none; }
 @media(max-width:767px) { #subject .subject-title { padding-top:24px; padding-bottom:20px; } #subject .subject-columns { margin-top:30px; } }
+
+#subject .subject-heading em { text-transform:none; }
+.subject-portrait-drift { position:absolute; inset:0 0 -60px; }
+.subject-portrait-mask > .clip-reveal-inner { width:100%; }
+#subject .subject-portrait { clip-path:polygon(0 0,100% 0,100% 98.6%,95% 99.5%,88% 98.9%,80% 100%,72% 99%,65% 99.7%,56% 98.8%,48% 100%,39% 99.2%,30% 99.8%,20% 98.8%,10% 99.6%,0 99%); }
+.subject-bio .marker-sweep { isolation:isolate; white-space:normal; }
+.subject-bio .reveal-marker-ink { z-index:0; }
+.subject-bio [data-reveal-content] { position:relative; }
+#subject .subject-spec-row { position:relative; border-top:0; }
+.draw-on { display:block; transform-origin:left; }
+.subject-spec-rule { position:absolute; inset:0 0 auto; height:1px; background:currentColor; opacity:.25; }
+@media(max-width:899px) { .subject-portrait-drift { inset:0; } }
