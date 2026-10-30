@@ -8,7 +8,6 @@ A cinematic portfolio built in the existing Next.js / React application: a torch
 npm install
 npm run dev
 ```
-
 ```sh
 npm run typecheck
 npm run lint
