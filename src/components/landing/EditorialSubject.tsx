@@ -6,7 +6,6 @@ import gsap from "gsap";
 import "./SubjectFlow.css";
 import useScrollScene from "../../hooks/useScrollScene";
 import GhostResolve from "../motion/GhostResolve";
-import ClipReveal from "../motion/ClipReveal";
 import { LineReveal, MarkerSweep } from "../motion/TextReveals";
 import DrawOn from "../motion/DrawOn";
 
@@ -20,11 +19,7 @@ export default function EditorialSubject() {
     ScrollTrigger.create({trigger:'.subject-specs',start:'top 90%',once:true,onEnter:()=>context.add(()=>{
       gsap.fromTo(rows,{y:16,opacity:0},{y:0,opacity:1,duration:.6,stagger:.08,ease:'power3.out'});
     })});
-    const media=gsap.matchMedia();
-    media.add('(min-width: 900px) and (pointer: fine)',()=>{
-      gsap.fromTo('.subject-portrait-drift',{y:0},{y:-60,ease:'none',scrollTrigger:{trigger:'.subject-portrait-mask',start:'top bottom',end:'bottom top',scrub:.6}});
-    });
-    return ()=>{media.revert();context.revert();};
+    return ()=>context.revert();
   });
   return (
     <section
@@ -45,19 +40,17 @@ export default function EditorialSubject() {
         <em><LineReveal>Authenticated APIs, relational data, interactive apps.</LineReveal></em>
       </h2>
       <div className="subject-columns">
-        <ClipReveal className="subject-portrait-mask"><figure className="subject-portrait">
-          <div className="subject-portrait-drift">
+        <figure className="subject-portrait">
           <Image
             src="/subject-portrait.webp"
             alt="Portrait of Vishwanath Nishad"
             fill
             sizes="(max-width: 767px) 90vw, 40vw"
           />
-          </div>
           <figcaption className="micro-label">
             The person behind the work / 01
           </figcaption>
-        </figure></ClipReveal>
+        </figure>
         <div>
           <div className="subject-bio" data-subject-reveal>
             <p>
