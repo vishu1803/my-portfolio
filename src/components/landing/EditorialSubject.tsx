@@ -48,7 +48,7 @@ export default function EditorialSubject() {
         <ClipReveal className="subject-portrait-mask"><figure className="subject-portrait">
           <div className="subject-portrait-drift">
           <Image
-            src="/vishwanath-portrait.jpg"
+            src="/subject-portrait.webp"
             alt="Portrait of Vishwanath Nishad"
             fill
             sizes="(max-width: 767px) 90vw, 40vw"
